@@ -88,8 +88,7 @@ public class MainActivity extends AppCompatActivity {
 					new ApiResult() {
 						@Override
 						public void success(Json data) {
-							String logo = data.getString("logo") + "@64";
-							Picasso.get().load(logo).fit().into(avatar);
+							Picasso.get().load(data.getString("logo") + "@" + avatar.getWidth()).into(avatar);
 						}
 
 						@Override
