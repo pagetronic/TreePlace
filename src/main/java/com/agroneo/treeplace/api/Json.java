@@ -1,7 +1,7 @@
 /*
  * Copyright 2019 Laurent PAGE, Apache Licence 2.0
  */
-package com.agroneo.treeplace.sys;
+package com.agroneo.treeplace.api;
 
 
 import com.google.gson.Gson;
@@ -30,8 +30,10 @@ public class Json implements Map<String, Object>, Serializable {
 	 * Init this a Json string, parse and make
 	 */
 	public Json(String json_string) {
-
 		datas = new LinkedHashMap<>();
+		if (json_string == null || json_string.equals("")) {
+			return;
+		}
 		datas.putAll(new Gson().fromJson(json_string, Map.class));
 
 	}
@@ -401,7 +403,7 @@ public class Json implements Map<String, Object>, Serializable {
 		if (key == null || get(key) == null) {
 			return null;
 		}
-		Iterator list = get(key, List.class).iterator();
+		Iterator<?> list = get(key, List.class).iterator();
 		List<Json> outlist = new ArrayList<>();
 		while (list.hasNext()) {
 			Object obj = list.next();
