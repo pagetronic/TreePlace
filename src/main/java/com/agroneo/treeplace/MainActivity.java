@@ -1,8 +1,16 @@
 package com.agroneo.treeplace;
 
+import android.accounts.Account;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -10,17 +18,29 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
+import com.agroneo.treeplace.api.ApiAsync;
+import com.agroneo.treeplace.api.ApiResult;
+import com.agroneo.treeplace.api.Json;
+import com.agroneo.treeplace.auth.Accounts;
+import com.agroneo.treeplace.auth.AuthActivity;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
+import com.squareup.picasso.Picasso;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
 	private AppBarConfiguration mAppBarConfiguration;
 
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
+
 		setContentView(R.layout.activity_main);
 		Toolbar toolbar = findViewById(R.id.toolbar);
 		setSupportActionBar(toolbar);
@@ -33,9 +53,9 @@ public class MainActivity extends AppCompatActivity {
 			}
 		});
 		DrawerLayout drawer = findViewById(R.id.drawer_layout);
+
 		NavigationView navigationView = findViewById(R.id.nav_view);
-		// Passing each menu ID as a set of Ids because each
-		// menu should be considered as top level destinations.
+
 		mAppBarConfiguration = new AppBarConfiguration.Builder(
 				R.id.nav_search, R.id.nav_creation)
 				.setDrawerLayout(drawer)
@@ -43,11 +63,89 @@ public class MainActivity extends AppCompatActivity {
 		NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
 		NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
 		NavigationUI.setupWithNavController(navigationView, navController);
+
+		makeAccounts(navigationView.getHeaderView(0));
+
+
+	}
+
+	@Override
+	protected void onPostResume() {
+		super.onPostResume();
+		if (!Accounts.control(getApplicationContext())) {
+			recreate();
+		}
+	}
+
+	private void makeAccounts(final View headerView) {
+		final TextView account_selector = headerView.findViewById(R.id.account_selector);
+		final ImageView avatar = headerView.findViewById(R.id.avatar);
+		final String account_name = Accounts.getAccountActive(getApplicationContext());
+
+		if (account_name != null) {
+			account_selector.setText(account_name);
+			ApiAsync.get(getApplicationContext(), "/profile",
+					new ApiResult() {
+						@Override
+						public void success(Json data) {
+							String logo = data.getString("logo") + "@64";
+							Picasso.get().load(logo).fit().into(avatar);
+						}
+
+						@Override
+						public void error(int code, Json data) {
+							Log.e("Agro", data.toString());
+						}
+					}
+			);
+		}
+
+		account_selector.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Account[] accounts = Accounts.getAccounts(getApplicationContext());
+				if (accounts.length > 0) {
+
+					AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+					final List<String> options = new ArrayList<>();
+					for (Account account : accounts) {
+						options.add(account.name);
+					}
+					options.add(getResources().getString(R.string.new_account));
+					builder.setTitle(R.string.select_account);
+					builder.setItems(options.toArray(new String[0]), new DialogInterface.OnClickListener() {
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							if (which == options.size() - 1) {
+								startActivityForResult(new Intent(getApplicationContext(), AuthActivity.class), 1);
+							} else {
+								Accounts.setAccountActive(getApplicationContext(), options.get(which));
+								recreate();
+							}
+							dialog.cancel();
+						}
+					});
+					builder.show();
+				} else {
+					startActivityForResult(new Intent(getApplicationContext(), AuthActivity.class), 1);
+				}
+			}
+		});
+
+
+	}
+
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+		if (requestCode == 1) {
+			recreate();
+			return;
+		}
+		super.onActivityResult(requestCode, resultCode, data);
 	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.main, menu);
 		return true;
 	}

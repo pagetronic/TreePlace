@@ -16,12 +16,12 @@ public class Api {
 
 	private static final String API_HOST = BuildConfig.DEBUG ? "http://api.agroneo.com" : "https://api.agroneo.com";
 
-	public static ApiResponse post(String path, Json data) {
+	public static ApiResponse post(String access_token, String path, Json data) {
 
 		try {
-			HttpURLConnection conn = connect(path);
+			HttpURLConnection conn = connect(access_token, path);
 			conn.setRequestMethod("POST");
-			conn.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
+			conn.setRequestProperty("Content-Type", "application/json");
 			OutputStream os = conn.getOutputStream();
 
 			BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os, StandardCharsets.UTF_8));
@@ -39,13 +39,10 @@ public class Api {
 		return null;
 	}
 
-	public static ApiResponse get(String path, String... params) {
+	public static ApiResponse get(String access_token, String path) {
 
 		try {
-			if (params.length > 0) {
-				path += "?" + StringUtils.join(path, "&");
-			}
-			HttpURLConnection conn = connect(path);
+			HttpURLConnection conn = connect(access_token, path);
 			conn.setRequestMethod("GET");
 
 			String response = IOUtils.toString(conn.getResponseCode() != HttpURLConnection.HTTP_OK ? conn.getErrorStream() : conn.getInputStream());
@@ -58,15 +55,16 @@ public class Api {
 		return null;
 	}
 
-	private static HttpURLConnection connect(String path) {
+	private static HttpURLConnection connect(String access_token, String path) {
 		try {
 			HttpURLConnection conn = (HttpURLConnection) new URL(API_HOST + path).openConnection();
 			conn.setRequestProperty("User-Agent", "Agroneo TreePlace Android V3");
 			conn.setRequestProperty("Accept", "application/json");
+			if (access_token != null) {
+				conn.setRequestProperty("Authorization", "Bearer " + access_token);
+			}
 			conn.setReadTimeout(15000);
 			conn.setConnectTimeout(15000);
-			conn.setDoInput(true);
-			conn.setDoOutput(true);
 			conn.setUseCaches(false);
 			return conn;
 		} catch (IOException e) {
@@ -74,4 +72,5 @@ public class Api {
 		}
 		return null;
 	}
+
 }
