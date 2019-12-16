@@ -4,26 +4,22 @@ import android.os.AsyncTask;
 
 public class ApiAsync extends AsyncTask<Object, Integer, ApiResponse> {
 
+	public static void post(String url, Json data) {
+		new ApiAsync(null).execute("POST", url, data);
+	}
+
 	public static void post(String url, Json data, ApiResult func) {
-		new ApiAsync(func).post(url, data);
+		new ApiAsync(func).execute("POST", url, data);
 	}
 
 	public static void get(String url, ApiResult func, String... params) {
-		new ApiAsync(func).get(url, params);
+		new ApiAsync(func).execute("GET", url, params);
 	}
 
 	private ApiResult func = null;
 
 	private ApiAsync(ApiResult func) {
 		this.func = func;
-	}
-
-	private void get(String url, String... params) {
-		execute("GET", url, params);
-	}
-
-	private void post(String url, Json data) {
-		execute("POST", url, data);
 	}
 
 	@Override
@@ -37,14 +33,19 @@ public class ApiAsync extends AsyncTask<Object, Integer, ApiResponse> {
 
 	@Override
 	protected void onPostExecute(ApiResponse rez) {
+
+		if (func == null) {
+			return;
+		}
 		if (rez == null) {
 			func.error(-1, null);
-		} else if (rez.getCode() != 200) {
-			func.error(rez.getCode(), rez.getResult());
-		} else {
-			func.success(rez.getResult());
+			return;
 		}
+		if (rez.getCode() != 200) {
+			func.error(rez.getCode(), rez.getResult());
+			return;
+		}
+		func.success(rez.getResult());
 	}
-
-
 }
+
