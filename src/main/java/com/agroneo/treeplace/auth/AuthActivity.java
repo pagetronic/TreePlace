@@ -20,17 +20,13 @@ public class AuthActivity extends Activity {
 
 		setContentView(R.layout.activity_auth);
 
-		((TextView) findViewById(R.id.email)).append("pagetronic@gmail.com");
-
-		((TextView) findViewById(R.id.password)).append("jJ9mtVgiAy2ebXW");
-
-
-		findViewById(R.id.login).setOnClickListener(new View.OnClickListener() {
+		findViewById(R.id.login)
+				.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
 
-				final String email = ((TextView) findViewById(R.id.email)).getText().toString().trim();
-				final String password = ((TextView) findViewById(R.id.password)).getText().toString().trim();
+				final String email = ((TextView) findViewById(R.id.login_email)).getText().toString().trim();
+				final String password = ((TextView) findViewById(R.id.login_password)).getText().toString().trim();
 				final Resources resources = getResources();
 
 				ApiAsync.post(getApplicationContext(), "/token",

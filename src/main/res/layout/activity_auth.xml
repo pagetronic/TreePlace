@@ -1,52 +1,118 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="vertical"
-              android:layout_width="fill_parent"
-              android:layout_height="fill_parent"
-              android:background="#000000"
-              android:paddingLeft="17dp"
-              android:paddingRight="17dp"
-              android:backgroundTint="@android:color/white"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@android:color/white"
 >
+    <LinearLayout android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:orientation="vertical"
+                  android:padding="17dp"
+    >
+        <TextView android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:text="@string/account_oauth"
+                  android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        />
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content">
+            <Button android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/google"/>
+            <Button android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/facebook"
+            />
+        </LinearLayout>
 
-    <EditText
-            android:id="@+id/username"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:hint="@string/name"
-            android:inputType="text"
-            android:padding="10dp"
-            android:importantForAutofill="no"/>
+        <EditText
+                android:id="@+id/login_email"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:hint="@string/email_address"
+                android:inputType="textEmailAddress"
+                android:padding="10dp"
+                android:importantForAutofill="no"/>
 
-    <EditText
-            android:id="@+id/email"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:hint="@string/email_address"
-            android:inputType="textEmailAddress"
-            android:padding="10dp"
-            android:importantForAutofill="no"/>
+        <EditText
+                android:id="@+id/login_password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:inputType="textPassword"
+                android:hint="@string/password"
+                android:padding="10dp"
+                android:importantForAutofill="no"/>
 
-    <EditText
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:id="@+id/password"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:inputType="textPassword"
-            android:hint="@string/password"
-            android:padding="10dp"
-            android:importantForAutofill="no"/>
+        <Button
+                android:id="@+id/login"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="@string/login"
+                android:padding="10dp"
+        />
 
-    <Button
-            android:id="@+id/login"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:text="@string/create_account"
-            android:padding="10dp"
-    />
-</LinearLayout>
+        <EditText
+                android:id="@+id/create_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:hint="@string/name"
+                android:inputType="text"
+                android:padding="10dp"
+                android:importantForAutofill="no"/>
+
+        <EditText
+                android:id="@+id/create_email"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:hint="@string/email_address"
+                android:inputType="textEmailAddress"
+                android:padding="10dp"
+                android:importantForAutofill="no"/>
+
+        <EditText
+                android:id="@+id/create_password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:inputType="textPassword"
+                android:hint="@string/password"
+                android:padding="10dp"
+                android:importantForAutofill="no"/>
+        <Button
+                android:id="@+id/create"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="@string/create_account"
+                android:padding="10dp"
+        />
+
+
+        <EditText
+                android:id="@+id/recover_email"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:hint="@string/email_address"
+                android:inputType="textEmailAddress"
+                android:padding="10dp"
+                android:importantForAutofill="no"/>
+
+        <Button
+                android:id="@+id/recover"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="@string/recover_account"
+                android:padding="10dp"
+        />
+    </LinearLayout>
+</ScrollView>
 
