@@ -4,6 +4,8 @@ import android.accounts.Account;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -22,9 +24,10 @@ import androidx.navigation.ui.NavigationUI;
 import com.agroneo.treeplace.api.ApiAsync;
 import com.agroneo.treeplace.api.ApiResult;
 import com.agroneo.treeplace.api.Json;
-import com.agroneo.treeplace.auth.Accounts;
 import com.agroneo.treeplace.auth.AuthActivity;
+import com.agroneo.treeplace.auth.AuthService;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestBuilder;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
@@ -75,20 +78,22 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onPostResume() {
         super.onPostResume();
-        if (!Accounts.control(getApplicationContext())) {
+        if (!AuthService.control(getBaseContext())) {
             recreate();
         }
     }
 
     private void makeAccounts(final ImageView avatar) {
-        final String account_name = Accounts.getAccountActive(getApplicationContext());
+        final String account_name = AuthService.getAccountActive(getApplicationContext());
 
         if (account_name != null) {
             ApiAsync.get(getApplicationContext(), "/profile",
                     new ApiResult() {
                         @Override
                         public void success(Json data) {
-                            Glide.with(MainActivity.this).load(data.getString("logo") + "@" + avatar.getWidth())
+
+                            Glide.with(MainActivity.this).load(Uri.parse(data.getString("logo") + "@" + avatar.getWidth()))
+                                    .error(R.drawable.logo)
                                     .circleCrop()
                                     .into(avatar);
                         }
@@ -96,6 +101,7 @@ public class MainActivity extends AppCompatActivity {
                         @Override
                         public void error(int code, Json data) {
                             Log.e("Agro", data.toString());
+
                         }
                     }
             );
@@ -104,7 +110,7 @@ public class MainActivity extends AppCompatActivity {
         avatar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Account[] accounts = Accounts.getAccounts(getApplicationContext());
+                Account[] accounts = AuthService.getAccounts(getApplicationContext());
                 if (accounts.length > 0) {
 
                     AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
@@ -120,7 +126,7 @@ public class MainActivity extends AppCompatActivity {
                             if (which == options.size() - 1) {
                                 startActivityForResult(new Intent(getApplicationContext(), AuthActivity.class), 1);
                             } else {
-                                Accounts.setAccountActive(getApplicationContext(), options.get(which));
+                                AuthService.setAccountActive(getApplicationContext(), options.get(which));
                                 recreate();
                             }
                             dialog.cancel();

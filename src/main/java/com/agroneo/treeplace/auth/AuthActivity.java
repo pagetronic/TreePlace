@@ -39,7 +39,7 @@ public class AuthActivity extends Activity {
 						new ApiResult() {
 							@Override
 							public void success(Json data) {
-								Accounts.add(getApplicationContext(), email, data.getString("access_token"), data.getString("refresh_token"));
+								AuthService.add(getApplicationContext(), email,  data.getString("access_token"), data.getString("refresh_token"));
 								Intent resultIntent = new Intent();
 								setResult(Activity.RESULT_OK, resultIntent);
 								finish();
