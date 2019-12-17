@@ -8,8 +8,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -64,7 +64,9 @@ public class MainActivity extends AppCompatActivity {
 		NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
 		NavigationUI.setupWithNavController(navigationView, navController);
 
-		makeAccounts(navigationView.getHeaderView(0));
+		ImageView avatar = findViewById(R.id.avatar);
+
+		makeAccounts(avatar);
 
 
 	}
@@ -77,13 +79,10 @@ public class MainActivity extends AppCompatActivity {
 		}
 	}
 
-	private void makeAccounts(final View headerView) {
-		final TextView account_selector = headerView.findViewById(R.id.account_selector);
-		final ImageView avatar = headerView.findViewById(R.id.avatar);
+	private void makeAccounts(final ImageView avatar) {
 		final String account_name = Accounts.getAccountActive(getApplicationContext());
 
 		if (account_name != null) {
-			account_selector.setText(account_name);
 			ApiAsync.get(getApplicationContext(), "/profile",
 					new ApiResult() {
 						@Override
@@ -99,7 +98,7 @@ public class MainActivity extends AppCompatActivity {
 			);
 		}
 
-		account_selector.setOnClickListener(new View.OnClickListener() {
+		avatar.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				Account[] accounts = Accounts.getAccounts(getApplicationContext());
