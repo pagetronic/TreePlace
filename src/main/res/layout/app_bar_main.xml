@@ -21,10 +21,10 @@
             <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:src="@mipmap/ic_launcher"
+                    android:src="@drawable/logo"
                     android:id="@+id/avatar"
-                    android:paddingTop="6dp"
-                    android:paddingBottom="6dp"
+                    android:layout_marginTop="6dp"
+                    android:layout_marginBottom="6dp"
                     android:adjustViewBounds="true"
                     android:layout_gravity="end"
                     android:contentDescription="@string/connect"
