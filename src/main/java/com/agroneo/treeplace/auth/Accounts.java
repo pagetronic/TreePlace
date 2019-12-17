@@ -53,7 +53,7 @@ public class Accounts {
 		for (Account account : am.getAccountsByType(ctx.getResources().getString(R.string.account_type))) {
 			if (account.name.equals(account_name)) {
 				am.setAuthToken(account, "access", data.getString("access_token"));
-				am.setAuthToken(account, "refresh", data.getString("refresh_token"));
+				am.setPassword(account, data.getString("refresh_token"));
 				return;
 			}
 		}
@@ -65,7 +65,7 @@ public class Accounts {
 		Account account = new Account(email, ctx.getResources().getString(R.string.account_type));
 		am.addAccountExplicitly(account, null, new Bundle());
 		am.setAuthToken(account, "access", access_token);
-		am.setAuthToken(account, "refresh", refresh_token);
+		am.setPassword(account, refresh_token);
 		setAccountActive(ctx, email);
 	}
 
