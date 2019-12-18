@@ -7,7 +7,7 @@ public class Animators {
         final View last = views[views.length - 1];
         for (final View view : views) {
             view.clearAnimation();
-            view.animate().alpha(0F).setDuration(400).withEndAction(new Runnable() {
+            view.animate().alpha(0F).setDuration(200).withEndAction(new Runnable() {
                 @Override
                 public void run() {
                     view.setVisibility(View.GONE);
@@ -24,7 +24,7 @@ public class Animators {
             view.clearAnimation();
             view.setAlpha(0F);
             view.setVisibility(View.VISIBLE);
-            view.animate().alpha(1F).setDuration(400).withEndAction(new Runnable() {
+            view.animate().alpha(1F).setDuration(200).withEndAction(new Runnable() {
                 @Override
                 public void run() {
                     view.setVisibility(View.VISIBLE);
