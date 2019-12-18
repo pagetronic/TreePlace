@@ -59,6 +59,20 @@ public class AccountsChooser {
 
                     View view = inflater.inflate(R.layout.accounts_item, null);
 
+                    view.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if (position >= accounts.length) {
+                                activity.startActivityForResult(new Intent(activity, AuthActivity.class), 1);
+                                dialog.cancel();
+                            } else {
+                                AuthService.setAccountActive(ctx, accounts[position].name);
+                                dialog.cancel();
+                                activity.recreate();
+                            }
+                        }
+                    });
+
                     ImageView avatar = view.findViewById(R.id.avatar);
                     TextView text = view.findViewById(R.id.name);
                     TextView email = view.findViewById(R.id.email);
@@ -78,19 +92,6 @@ public class AccountsChooser {
                             .error(R.drawable.logo)
                             .circleCrop()
                             .into(avatar);
-
-                    view.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            if (position >= accounts.length) {
-                                activity.startActivityForResult(new Intent(ctx, AuthActivity.class), 1);
-                            } else {
-                                AuthService.setAccountActive(ctx, accounts[position].name);
-                                dialog.cancel();
-                                activity.recreate();
-                            }
-                        }
-                    });
 
                     return view;
                 }
