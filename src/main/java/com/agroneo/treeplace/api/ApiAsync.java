@@ -1,86 +1,77 @@
 package com.agroneo.treeplace.api;
 
-import android.accounts.Account;
-import android.accounts.AccountManager;
-import android.accounts.AccountManagerCallback;
-import android.accounts.AccountManagerFuture;
 import android.content.Context;
-import android.content.res.Resources;
 import android.os.AsyncTask;
-import android.os.Bundle;
 
-import com.agroneo.treeplace.R;
 import com.agroneo.treeplace.auth.AuthService;
 
 public class ApiAsync extends AsyncTask<Object, Integer, ApiResponse> {
 
-    private ApiResult func = null;
-    private String access_token = null;
+
+    private ApiResult func;
+    private String access_token;
 
     private ApiAsync(ApiResult func, String access_token) {
         this.access_token = access_token;
         this.func = func;
     }
 
-    public static void post(Context ctx, final String url, final Json data, final ApiResult func) {
-        getAccessToken(ctx, new Token() {
+    public static void post(final Context ctx, final String url, final Json data, final ApiResult func) {
+        AuthService.getAccessToken(ctx, new AuthService.Token() {
             @Override
-            public void get(String access_token) {
-                new ApiAsync(func, access_token).execute("POST", url, data);
-            }
-        });
-    }
+            public void get(final String access_token) {
+                new ApiAsync(new ApiResult() {
 
-    public static void get(Context ctx, final String url, final ApiResult func) {
-        getAccessToken(ctx, new Token() {
-            @Override
-            public void get(String access_token) {
-                new ApiAsync(func, access_token).execute("GET", url);
-            }
-        });
-    }
-
-    private static void invalidateAccessToken(final Context ctx) {
-        getAccessToken(ctx, new Token() {
                     @Override
-                    public void get(String access_token) {
-                        AccountManager am = AccountManager.get(ctx);
-                        am.invalidateAuthToken(ctx.getResources().getString(R.string.account_type), access_token);
+                    public void success(Json data) {
+                        func.success(data);
                     }
-                }
-        );
-    }
 
-    private static void getAccessToken(Context ctx, final Token token) {
-        String account_name = AuthService.getAccountActive(ctx);
-        AccountManager am = AccountManager.get(ctx);
-        for (Account account : am.getAccountsByType(ctx.getResources().getString(R.string.account_type))) {
-            if (account.name.equals(account_name)) {
-                am.getAuthToken(account, "access", new Bundle(), true, new AccountManagerCallback<Bundle>() {
                     @Override
-                    public void run(AccountManagerFuture<Bundle> future) {
-
-                        try {
-                            Bundle authTokenBundle = future.getResult();
-                            token.get(authTokenBundle.get(AccountManager.KEY_AUTHTOKEN).toString());
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                            token.get(null);
+                    public void error(int code, Json data) {
+                        if (code == 401 && "EXPIRED_ACCESS_TOKEN".equals(data.getString("error"))) {
+                            AuthService.invalidateAuthToken(ctx, access_token);
+                            post(ctx, url, data, func);
+                            return;
                         }
+                        func.error(code, data);
                     }
-                }, null);
-                return;
+                }, access_token).execute("POST", url, data);
             }
-        }
-        token.get(null);
+        });
+    }
+
+    public static void get(final Context ctx, final String url, final ApiResult func) {
+        AuthService.getAccessToken(ctx, new AuthService.Token() {
+            @Override
+            public void get(final String access_token) {
+                new ApiAsync(new ApiResult() {
+
+                    @Override
+                    public void success(Json data) {
+                        func.success(data);
+                    }
+
+                    @Override
+                    public void error(int code, Json data) {
+                        if (code == 401 && "EXPIRED_ACCESS_TOKEN".equals(data.getString("error"))) {
+                            AuthService.invalidateAuthToken(ctx, access_token);
+                            post(ctx, url, data, func);
+                            return;
+                        }
+                        func.error(code, data);
+                    }
+                }, access_token).execute("GET", url);
+            }
+        });
     }
 
     @Override
     protected ApiResponse doInBackground(Object... params) {
         if (params[0].equals("POST")) {
-            return Api.post(access_token, (String) params[1], (Json) params[2]);
+            return ApiSync.post(access_token, (String) params[1], (Json) params[2]);
         } else {
-            return Api.get(access_token, (String) params[1]);
+            return ApiSync.get(access_token, (String) params[1]);
         }
     }
 
@@ -101,8 +92,5 @@ public class ApiAsync extends AsyncTask<Object, Integer, ApiResponse> {
         func.success(rez.getResult());
     }
 
-    private interface Token {
-        void get(String access_token);
-    }
 }
 

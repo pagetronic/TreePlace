@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
+
 import com.agroneo.treeplace.R;
 import com.agroneo.treeplace.api.ApiAsync;
 import com.agroneo.treeplace.api.ApiResult;
@@ -14,55 +15,60 @@ import com.agroneo.treeplace.api.Json;
 
 public class AuthActivity extends Activity {
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
-		setContentView(R.layout.activity_auth);
+        setContentView(R.layout.activity_auth);
+        String accountName = getIntent().getStringExtra("accountName");
+        if (accountName != null) {
+            ((TextView) findViewById(R.id.login_email)).setText(accountName);
+            findViewById(R.id.login_password).requestFocus();
+        }
 
-		findViewById(R.id.login)
-				.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
+        findViewById(R.id.login)
+                .setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
 
-				final String email = ((TextView) findViewById(R.id.login_email)).getText().toString().trim();
-				final String password = ((TextView) findViewById(R.id.login_password)).getText().toString().trim();
-				final Resources resources = getResources();
+                        final String email = ((TextView) findViewById(R.id.login_email)).getText().toString().trim();
+                        final String password = ((TextView) findViewById(R.id.login_password)).getText().toString().trim();
+                        final Resources resources = getResources();
 
-				ApiAsync.post(getApplicationContext(), "/token",
-						new Json("grant_type", "password")
-								.put("client_id", resources.getString(R.string.client_id))
-								.put("client_secret", resources.getString(R.string.client_secret))
-								.put("email", email)
-								.put("password", password),
+                        ApiAsync.post(getBaseContext(), "/token",
+                                new Json("grant_type", "password")
+                                        .put("client_id", resources.getString(R.string.client_id))
+                                        .put("client_secret", resources.getString(R.string.client_secret))
+                                        .put("email", email)
+                                        .put("password", password),
 
-						new ApiResult() {
-							@Override
-							public void success(Json data) {
-								AuthService.add(getApplicationContext(), email,  data.getString("access_token"), data.getString("refresh_token"));
-								Intent resultIntent = new Intent();
-								setResult(Activity.RESULT_OK, resultIntent);
-								finish();
-							}
+                                new ApiResult() {
+                                    @Override
+                                    public void success(Json data) {
+                                        AuthService.add(getBaseContext(), email, data.getString("access_token"), data.getString("refresh_token"));
+                                        Intent resultIntent = new Intent();
+                                        setResult(Activity.RESULT_OK, resultIntent);
+                                        finish();
+                                    }
 
-							@Override
-							public void error(int code, Json data) {
-								if (data != null) {
-									Log.e("AGRO", data.toString());
-								}
-							}
-						});
-			}
-		});
+                                    @Override
+                                    public void error(int code, Json data) {
+                                        if (data != null) {
+                                            Log.e("AGRO", data.toString());
+                                        }
+                                    }
+                                });
+                    }
+                });
 
-	}
+    }
 
 
-	@Override
-	public void onBackPressed() {
-		setResult(RESULT_CANCELED);
-		super.onBackPressed();
-	}
+    @Override
+    public void onBackPressed() {
+        setResult(RESULT_CANCELED);
+        super.onBackPressed();
+    }
 
 
 }

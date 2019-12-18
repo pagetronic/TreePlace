@@ -4,7 +4,6 @@ import android.accounts.Account;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -27,7 +26,6 @@ import com.agroneo.treeplace.api.Json;
 import com.agroneo.treeplace.auth.AuthActivity;
 import com.agroneo.treeplace.auth.AuthService;
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.RequestBuilder;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
@@ -78,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onPostResume() {
         super.onPostResume();
-        if (!AuthService.control(getBaseContext())) {
+        if (!AuthService.controlChange(getBaseContext())) {
             recreate();
         }
     }

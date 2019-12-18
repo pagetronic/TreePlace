@@ -12,7 +12,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
-public class Api {
+public class ApiSync {
 
     private static final String API_HOST = BuildConfig.DEBUG ? "http://api.agroneo.com" : "https://api.agroneo.com";
 

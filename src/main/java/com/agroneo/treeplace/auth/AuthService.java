@@ -4,6 +4,8 @@ import android.accounts.AbstractAccountAuthenticator;
 import android.accounts.Account;
 import android.accounts.AccountAuthenticatorResponse;
 import android.accounts.AccountManager;
+import android.accounts.AccountManagerCallback;
+import android.accounts.AccountManagerFuture;
 import android.accounts.NetworkErrorException;
 import android.app.Service;
 import android.content.Context;
@@ -15,35 +17,36 @@ import android.os.IBinder;
 import android.text.TextUtils;
 
 import com.agroneo.treeplace.R;
-import com.agroneo.treeplace.api.Api;
 import com.agroneo.treeplace.api.ApiResponse;
+import com.agroneo.treeplace.api.ApiSync;
 import com.agroneo.treeplace.api.Json;
 
 import static android.accounts.AccountManager.KEY_BOOLEAN_RESULT;
 
 public class AuthService extends Service {
 
-    private static long expire = 0;
+    public static final String tokenType = "access";
+    public static final String keyAccount = "account_name";
 
     public static void setAccountActive(Context ctx, String account_name) {
         SharedPreferences settings = ctx.getSharedPreferences("settings", MODE_PRIVATE);
         if (account_name == null) {
-            settings.edit().remove("account_name").apply();
+            settings.edit().remove(keyAccount).apply();
         } else {
-            settings.edit().putString("account_name", account_name).apply();
+            settings.edit().putString(keyAccount, account_name).apply();
         }
     }
 
     public static String getAccountActive(Context ctx) {
         SharedPreferences settings = ctx.getSharedPreferences("settings", MODE_PRIVATE);
-        return settings.getString("account_name", null);
+        return settings.getString(keyAccount, null);
     }
 
     public static void add(Context ctx, String email, String access_token, String refresh_token) {
         AccountManager am = AccountManager.get(ctx);
         Account account = new Account(email, ctx.getResources().getString(R.string.account_type));
         am.addAccountExplicitly(account, refresh_token, new Bundle());
-        am.setAuthToken(account, "access", access_token);
+        am.setAuthToken(account, tokenType, access_token);
         setAccountActive(ctx, email);
     }
 
@@ -51,7 +54,37 @@ public class AuthService extends Service {
         return AccountManager.get(ctx).getAccountsByType(ctx.getResources().getString(R.string.account_type));
     }
 
-    public static boolean control(Context ctx) {
+
+    public static void getAccessToken(Context ctx, final Token token) {
+        String account_name = AuthService.getAccountActive(ctx);
+        AccountManager am = AccountManager.get(ctx);
+        for (Account account : am.getAccountsByType(ctx.getResources().getString(R.string.account_type))) {
+            if (account.name.equals(account_name)) {
+                am.getAuthToken(account, tokenType, new Bundle(), true, new AccountManagerCallback<Bundle>() {
+                    @Override
+                    public void run(AccountManagerFuture<Bundle> future) {
+
+                        try {
+                            Bundle authTokenBundle = future.getResult();
+                            token.get(authTokenBundle.get(AccountManager.KEY_AUTHTOKEN).toString());
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            token.get(null);
+                        }
+                    }
+                }, null);
+                return;
+            }
+        }
+        token.get(null);
+    }
+
+    public static void invalidateAuthToken(Context ctx, String access_token) {
+        AccountManager am = AccountManager.get(ctx);
+        am.invalidateAuthToken(ctx.getResources().getString(R.string.account_type), access_token);
+    }
+
+    public static boolean controlChange(Context ctx) {
         String account_name = getAccountActive(ctx);
         if (account_name == null) {
             return true;
@@ -72,6 +105,10 @@ public class AuthService extends Service {
 
         AgroneoAuthenticator authenticator = new AgroneoAuthenticator(this);
         return authenticator.getIBinder();
+    }
+
+    public interface Token {
+        void get(String access_token);
     }
 
     private static class AgroneoAuthenticator extends AbstractAccountAuthenticator {
@@ -102,17 +139,12 @@ public class AuthService extends Service {
 
             final AccountManager am = AccountManager.get(mContext);
 
+            String access_token = am.peekAuthToken(account, authTokenType);
 
-            String access_token = null;
+            if (TextUtils.isEmpty(access_token)) {
 
-            if (expire > System.currentTimeMillis() - 3000 * 1000) {
-                try {
-                    access_token = am.blockingGetAuthToken(account, authTokenType, false);
-                } catch (Exception e) {
-                }
-            } else {
                 Resources resources = mContext.getResources();
-                ApiResponse rez = Api.post(null, "/token",
+                ApiResponse rez = ApiSync.post(null, "/token",
                         new Json()
                                 .put("grant_type", "refresh_token")
                                 .put("client_id", resources.getString(R.string.client_id))
@@ -124,11 +156,12 @@ public class AuthService extends Service {
                     Json data = rez.getResult();
                     if (data != null && !data.isEmpty()) {
                         am.invalidateAuthToken(resources.getString(R.string.account_type), access_token);
-                        access_token = data.getString("access_token");
-                        am.setAuthToken(account, "access", access_token);
-                        am.setPassword(account, data.getString("refresh_token"));
-                        expire = System.currentTimeMillis();
-
+                        access_token = data.getString("access_token", "");
+                        String refresh_token = data.getString("refresh_token", "");
+                        if (!refresh_token.equals("") && !access_token.equals("")) {
+                            am.setAuthToken(account, tokenType, access_token);
+                            am.setPassword(account, refresh_token);
+                        }
                     }
                 }
             }
@@ -142,16 +175,16 @@ public class AuthService extends Service {
 
             final Intent intent = new Intent(mContext, AuthActivity.class);
             intent.putExtra(AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE, response);
+            intent.putExtra("accountName", account.name);
             final Bundle bundle = new Bundle();
             bundle.putParcelable(AccountManager.KEY_INTENT, intent);
-
             return bundle;
         }
 
 
         @Override
         public String getAuthTokenLabel(String authTokenType) {
-            if (authTokenType.equals("access")) {
+            if (authTokenType.equals(tokenType)) {
                 return "access_token";
             }
             return "";
@@ -174,5 +207,4 @@ public class AuthService extends Service {
             return null;
         }
     }
-
 }
