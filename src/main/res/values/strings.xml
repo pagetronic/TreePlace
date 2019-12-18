@@ -21,7 +21,7 @@
     <string name="create_account">Create Account</string>
     <string name="email_address">Email address</string>
     <string name="name">Name</string>
-    <string name="select_account">Selectionner un compte</string>
+    <string name="select_account">Select account</string>
     <string name="new_account">New account</string>
     <string name="login">login</string>
     <string name="recover_account">recover access</string>
