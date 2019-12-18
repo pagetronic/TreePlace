@@ -4,7 +4,6 @@ import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.view.LayoutInflater;
@@ -19,9 +18,6 @@ import com.agroneo.treeplace.R;
 import com.agroneo.treeplace.auth.AuthActivity;
 import com.agroneo.treeplace.auth.AuthService;
 import com.bumptech.glide.Glide;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class AccountsChooser {
 
