@@ -36,8 +36,6 @@ public class AccountsChooser {
             }
         }
 
-
-        AccountManager am = AccountManager.get(activity);
         final Account[] accounts = AccountManager.get(activity).getAccountsByType(activity.getResources().getString(R.string.account_type));
         if (accounts.length > 0) {
 
