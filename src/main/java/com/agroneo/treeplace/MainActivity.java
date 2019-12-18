@@ -1,11 +1,9 @@
 package com.agroneo.treeplace;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
-import android.widget.ImageView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -18,7 +16,6 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.agroneo.treeplace.auth.AuthService;
 import com.agroneo.treeplace.sys.AccountsChooser;
-import com.bumptech.glide.Glide;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
@@ -56,9 +53,8 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
 
-        ImageView avatar = findViewById(R.id.avatar);
 
-        makeAccounts(avatar);
+        AccountsChooser.make(this);
 
 
     }
@@ -69,30 +65,6 @@ public class MainActivity extends AppCompatActivity {
         if (!AuthService.controlChange(getBaseContext())) {
             recreate();
         }
-    }
-
-    private void makeAccounts(final ImageView avatar) {
-        final String account_name = AuthService.getAccountNameActive(getBaseContext());
-
-        if (account_name != null) {
-            String logo = AuthService.getAccountData(getBaseContext(), account_name, "avatar");
-            if (logo != null) {
-                Glide.with(MainActivity.this).load(Uri.parse(logo + "@" + avatar.getWidth()))
-                        .error(R.drawable.logo)
-                        .circleCrop()
-                        .into(avatar);
-            }
-        }
-
-        avatar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                AccountsChooser.choose(MainActivity.this);
-            }
-        });
-
-
     }
 
     @Override

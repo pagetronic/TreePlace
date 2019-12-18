@@ -4,7 +4,6 @@ import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.view.LayoutInflater;
@@ -22,10 +21,24 @@ import com.bumptech.glide.Glide;
 
 public class AccountsChooser {
 
-    public static void choose(final Activity activity) {
-        final Context ctx = activity.getBaseContext();
-        AccountManager am = AccountManager.get(ctx);
-        final Account[] accounts = AccountManager.get(ctx).getAccountsByType(ctx.getResources().getString(R.string.account_type));
+    public static void make(final Activity activity) {
+
+        ImageView avatar = activity.findViewById(R.id.avatar);
+        final String account_name = AuthService.getAccountNameActive(activity);
+
+        if (account_name != null) {
+            String logo = AuthService.getAccountData(activity, account_name, "avatar");
+            if (logo != null) {
+                Glide.with(activity).load(Uri.parse(logo + "@" + avatar.getWidth()))
+                        .error(R.drawable.logo)
+                        .circleCrop()
+                        .into(avatar);
+            }
+        }
+
+
+        AccountManager am = AccountManager.get(activity);
+        final Account[] accounts = AccountManager.get(activity).getAccountsByType(activity.getResources().getString(R.string.account_type));
         if (accounts.length > 0) {
 
             final AlertDialog.Builder builder = new AlertDialog.Builder(activity);
@@ -66,7 +79,7 @@ public class AccountsChooser {
                                 activity.startActivityForResult(new Intent(activity, AuthActivity.class), 1);
                                 dialog.cancel();
                             } else {
-                                AuthService.setAccountActive(ctx, accounts[position].name);
+                                AuthService.setAccountActive(activity, accounts[position].name);
                                 dialog.cancel();
                                 activity.recreate();
                             }
@@ -84,9 +97,9 @@ public class AccountsChooser {
                         return view;
                     }
 
-                    text.setText(AuthService.getAccountData(ctx, accounts[position].name, "name"));
+                    text.setText(AuthService.getAccountData(activity, accounts[position].name, "name"));
                     email.setText(accounts[position].name);
-                    String logo = AuthService.getAccountData(ctx, accounts[position].name, "avatar");
+                    String logo = AuthService.getAccountData(activity, accounts[position].name, "avatar");
 
                     Glide.with(activity).load(Uri.parse(logo + "@" + avatar.getWidth()))
                             .error(R.drawable.logo)
@@ -97,7 +110,7 @@ public class AccountsChooser {
                 }
             });
         } else {
-            activity.startActivityForResult(new Intent(ctx, AuthActivity.class), 1);
+            activity.startActivityForResult(new Intent(activity, AuthActivity.class), 1);
         }
     }
 
