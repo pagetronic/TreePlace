@@ -50,11 +50,12 @@ public class AccountsChooser {
 
                     builder.setTitle(R.string.select_account);
                     final LayoutInflater inflater = activity.getLayoutInflater();
-                    View convertView = inflater.inflate(R.layout.accounts, null);
-                    builder.setView(convertView);
+
+                    ListView list = new ListView(activity);
+
+                    builder.setView(list);
                     builder.setCancelable(true);
                     final AlertDialog dialog = builder.show();
-                    ListView list = convertView.findViewById(R.id.accounts);
                     list.setAdapter(new BaseAdapter() {
                         @Override
                         public int getCount() {
@@ -95,8 +96,7 @@ public class AccountsChooser {
                             TextView email = view.findViewById(R.id.email);
 
                             if (position >= accounts.length) {
-                                avatar.setVisibility(View.INVISIBLE);
-                                email.setVisibility(View.INVISIBLE);
+                                email.setVisibility(View.GONE);
                                 text.setText(R.string.new_account);
                                 return view;
                             }
