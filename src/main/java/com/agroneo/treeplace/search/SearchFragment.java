@@ -1,6 +1,7 @@
 package com.agroneo.treeplace.search;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,9 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.agroneo.treeplace.R;
+import com.agroneo.treeplace.api.ApiAsync;
+import com.agroneo.treeplace.api.ApiResult;
+import com.agroneo.treeplace.api.Json;
 
 public class SearchFragment extends Fragment {
 
@@ -29,6 +33,18 @@ public class SearchFragment extends Fragment {
                 textView.setText(s);
             }
         });
+        ApiAsync.get(getContext(), "/gaia/specimens", new ApiResult() {
+            @Override
+            public void success(Json data) {
+                Log.e("Agro", data.toString());
+            }
+
+            @Override
+            public void error(int code, Json data) {
+                super.error(code, data);
+            }
+        });
+
         return root;
     }
 }

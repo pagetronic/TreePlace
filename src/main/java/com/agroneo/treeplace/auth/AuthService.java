@@ -127,6 +127,20 @@ public class AuthService extends Service {
         return null;
     }
 
+    public static void invalidateAccount(Context ctx) {
+        String account_name = getAccountNameActive(ctx);
+        if (account_name == null) {
+            return;
+        }
+        AccountManager am = AccountManager.get(ctx);
+        for (Account account : am.getAccountsByType(ctx.getResources().getString(R.string.account_type))) {
+            if (account.name.equals(account_name)) {
+                am.setPassword(account, null);
+                am.invalidateAuthToken(ctx.getResources().getString(R.string.account_type), am.peekAuthToken(account, tokenType));
+            }
+        }
+    }
+
     @Override
     public IBinder onBind(Intent intent) {
 
@@ -169,25 +183,26 @@ public class AuthService extends Service {
             String access_token = am.peekAuthToken(account, authTokenType);
 
             if (TextUtils.isEmpty(access_token)) {
-
-                Resources resources = mContext.getResources();
-                ApiResponse rez = ApiSync.post(null, "/token",
-                        new Json()
-                                .put("grant_type", "refresh_token")
-                                .put("client_id", resources.getString(R.string.client_id))
-                                .put("client_secret", resources.getString(R.string.client_secret))
-                                .put("refresh_token", am.getPassword(account))
-                );
-
-                if (rez.getCode() == 200) {
-                    Json data = rez.getResult();
-                    if (data != null && !data.isEmpty()) {
-                        am.invalidateAuthToken(resources.getString(R.string.account_type), access_token);
-                        access_token = data.getString("access_token", "");
-                        String refresh_token = data.getString("refresh_token", "");
-                        if (!refresh_token.equals("") && !access_token.equals("")) {
-                            am.setAuthToken(account, tokenType, access_token);
-                            am.setPassword(account, refresh_token);
+                String refresh_token = am.getPassword(account);
+                if (refresh_token != null) {
+                    Resources resources = mContext.getResources();
+                    ApiResponse rez = ApiSync.post(null, "/token",
+                            new Json()
+                                    .put("grant_type", "refresh_token")
+                                    .put("client_id", resources.getString(R.string.client_id))
+                                    .put("client_secret", resources.getString(R.string.client_secret))
+                                    .put("refresh_token", refresh_token)
+                    );
+                    if (rez.getCode() == 200) {
+                        Json data = rez.getResult();
+                        if (data != null && !data.isEmpty()) {
+                            am.invalidateAuthToken(resources.getString(R.string.account_type), access_token);
+                            access_token = data.getString("access_token", "");
+                            refresh_token = data.getString("refresh_token", "");
+                            if (!refresh_token.equals("") && !access_token.equals("")) {
+                                am.setAuthToken(account, tokenType, access_token);
+                                am.setPassword(account, refresh_token);
+                            }
                         }
                     }
                 }
