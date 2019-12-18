@@ -41,11 +41,14 @@ public class Json implements Map<String, Object>, Serializable {
      */
     public Json(String json_string) {
         datas = new LinkedHashMap<>();
-        if (json_string == null || json_string.equals("")) {
-            return;
-        }
-        datas.putAll(new Gson().fromJson(json_string, Map.class));
+        try {
+            if (json_string == null || json_string.equals("")) {
+                return;
+            }
+            datas.putAll(new Gson().fromJson(json_string, Map.class));
+        } catch (Exception ignore) {
 
+        }
     }
 
     /**

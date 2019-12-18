@@ -30,7 +30,7 @@ public class AccountsChooser {
         if (account_name != null) {
             String logo = AuthService.getAccountData(activity, account_name, "avatar");
             if (logo != null) {
-                Glide.with(activity).load(Uri.parse(logo + "@" + avatar.getWidth()))
+                Glide.with(activity).load(Uri.parse(logo + "@128"))
                         .error(R.drawable.logo)
                         .circleCrop()
                         .into(avatar);
@@ -105,7 +105,7 @@ public class AccountsChooser {
                             email.setText(accounts[position].name);
                             String logo = AuthService.getAccountData(activity, accounts[position].name, "avatar");
 
-                            Glide.with(activity).load(Uri.parse(logo + "@" + avatar.getWidth()))
+                            Glide.with(activity).load(Uri.parse(logo + "@128"))
                                     .error(R.drawable.logo)
                                     .circleCrop()
                                     .into(avatar);
