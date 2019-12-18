@@ -45,10 +45,19 @@ public class AuthActivity extends Activity {
                                 new ApiResult() {
                                     @Override
                                     public void success(Json data) {
-                                        AuthService.add(getBaseContext(), email, data.getString("access_token"), data.getString("refresh_token"));
-                                        Intent resultIntent = new Intent();
-                                        setResult(Activity.RESULT_OK, resultIntent);
-                                        finish();
+                                        AuthService.addAccount(getBaseContext(), email, data.getString("access_token"), data.getString("refresh_token"), new ApiResult() {
+
+                                            @Override
+                                            public void success(Json data) {
+                                                Intent resultIntent = new Intent();
+                                                setResult(Activity.RESULT_OK, resultIntent);
+                                                finish();
+                                            }
+
+                                            @Override
+                                            public void error(int code, Json data) {
+                                            }
+                                        });
                                     }
 
                                     @Override

@@ -17,7 +17,9 @@ import android.os.IBinder;
 import android.text.TextUtils;
 
 import com.agroneo.treeplace.R;
+import com.agroneo.treeplace.api.ApiAsync;
 import com.agroneo.treeplace.api.ApiResponse;
+import com.agroneo.treeplace.api.ApiResult;
 import com.agroneo.treeplace.api.ApiSync;
 import com.agroneo.treeplace.api.Json;
 
@@ -37,26 +39,41 @@ public class AuthService extends Service {
         }
     }
 
-    public static String getAccountActive(Context ctx) {
+    public static String getAccountNameActive(Context ctx) {
         SharedPreferences settings = ctx.getSharedPreferences("settings", MODE_PRIVATE);
         return settings.getString(keyAccount, null);
     }
 
-    public static void add(Context ctx, String email, String access_token, String refresh_token) {
-        AccountManager am = AccountManager.get(ctx);
-        Account account = new Account(email, ctx.getResources().getString(R.string.account_type));
+    public static void addAccount(final Context ctx, final String email, final String access_token, final String refresh_token, final ApiResult onresult) {
+
+
+        final Account account = new Account(email, ctx.getResources().getString(R.string.account_type));
+        final AccountManager am = AccountManager.get(ctx);
         am.addAccountExplicitly(account, refresh_token, new Bundle());
         am.setAuthToken(account, tokenType, access_token);
+
         setAccountActive(ctx, email);
-    }
 
-    public static Account[] getAccounts(Context ctx) {
-        return AccountManager.get(ctx).getAccountsByType(ctx.getResources().getString(R.string.account_type));
-    }
+        ApiAsync.get(ctx, "/profile", new ApiResult() {
 
+            @Override
+            public void success(Json data) {
+                am.setUserData(account, "avatar", data.getString("logo"));
+                am.setUserData(account, "name", data.getString("name"));
+                onresult.success(data);
+            }
+
+            @Override
+            public void error(int code, Json data) {
+                onresult.error(code, data);
+            }
+        });
+
+
+    }
 
     public static void getAccessToken(Context ctx, final Token token) {
-        String account_name = AuthService.getAccountActive(ctx);
+        String account_name = AuthService.getAccountNameActive(ctx);
         AccountManager am = AccountManager.get(ctx);
         for (Account account : am.getAccountsByType(ctx.getResources().getString(R.string.account_type))) {
             if (account.name.equals(account_name)) {
@@ -85,7 +102,7 @@ public class AuthService extends Service {
     }
 
     public static boolean controlChange(Context ctx) {
-        String account_name = getAccountActive(ctx);
+        String account_name = getAccountNameActive(ctx);
         if (account_name == null) {
             return true;
         }
@@ -98,6 +115,16 @@ public class AuthService extends Service {
 
         setAccountActive(ctx, null);
         return false;
+    }
+
+    public static String getAccountData(Context ctx, String account_name, String key) {
+        AccountManager am = AccountManager.get(ctx);
+        for (Account account : am.getAccountsByType(ctx.getResources().getString(R.string.account_type))) {
+            if (account.name.equals(account_name)) {
+                return am.getUserData(account, key);
+            }
+        }
+        return null;
     }
 
     @Override
@@ -166,11 +193,20 @@ public class AuthService extends Service {
                 }
             }
             if (!TextUtils.isEmpty(access_token)) {
-                final Bundle result = new Bundle();
-                result.putString(AccountManager.KEY_ACCOUNT_NAME, account.name);
-                result.putString(AccountManager.KEY_ACCOUNT_TYPE, account.type);
-                result.putString(AccountManager.KEY_AUTHTOKEN, access_token);
-                return result;
+
+                ApiResponse rez = ApiSync.get(access_token, "/profile");
+
+                if (rez != null && rez.getCode() == 200) {
+                    Json user = rez.getResult();
+                    am.setUserData(account, "avatar", user.getString("logo"));
+                    am.setUserData(account, "name", user.getString("name"));
+
+                    final Bundle result = new Bundle();
+                    result.putString(AccountManager.KEY_ACCOUNT_NAME, account.name);
+                    result.putString(AccountManager.KEY_ACCOUNT_TYPE, account.type);
+                    result.putString(AccountManager.KEY_AUTHTOKEN, access_token);
+                    return result;
+                }
             }
 
             final Intent intent = new Intent(mContext, AuthActivity.class);
@@ -191,19 +227,22 @@ public class AuthService extends Service {
         }
 
         @Override
-        public Bundle hasFeatures(AccountAuthenticatorResponse response, Account account, String[] features) throws NetworkErrorException {
+        public Bundle hasFeatures(AccountAuthenticatorResponse response, Account
+                account, String[] features) throws NetworkErrorException {
             final Bundle result = new Bundle();
             result.putBoolean(KEY_BOOLEAN_RESULT, false);
             return result;
         }
 
         @Override
-        public Bundle confirmCredentials(AccountAuthenticatorResponse response, Account account, Bundle options) throws NetworkErrorException {
+        public Bundle confirmCredentials(AccountAuthenticatorResponse response, Account
+                account, Bundle options) throws NetworkErrorException {
             return null;
         }
 
         @Override
-        public Bundle updateCredentials(AccountAuthenticatorResponse response, Account account, String authTokenType, Bundle options) throws NetworkErrorException {
+        public Bundle updateCredentials(AccountAuthenticatorResponse response, Account
+                account, String authTokenType, Bundle options) throws NetworkErrorException {
             return null;
         }
     }

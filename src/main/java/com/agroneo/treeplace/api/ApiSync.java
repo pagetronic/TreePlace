@@ -45,7 +45,7 @@ public class ApiSync {
             HttpURLConnection conn = connect(access_token, path);
             conn.setRequestMethod("GET");
 
-            String response = IOUtils.toString(conn.getResponseCode() != HttpURLConnection.HTTP_OK ? conn.getErrorStream() : conn.getInputStream());
+            String response = IOUtils.toString(conn.getResponseCode() != 200 ? conn.getErrorStream() : conn.getInputStream());
             conn.disconnect();
             return new ApiResponse(conn.getResponseCode(), response);
 

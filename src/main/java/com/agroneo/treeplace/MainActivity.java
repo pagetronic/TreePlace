@@ -1,15 +1,20 @@
 package com.agroneo.treeplace;
 
 import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.ListAdapter;
+import android.widget.ListView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -20,11 +25,9 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
-import com.agroneo.treeplace.api.ApiAsync;
-import com.agroneo.treeplace.api.ApiResult;
-import com.agroneo.treeplace.api.Json;
 import com.agroneo.treeplace.auth.AuthActivity;
 import com.agroneo.treeplace.auth.AuthService;
+import com.agroneo.treeplace.sys.AccountsChooser;
 import com.bumptech.glide.Glide;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
@@ -82,58 +85,23 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void makeAccounts(final ImageView avatar) {
-        final String account_name = AuthService.getAccountActive(getApplicationContext());
+        final String account_name = AuthService.getAccountNameActive(getBaseContext());
 
         if (account_name != null) {
-            ApiAsync.get(getApplicationContext(), "/profile",
-                    new ApiResult() {
-                        @Override
-                        public void success(Json data) {
-
-                            Glide.with(MainActivity.this).load(Uri.parse(data.getString("logo") + "@" + avatar.getWidth()))
-                                    .error(R.drawable.logo)
-                                    .circleCrop()
-                                    .into(avatar);
-                        }
-
-                        @Override
-                        public void error(int code, Json data) {
-                            Log.e("Agro", data.toString());
-
-                        }
-                    }
-            );
+            String logo = AuthService.getAccountData(getBaseContext(), account_name, "avatar");
+            if (logo != null) {
+                Glide.with(MainActivity.this).load(Uri.parse(logo + "@" + avatar.getWidth()))
+                        .error(R.drawable.logo)
+                        .circleCrop()
+                        .into(avatar);
+            }
         }
 
         avatar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Account[] accounts = AuthService.getAccounts(getApplicationContext());
-                if (accounts.length > 0) {
 
-                    AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                    final List<String> options = new ArrayList<>();
-                    for (Account account : accounts) {
-                        options.add(account.name);
-                    }
-                    options.add(getResources().getString(R.string.new_account));
-                    builder.setTitle(R.string.select_account);
-                    builder.setItems(options.toArray(new String[0]), new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            if (which == options.size() - 1) {
-                                startActivityForResult(new Intent(getApplicationContext(), AuthActivity.class), 1);
-                            } else {
-                                AuthService.setAccountActive(getApplicationContext(), options.get(which));
-                                recreate();
-                            }
-                            dialog.cancel();
-                        }
-                    });
-                    builder.show();
-                } else {
-                    startActivityForResult(new Intent(getApplicationContext(), AuthActivity.class), 1);
-                }
+               AccountsChooser.choose(MainActivity.this);
             }
         });
 
