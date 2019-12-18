@@ -25,8 +25,8 @@
     <string name="new_account">New account</string>
     <string name="login">login</string>
     <string name="recover_account">recover access</string>
-    <string name="google">Google</string>
-    <string name="facebook">Facebook</string>
+    <string name="google"> Google</string>
+    <string name="facebook"> Facebook</string>
     <string name="account_oauth">Rapid connection</string>
     <string name="empty"> </string>
     <string name="register">register</string>

@@ -13,6 +13,7 @@ import com.agroneo.treeplace.R;
 import com.agroneo.treeplace.api.ApiAsync;
 import com.agroneo.treeplace.api.ApiResult;
 import com.agroneo.treeplace.api.Json;
+import com.agroneo.treeplace.sys.Animators;
 
 public class AuthActivity extends Activity {
 
@@ -27,10 +28,84 @@ public class AuthActivity extends Activity {
             findViewById(R.id.login_password).requestFocus();
         }
 
+        comodo();
         oauth();
         login();
         register();
         recover();
+
+    }
+
+    private void comodo() {
+        final View form_register = findViewById(R.id.form_register);
+        final View form_login = findViewById(R.id.form_login);
+        final View form_recover = findViewById(R.id.form_recover);
+        final View form_gafa = findViewById(R.id.form_gafa);
+
+
+        final Button tab_login = findViewById(R.id.tab_login);
+        final Button tab_register = findViewById(R.id.tab_register);
+        final Button tab_recover = findViewById(R.id.tab_recover);
+
+        tab_login.setBackgroundResource(R.drawable.tab_active);
+        tab_register.setBackgroundResource(android.R.color.transparent);
+        tab_recover.setBackgroundResource(android.R.color.transparent);
+
+        tab_login.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                if (form_login.getVisibility() == View.VISIBLE) {
+                    return;
+                }
+                tab_login.setBackgroundResource(R.drawable.tab_active);
+                tab_register.setBackgroundResource(android.R.color.transparent);
+                tab_recover.setBackgroundResource(android.R.color.transparent);
+                Animators.gone(new Runnable() {
+                    @Override
+                    public void run() {
+                        Animators.visible(form_login, form_gafa);
+                    }
+                }, form_gafa, form_register, form_recover);
+
+            }
+        });
+        tab_register.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (form_register.getVisibility() == View.VISIBLE) {
+                    return;
+                }
+                tab_login.setBackgroundResource(android.R.color.transparent);
+                tab_register.setBackgroundResource(R.drawable.tab_active);
+                tab_recover.setBackgroundResource(android.R.color.transparent);
+                Animators.gone(new Runnable() {
+                    @Override
+                    public void run() {
+                        Animators.visible(form_register, form_gafa);
+                    }
+                }, form_gafa, form_recover, form_login);
+
+            }
+        });
+        tab_recover.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (form_recover.getVisibility() == View.VISIBLE) {
+                    return;
+                }
+                tab_login.setBackgroundResource(android.R.color.transparent);
+                tab_register.setBackgroundResource(android.R.color.transparent);
+                tab_recover.setBackgroundResource(R.drawable.tab_active);
+                Animators.gone(new Runnable() {
+                    @Override
+                    public void run() {
+                        Animators.visible(form_recover);
+                    }
+                }, form_register, form_login, form_gafa);
+
+            }
+        });
 
 
     }
@@ -39,7 +114,6 @@ public class AuthActivity extends Activity {
         Button facebook = findViewById(R.id.facebook);
         Button google = findViewById(R.id.google);
     }
-
 
     private void login() {
         findViewById(R.id.login)
@@ -96,14 +170,12 @@ public class AuthActivity extends Activity {
                 });
     }
 
-
     private void register() {
         Button register = findViewById(R.id.register);
         TextView register_name = findViewById(R.id.register_name);
         TextView register_email = findViewById(R.id.register_email);
         TextView register_password = findViewById(R.id.register_password);
     }
-
 
     private void recover() {
         Button recover = findViewById(R.id.recover);
