@@ -187,36 +187,6 @@ public class Json implements Map<String, Object>, Serializable {
 
 
     /**
-     * Get a string
-     *
-     * @param key where find the value
-     * @return null or a string
-     */
-    public String getText(String key) {
-        return get(key, String.class);
-    }
-
-
-    /**
-     * Get a string with a failure value
-     *
-     * @param key where find the value
-     * @param def returned if there is no entry at key
-     * @return null or a string
-     */
-    public String getText(String key, String def) {
-        if (containsKey(key)) {
-            String text = getText(key);
-            if (text == null) {
-                return def;
-            }
-            return text;
-        }
-        return def;
-    }
-
-
-    /**
      * Get a boolean with a failure value
      *
      * @param key where find the value
