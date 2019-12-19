@@ -119,7 +119,6 @@ public class Accounts {
         AccountManager am = AccountManager.get(ctx);
         am.invalidateAuthToken(ctx.getResources().getString(R.string.account_type), access_token);
     }
-
     public interface Token {
         void get(String access_token);
     }
