@@ -4,8 +4,6 @@ import android.accounts.AbstractAccountAuthenticator;
 import android.accounts.Account;
 import android.accounts.AccountAuthenticatorResponse;
 import android.accounts.AccountManager;
-import android.accounts.AccountManagerCallback;
-import android.accounts.AccountManagerFuture;
 import android.accounts.NetworkErrorException;
 import android.app.Service;
 import android.content.Context;
@@ -17,9 +15,7 @@ import android.os.IBinder;
 import android.text.TextUtils;
 
 import com.agroneo.treeplace.R;
-import com.agroneo.treeplace.api.ApiAsync;
 import com.agroneo.treeplace.api.ApiResponse;
-import com.agroneo.treeplace.api.ApiResult;
 import com.agroneo.treeplace.api.ApiSync;
 import com.agroneo.treeplace.api.Json;
 
@@ -27,117 +23,12 @@ import static android.accounts.AccountManager.KEY_BOOLEAN_RESULT;
 
 public class AuthService extends Service {
 
-    public static final String tokenType = "access";
-    public static final String keyAccount = "account_name";
-
     public static void setAccountActive(Context ctx, String account_name) {
         SharedPreferences settings = ctx.getSharedPreferences("settings", MODE_PRIVATE);
         if (account_name == null) {
-            settings.edit().remove(keyAccount).apply();
+            settings.edit().remove(Accounts.keyAccount).apply();
         } else {
-            settings.edit().putString(keyAccount, account_name).apply();
-        }
-    }
-
-    public static String getAccountNameActive(Context ctx) {
-        SharedPreferences settings = ctx.getSharedPreferences("settings", MODE_PRIVATE);
-        return settings.getString(keyAccount, null);
-    }
-
-    public static void addAccount(final Context ctx, final String email, final String access_token, final String refresh_token, final ApiResult onresult) {
-
-
-        final Account account = new Account(email, ctx.getResources().getString(R.string.account_type));
-        final AccountManager am = AccountManager.get(ctx);
-        am.addAccountExplicitly(account, refresh_token, new Bundle());
-        am.setAuthToken(account, tokenType, access_token);
-
-        setAccountActive(ctx, email);
-
-        ApiAsync.get(ctx, "/profile", new ApiResult() {
-
-            @Override
-            public void success(Json data) {
-                am.setUserData(account, "avatar", data.getString("logo"));
-                am.setUserData(account, "name", data.getString("name"));
-                onresult.success(data);
-            }
-
-            @Override
-            public void error(int code, Json data) {
-                onresult.error(code, data);
-            }
-        });
-
-
-    }
-
-    public static void getAccessToken(Context ctx, final Token token) {
-        String account_name = AuthService.getAccountNameActive(ctx);
-        AccountManager am = AccountManager.get(ctx);
-        for (Account account : am.getAccountsByType(ctx.getResources().getString(R.string.account_type))) {
-            if (account.name.equals(account_name)) {
-                am.getAuthToken(account, tokenType, new Bundle(), true, new AccountManagerCallback<Bundle>() {
-                    @Override
-                    public void run(AccountManagerFuture<Bundle> future) {
-
-                        try {
-                            Bundle authTokenBundle = future.getResult();
-                            token.get(authTokenBundle.get(AccountManager.KEY_AUTHTOKEN).toString());
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                            token.get(null);
-                        }
-                    }
-                }, null);
-                return;
-            }
-        }
-        token.get(null);
-    }
-
-    public static void invalidateAuthToken(Context ctx, String access_token) {
-        AccountManager am = AccountManager.get(ctx);
-        am.invalidateAuthToken(ctx.getResources().getString(R.string.account_type), access_token);
-    }
-
-    public static boolean controlChange(Context ctx) {
-        String account_name = getAccountNameActive(ctx);
-        if (account_name == null) {
-            return true;
-        }
-        AccountManager am = AccountManager.get(ctx);
-        for (Account account : am.getAccountsByType(ctx.getResources().getString(R.string.account_type))) {
-            if (account.name.equals(account_name)) {
-                return true;
-            }
-        }
-
-        setAccountActive(ctx, null);
-        return false;
-    }
-
-    public static String getAccountData(Context ctx, String account_name, String key) {
-        AccountManager am = AccountManager.get(ctx);
-        for (Account account : am.getAccountsByType(ctx.getResources().getString(R.string.account_type))) {
-            if (account.name.equals(account_name)) {
-                return am.getUserData(account, key);
-            }
-        }
-        return null;
-    }
-
-    public static void invalidateAccount(Context ctx) {
-        String account_name = getAccountNameActive(ctx);
-        if (account_name == null) {
-            return;
-        }
-        AccountManager am = AccountManager.get(ctx);
-        for (Account account : am.getAccountsByType(ctx.getResources().getString(R.string.account_type))) {
-            if (account.name.equals(account_name)) {
-                am.setPassword(account, null);
-                am.invalidateAuthToken(ctx.getResources().getString(R.string.account_type), am.peekAuthToken(account, tokenType));
-            }
+            settings.edit().putString(Accounts.keyAccount, account_name).apply();
         }
     }
 
@@ -146,10 +37,6 @@ public class AuthService extends Service {
 
         AgroneoAuthenticator authenticator = new AgroneoAuthenticator(this);
         return authenticator.getIBinder();
-    }
-
-    public interface Token {
-        void get(String access_token);
     }
 
     private static class AgroneoAuthenticator extends AbstractAccountAuthenticator {
@@ -200,7 +87,7 @@ public class AuthService extends Service {
                             access_token = data.getString("access_token", "");
                             refresh_token = data.getString("refresh_token", "");
                             if (!refresh_token.equals("") && !access_token.equals("")) {
-                                am.setAuthToken(account, tokenType, access_token);
+                                am.setAuthToken(account, Accounts.tokenType, access_token);
                                 am.setPassword(account, refresh_token);
                             }
                         }
@@ -235,7 +122,7 @@ public class AuthService extends Service {
 
         @Override
         public String getAuthTokenLabel(String authTokenType) {
-            if (authTokenType.equals(tokenType)) {
+            if (authTokenType.equals(Accounts.tokenType)) {
                 return "access_token";
             }
             return "";

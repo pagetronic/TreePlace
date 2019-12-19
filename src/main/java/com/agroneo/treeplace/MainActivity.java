@@ -14,7 +14,7 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
-import com.agroneo.treeplace.auth.AuthService;
+import com.agroneo.treeplace.auth.Accounts;
 import com.agroneo.treeplace.auth.AccountsChooser;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
@@ -62,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onPostResume() {
         super.onPostResume();
-        if (!AuthService.controlChange(getBaseContext())) {
+        if (!Accounts.controlChange(getBaseContext())) {
             recreate();
         }
     }

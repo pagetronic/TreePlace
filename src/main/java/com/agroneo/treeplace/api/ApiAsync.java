@@ -3,7 +3,7 @@ package com.agroneo.treeplace.api;
 import android.content.Context;
 import android.os.AsyncTask;
 
-import com.agroneo.treeplace.auth.AuthService;
+import com.agroneo.treeplace.auth.Accounts;
 
 public class ApiAsync extends AsyncTask<Object, Integer, ApiResponse> {
 
@@ -17,7 +17,7 @@ public class ApiAsync extends AsyncTask<Object, Integer, ApiResponse> {
     }
 
     public static void post(final Context ctx, final String url, final Json data, final ApiResult func) {
-        AuthService.getAccessToken(ctx, new AuthService.Token() {
+        Accounts.getAccessToken(ctx, new Accounts.Token() {
             @Override
             public void get(final String access_token) {
                 new ApiAsync(new ApiResult() {
@@ -30,7 +30,7 @@ public class ApiAsync extends AsyncTask<Object, Integer, ApiResponse> {
                     @Override
                     public void error(int code, Json data) {
                         if (code == 401 && "EXPIRED_ACCESS_TOKEN".equals(data.getString("error"))) {
-                            AuthService.invalidateAuthToken(ctx, access_token);
+                            Accounts.invalidateAuthToken(ctx, access_token);
                             post(ctx, url, data, func);
                             return;
                         }
@@ -42,7 +42,7 @@ public class ApiAsync extends AsyncTask<Object, Integer, ApiResponse> {
     }
 
     public static void get(final Context ctx, final String url, final ApiResult func) {
-        AuthService.getAccessToken(ctx, new AuthService.Token() {
+        Accounts.getAccessToken(ctx, new Accounts.Token() {
             @Override
             public void get(final String access_token) {
                 new ApiAsync(new ApiResult() {
@@ -56,12 +56,12 @@ public class ApiAsync extends AsyncTask<Object, Integer, ApiResponse> {
                     public void error(int code, Json data) {
                         switch (data.getString("error")) {
                             case "EXPIRED_ACCESS_TOKEN":
-                                AuthService.invalidateAuthToken(ctx, access_token);
+                                Accounts.invalidateAuthToken(ctx, access_token);
                                 post(ctx, url, data, func);
                                 break;
                             case "AUTHORIZATION_SCOPE_ERROR":
                             case "INVALID_ACCESS_TOKEN":
-                                AuthService.invalidateAccount(ctx);
+                                Accounts.invalidateAccount(ctx);
                                 break;
                             default:
                                 func.error(code, data);

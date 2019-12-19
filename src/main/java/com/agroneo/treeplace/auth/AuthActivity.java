@@ -137,7 +137,7 @@ public class AuthActivity extends Activity {
                                     public void success(Json data) {
                                         if (!data.getString("access_token", "").equals("") && !data.getString("refresh_token", "").equals("")) {
 
-                                            AuthService.addAccount(getBaseContext(), email, data.getString("access_token"), data.getString("refresh_token"), new ApiResult() {
+                                            Accounts.addAccount(getBaseContext(), email, data.getString("access_token"), data.getString("refresh_token"), new ApiResult() {
 
                                                 @Override
                                                 public void success(Json data) {

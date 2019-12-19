@@ -23,10 +23,10 @@ public class AccountsChooser {
 
         ImageView avatar = activity.findViewById(R.id.avatar);
 
-        final String account_name = AuthService.getAccountNameActive(activity);
+        final String account_name = Accounts.getAccountNameActive(activity);
 
         if (account_name != null) {
-            String logo = AuthService.getAccountData(activity, account_name, "avatar");
+            String logo = Accounts.getAccountData(activity, account_name, "avatar");
             if (logo != null) {
                 Glide.with(activity).load(Uri.parse(logo + "@128"))
                         .error(R.drawable.logo)
@@ -99,9 +99,9 @@ public class AccountsChooser {
                                 return view;
                             }
 
-                            text.setText(AuthService.getAccountData(activity, accounts[position].name, "name"));
+                            text.setText(Accounts.getAccountData(activity, accounts[position].name, "name"));
                             email.setText(accounts[position].name);
-                            String logo = AuthService.getAccountData(activity, accounts[position].name, "avatar");
+                            String logo = Accounts.getAccountData(activity, accounts[position].name, "avatar");
 
                             Glide.with(activity).load(Uri.parse(logo + "@128"))
                                     .error(R.drawable.logo)
