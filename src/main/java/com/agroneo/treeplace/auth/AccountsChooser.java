@@ -1,4 +1,4 @@
-package com.agroneo.treeplace.sys;
+package com.agroneo.treeplace.auth;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
@@ -15,8 +15,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.agroneo.treeplace.R;
-import com.agroneo.treeplace.auth.AuthActivity;
-import com.agroneo.treeplace.auth.AuthService;
 import com.bumptech.glide.Glide;
 
 public class AccountsChooser {

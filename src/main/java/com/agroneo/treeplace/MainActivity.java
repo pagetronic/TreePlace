@@ -15,7 +15,7 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import com.agroneo.treeplace.auth.AuthService;
-import com.agroneo.treeplace.sys.AccountsChooser;
+import com.agroneo.treeplace.auth.AccountsChooser;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
