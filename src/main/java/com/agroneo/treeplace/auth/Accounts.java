@@ -5,6 +5,7 @@ import android.accounts.AccountManager;
 import android.accounts.AccountManagerCallback;
 import android.accounts.AccountManagerFuture;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
@@ -63,7 +64,7 @@ public class Accounts {
         return false;
     }
 
-    public static void getAccessToken(Context ctx, final Token token) {
+    public static void getAccessToken(final Context ctx, final Token token) {
         String account_name = getAccountNameActive(ctx);
         AccountManager am = AccountManager.get(ctx);
         for (Account account : am.getAccountsByType(ctx.getResources().getString(R.string.account_type))) {
@@ -73,8 +74,15 @@ public class Accounts {
                     public void run(AccountManagerFuture<Bundle> future) {
 
                         try {
-                            Object access_token = future.getResult().get(AccountManager.KEY_AUTHTOKEN);
-                            token.get(access_token == null ? null : access_token.toString());
+                            Bundle result = future.getResult();
+                            String access_token = result.getString(AccountManager.KEY_AUTHTOKEN);
+                            if (access_token != null) {
+                                token.get(access_token);
+                            } else {
+                                Intent intent = (Intent) result.get(AccountManager.KEY_INTENT);
+                                ctx.startActivity(intent, result);
+                                token.get(null);
+                            }
                         } catch (Exception e) {
                             e.printStackTrace();
                             token.get(null);
