@@ -2,7 +2,9 @@ package com.agroneo.treeplace.specimens;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Point;
 import android.net.Uri;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -94,23 +96,32 @@ public class SpecimensAdapter extends BaseAdapter {
             convertView = inflater.inflate(R.layout.specimen_item, null);
         }
         Json specimen = specimens.get(position);
+
+        convertView.findViewById(R.id.scroll).scrollTo(0, 0);
         ((TextView) convertView.findViewById(R.id.title)).setText(specimen.getString("title"));
         ((TextView) convertView.findViewById(R.id.text)).setText(specimen.getString("text"));
         LinearLayout images = convertView.findViewById(R.id.images);
         images.removeAllViews();
+
         for (Json image : specimen.getListJson("images")) {
             ImageView imageView = new ImageView(activity);
             images.addView(imageView);
             imageView.requestLayout();
             ViewGroup.LayoutParams layout = imageView.getLayoutParams();
-            layout.height = 200;
-            layout.width = 280;
 
-            Glide.with(activity).load(Uri.parse(image.getString("url") + "@280x200.jpg"))
+            Point size = new Point();
+            Display display = activity.getWindowManager().getDefaultDisplay();
+            display.getSize(size);
+            int width = size.x;
+            layout.height = width * 200 / 462;
+            layout.width = width;
+
+            Glide.with(activity).load(Uri.parse(image.getString("url") + "@462x200.jpg"))
                     .placeholder(new ImageProgress(activity))
                     .error(R.drawable.logo)
                     .into(imageView);
         }
+
         return convertView;
     }
 
