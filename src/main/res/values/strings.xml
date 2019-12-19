@@ -31,4 +31,5 @@
     <string name="empty"> </string>
     <string name="register">register</string>
     <string name="recover">recover</string>
+    <string name="google_client_id">397581211584-0h4m1uu7ehpvleu6irpahe3a8i58m4nv.apps.googleusercontent.com</string>
 </resources>

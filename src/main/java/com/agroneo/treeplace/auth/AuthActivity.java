@@ -9,6 +9,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
+
 import com.agroneo.treeplace.R;
 import com.agroneo.treeplace.api.ApiAsync;
 import com.agroneo.treeplace.api.ApiResult;
@@ -113,6 +115,13 @@ public class AuthActivity extends Activity {
     private void oauth() {
         Button facebook = findViewById(R.id.facebook);
         Button google = findViewById(R.id.google);
+        google.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                GoogleOauth.sign(AuthActivity.this);
+            }
+        });
+
     }
 
     private void login() {
@@ -200,5 +209,12 @@ public class AuthActivity extends Activity {
         super.onBackPressed();
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if (requestCode == 100) {
+            GoogleOauth.result(data);
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
 
 }
