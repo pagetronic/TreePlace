@@ -33,11 +33,16 @@ public class SpecimensAdapter extends BaseAdapter {
     private int limit = 0;
     private boolean isLocked = false;
 
-    public SpecimensAdapter(Activity activity) {
+
+    public void setActivity(Activity activity) {
         this.activity = activity;
         this.inflater = activity.getLayoutInflater();
+    }
+
+    public void init() {
         loadData(null);
     }
+
 
     public void loadData(String next) {
 
