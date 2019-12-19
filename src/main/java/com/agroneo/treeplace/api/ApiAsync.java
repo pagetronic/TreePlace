@@ -54,17 +54,19 @@ public class ApiAsync extends AsyncTask<Object, Integer, ApiResponse> {
 
                     @Override
                     public void error(int code, Json data) {
-                        String error = data.getString("error");
-                        if (code == 401 && ("EXPIRED_ACCESS_TOKEN".equals(error) || "AUTHORIZATION_SCOPE_ERROR".equals(error) || "INVALID_ACCESS_TOKEN".equals(error))) {
-                            if ("AUTHORIZATION_SCOPE_ERROR".equals(error)) {
-                                AuthService.invalidateAccount(ctx);
-                            } else {
+                        switch (data.getString("error")) {
+                            case "EXPIRED_ACCESS_TOKEN":
                                 AuthService.invalidateAuthToken(ctx, access_token);
                                 post(ctx, url, data, func);
-                                return;
-                            }
+                                break;
+                            case "AUTHORIZATION_SCOPE_ERROR":
+                            case "INVALID_ACCESS_TOKEN":
+                                AuthService.invalidateAccount(ctx);
+                                break;
+                            default:
+                                func.error(code, data);
+                                break;
                         }
-                        func.error(code, data);
                     }
                 }, access_token).execute("GET", url);
             }
