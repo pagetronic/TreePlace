@@ -42,9 +42,11 @@ public class ApiAsync extends AsyncTask<Object, Integer, ApiResponse> {
     }
 
     public static void get(final Context ctx, final String url, final ApiResult func) {
+
         Accounts.getAccessToken(ctx, new Accounts.Token() {
             @Override
             public void get(final String access_token) {
+
                 new ApiAsync(new ApiResult() {
 
                     @Override

@@ -62,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onPostResume() {
         super.onPostResume();
-        if (!Accounts.controlChange(getBaseContext())) {
+        if (!Accounts.accountActiveRemoved(getBaseContext())) {
             recreate();
         }
     }

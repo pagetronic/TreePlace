@@ -4,9 +4,7 @@ import android.accounts.AbstractAccountAuthenticator;
 import android.accounts.Account;
 import android.accounts.AccountAuthenticatorResponse;
 import android.accounts.AccountManager;
-import android.accounts.AuthenticatorException;
 import android.accounts.NetworkErrorException;
-import android.accounts.OperationCanceledException;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -20,8 +18,6 @@ import com.agroneo.treeplace.R;
 import com.agroneo.treeplace.api.ApiResponse;
 import com.agroneo.treeplace.api.ApiSync;
 import com.agroneo.treeplace.api.Json;
-
-import java.io.IOException;
 
 import static android.accounts.AccountManager.KEY_BOOLEAN_RESULT;
 
@@ -71,17 +67,7 @@ public class AuthService extends Service {
 
             final AccountManager am = AccountManager.get(mContext);
 
-            String access_token = null;
-
-            try {
-                access_token = am.blockingGetAuthToken(account, authTokenType, false);
-            } catch (AuthenticatorException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (OperationCanceledException e) {
-                e.printStackTrace();
-            }
+            String access_token = am.peekAuthToken(account, authTokenType);
 
             if (TextUtils.isEmpty(access_token)) {
                 String refresh_token = am.getPassword(account);

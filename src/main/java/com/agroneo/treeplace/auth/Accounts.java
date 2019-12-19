@@ -23,9 +23,10 @@ public class Accounts {
 
         final Account account = new Account(email, ctx.getResources().getString(R.string.account_type));
         final AccountManager am = AccountManager.get(ctx);
+        //password / refresh_token must to be set next
         am.addAccountExplicitly(account, refresh_token, new Bundle());
+        am.setPassword(account, refresh_token);
         am.setAuthToken(account, tokenType, access_token);
-
         AuthService.setAccountActive(ctx, email);
 
         ApiAsync.get(ctx, "/profile", new ApiResult() {
@@ -46,7 +47,7 @@ public class Accounts {
 
     }
 
-    public static boolean controlChange(Context ctx) {
+    public static boolean accountActiveRemoved(Context ctx) {
         String account_name = getAccountNameActive(ctx);
         if (account_name == null) {
             return true;
@@ -67,13 +68,13 @@ public class Accounts {
         AccountManager am = AccountManager.get(ctx);
         for (Account account : am.getAccountsByType(ctx.getResources().getString(R.string.account_type))) {
             if (account.name.equals(account_name)) {
-                am.getAuthToken(account, tokenType, new Bundle(), true, new AccountManagerCallback<Bundle>() {
+                am.getAuthToken(account, tokenType, new Bundle(), false, new AccountManagerCallback<Bundle>() {
                     @Override
                     public void run(AccountManagerFuture<Bundle> future) {
 
                         try {
-                            Bundle authTokenBundle = future.getResult();
-                            token.get(authTokenBundle.get(AccountManager.KEY_AUTHTOKEN).toString());
+                            Object access_token = future.getResult().get(AccountManager.KEY_AUTHTOKEN);
+                            token.get(access_token == null ? null : access_token.toString());
                         } catch (Exception e) {
                             e.printStackTrace();
                             token.get(null);
@@ -119,6 +120,7 @@ public class Accounts {
         AccountManager am = AccountManager.get(ctx);
         am.invalidateAuthToken(ctx.getResources().getString(R.string.account_type), access_token);
     }
+
     public interface Token {
         void get(String access_token);
     }
