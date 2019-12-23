@@ -175,7 +175,11 @@ public class Accounts {
             Uri data = intent.getData();
             if (action.equals(Intent.ACTION_VIEW) && data != null && data.getScheme().equals(activity.getString(R.string.scheme_auth))) {
 
-                OAuthClient.validate(activity, data.getHost(), new ApiResult() {
+                ApiAsync.post(null, activity, "/token", new Json()
+                        .put("grant_type", "authorization_code")
+                        .put("client_id", activity.getString(R.string.client_id))
+                        .put("client_secret", activity.getString(R.string.client_secret))
+                        .put("code", data.getHost()), new ApiResult() {
                     @Override
                     public void success(Json data) {
 
