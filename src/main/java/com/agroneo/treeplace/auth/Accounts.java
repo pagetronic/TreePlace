@@ -147,7 +147,9 @@ public class Accounts {
         parameters.add("response_type=code");
         parameters.add("client_id=" + ctx.getString(R.string.client_id));
         parameters.add("scheme=" + ctx.getString(R.string.scheme_auth));
-        parameters.addAll(Arrays.asList(params));
+        if (params != null && params.length > 0) {
+            parameters.addAll(Arrays.asList(params));
+        }
         return new Intent(Intent.ACTION_VIEW, Uri.parse(getDomain() + "auth?" + StringUtils.join(parameters, "&")));
     }
 
@@ -188,8 +190,7 @@ public class Accounts {
 
                             @Override
                             public void success(Json data) {
-                                Intent resultIntent = new Intent();
-                                activity.setResult(Activity.RESULT_OK, resultIntent);
+                                activity.recreate();
                             }
 
                             @Override
