@@ -9,7 +9,6 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.text.TextUtils;
@@ -72,18 +71,17 @@ public class AuthService extends Service {
             if (TextUtils.isEmpty(access_token)) {
                 String refresh_token = am.getPassword(account);
                 if (refresh_token != null) {
-                    Resources resources = mContext.getResources();
                     ApiResponse rez = ApiSync.post(null, "/token",
                             new Json()
                                     .put("grant_type", "refresh_token")
-                                    .put("client_id", resources.getString(R.string.client_id))
-                                    .put("client_secret", resources.getString(R.string.client_secret))
+                                    .put("client_id", mContext.getString(R.string.client_id))
+                                    .put("client_secret", mContext.getString(R.string.client_secret))
                                     .put("refresh_token", refresh_token)
                     );
                     if (rez.getCode() == 200) {
                         Json data = rez.getResult();
                         if (data != null && !data.isEmpty()) {
-                            am.invalidateAuthToken(resources.getString(R.string.account_type), access_token);
+                            am.invalidateAuthToken(mContext.getString(R.string.account_type), access_token);
                             access_token = data.getString("access_token", "");
                             refresh_token = data.getString("refresh_token", "");
                             if (!refresh_token.equals("") && !access_token.equals("")) {
