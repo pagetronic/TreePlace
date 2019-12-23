@@ -139,7 +139,7 @@ public class Accounts {
 
     public static Intent getAuthIntent(Context ctx, String... params) {
         StringBuilder url = new StringBuilder(getDomain() + "auth?");
-        url.append("&scope=email,gaia");
+        url.append("scope=email,gaia");
         url.append("&response_type=code");
         url.append("&client_id=").append(ctx.getString(R.string.client_id));
         url.append("&scheme=").append(ctx.getString(R.string.scheme_auth));
