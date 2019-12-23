@@ -111,7 +111,7 @@ public class AuthService extends Service {
                 }
             }
 
-            final Intent intent = Accounts.getAuthIntent(mContext);
+            final Intent intent = Accounts.getAuthIntent(mContext, "email="+account.name);
             intent.putExtra(AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE, response);
             final Bundle bundle = new Bundle();
             bundle.putParcelable(AccountManager.KEY_INTENT, intent);

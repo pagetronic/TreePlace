@@ -17,6 +17,11 @@ import com.agroneo.treeplace.api.ApiResult;
 import com.agroneo.treeplace.api.Json;
 import com.agroneo.treeplace.sys.Fx;
 
+import org.apache.commons.lang3.StringUtils;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
 
 public class Accounts {
@@ -135,13 +140,14 @@ public class Accounts {
         am.invalidateAuthToken(ctx.getResources().getString(R.string.account_type), access_token);
     }
 
-    public static Intent getAuthIntent(Context ctx) {
-        StringBuilder url = new StringBuilder(getDomain() + "auth?scope=email,gaia" +
-                "&response_type=code" +
-                "&client_id=" + ctx.getString(R.string.client_id) +
-                "&scheme=" + ctx.getString(R.string.scheme_auth));
-
-        return new Intent(Intent.ACTION_VIEW, Uri.parse(url.toString()));
+    public static Intent getAuthIntent(Context ctx, String... params) {
+        List<String> parameters = new ArrayList<>();
+        parameters.add("scope=email,gaia");
+        parameters.add("response_type=code");
+        parameters.add("client_id=" + ctx.getString(R.string.client_id));
+        parameters.add("scheme=" + ctx.getString(R.string.scheme_auth));
+        parameters.addAll(Arrays.asList(params));
+        return new Intent(Intent.ACTION_VIEW, Uri.parse(getDomain() + "auth?" + StringUtils.join(parameters, "&")));
     }
 
     public static String getDomain() {
