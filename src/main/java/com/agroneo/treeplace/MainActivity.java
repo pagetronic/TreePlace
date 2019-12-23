@@ -16,9 +16,9 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.agroneo.treeplace.auth.Accounts;
 import com.agroneo.treeplace.auth.AccountsChooser;
+import com.agroneo.treeplace.specimens.SpecimenCreator;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
-import com.google.android.material.snackbar.Snackbar;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -37,18 +37,15 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, R.string.add_specimen, Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                Intent intent = new Intent(MainActivity.this, SpecimenCreator.class);
+                startActivity(intent);
             }
         });
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
 
         NavigationView navigationView = findViewById(R.id.nav_view);
 
-        mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_search, R.id.nav_creation)
-                .setDrawerLayout(drawer)
-                .build();
+        mAppBarConfiguration = new AppBarConfiguration.Builder(R.id.nav_search, R.id.nav_creation).setDrawerLayout(drawer).build();
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);

@@ -25,4 +25,8 @@
     <string name="select_account">Select account</string>
     <string name="new_account">New account</string>
     <string name="empty"> </string>
+    <string name="specimen_title">Specimen title</string>
+    <string name="specimen_publish">publish specimen</string>
+    <string name="specimen_creator">Specimen creator</string>
+    <string name="specimen_view">Specimen view</string>
 </resources>

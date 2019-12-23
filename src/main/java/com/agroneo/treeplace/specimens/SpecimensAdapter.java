@@ -2,6 +2,7 @@ package com.agroneo.treeplace.specimens;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Point;
 import android.net.Uri;
 import android.view.Display;
@@ -104,7 +105,7 @@ public class SpecimensAdapter extends BaseAdapter {
         if (convertView == null) {
             convertView = inflater.inflate(R.layout.specimen_item, null);
         }
-        Json specimen = specimens.get(position);
+        final Json specimen = specimens.get(position);
 
         convertView.findViewById(R.id.scroll).scrollTo(0, 0);
         ((TextView) convertView.findViewById(R.id.title)).setText(specimen.getString("title"));
@@ -131,6 +132,14 @@ public class SpecimensAdapter extends BaseAdapter {
                     .into(imageView);
         }
 
+        convertView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(activity, SpecimenView.class);
+                intent.putExtra("id", specimen.getId());
+                activity.startActivity(intent);
+            }
+        });
         return convertView;
     }
 
