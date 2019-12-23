@@ -36,15 +36,16 @@ public class Accounts {
 
             @Override
             public void success(Json data) {
-                String email = data.getString("email");
-                final Account account = new Account(email, ctx.getResources().getString(R.string.account_type));
+                String id = data.getId();
+                final Account account = new Account(id, ctx.getResources().getString(R.string.account_type));
                 final AccountManager am = AccountManager.get(ctx);
                 //password / refresh_token must to be set next
                 am.addAccountExplicitly(account, refresh_token, new Bundle());
                 am.setPassword(account, refresh_token);
                 am.setAuthToken(account, tokenType, access_token);
-                AuthService.setAccountActive(ctx, email);
+                AuthService.setAccountActive(ctx, id);
 
+                am.setUserData(account, "email", data.getString("email"));
                 am.setUserData(account, "avatar", data.getString("logo"));
                 am.setUserData(account, "name", data.getString("name"));
                 onresult.success(data);
