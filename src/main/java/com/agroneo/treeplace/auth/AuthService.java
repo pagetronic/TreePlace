@@ -99,9 +99,12 @@ public class AuthService extends Service {
                 ApiResponse rez = ApiSync.get(access_token, "/profile");
 
                 if (rez != null && rez.getCode() == 200) {
-                    Json user = rez.getResult();
-                    am.setUserData(account, "avatar", user.getString("logo"));
-                    am.setUserData(account, "name", user.getString("name"));
+                    Json data = rez.getResult();
+
+                    am.setUserData(account, "id", data.getId());
+                    am.setUserData(account, "email", data.getString("email"));
+                    am.setUserData(account, "avatar", data.getString("logo"));
+                    am.setUserData(account, "name", data.getString("name"));
 
                     final Bundle result = new Bundle();
                     result.putString(AccountManager.KEY_ACCOUNT_NAME, account.name);
@@ -111,7 +114,7 @@ public class AuthService extends Service {
                 }
             }
 
-            final Intent intent = Accounts.getAuthIntent(mContext, "user=" + Accounts.getAccountData(mContext, account.name, "id"));
+            final Intent intent = Accounts.getAuthIntent(mContext, "user=" + am.getUserData(account, "id"));
             intent.putExtra(AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE, response);
             final Bundle bundle = new Bundle();
             bundle.putParcelable(AccountManager.KEY_INTENT, intent);

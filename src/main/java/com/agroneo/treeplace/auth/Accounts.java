@@ -17,11 +17,6 @@ import com.agroneo.treeplace.api.ApiResult;
 import com.agroneo.treeplace.api.Json;
 import com.agroneo.treeplace.sys.Fx;
 
-import org.apache.commons.lang3.StringUtils;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Locale;
 
 public class Accounts {
@@ -36,15 +31,16 @@ public class Accounts {
 
             @Override
             public void success(Json data) {
-                String id = data.getId();
-                final Account account = new Account(id, ctx.getResources().getString(R.string.account_type));
+                String email = data.getString("email");
+                final Account account = new Account(email, ctx.getResources().getString(R.string.account_type));
                 final AccountManager am = AccountManager.get(ctx);
                 //password / refresh_token must to be set next
                 am.addAccountExplicitly(account, refresh_token, new Bundle());
                 am.setPassword(account, refresh_token);
                 am.setAuthToken(account, tokenType, access_token);
-                AuthService.setAccountActive(ctx, id);
+                AuthService.setAccountActive(ctx, email);
 
+                am.setUserData(account, "id", data.getId());
                 am.setUserData(account, "email", data.getString("email"));
                 am.setUserData(account, "avatar", data.getString("logo"));
                 am.setUserData(account, "name", data.getString("name"));
@@ -142,15 +138,15 @@ public class Accounts {
     }
 
     public static Intent getAuthIntent(Context ctx, String... params) {
-        List<String> parameters = new ArrayList<>();
-        parameters.add("scope=email,gaia");
-        parameters.add("response_type=code");
-        parameters.add("client_id=" + ctx.getString(R.string.client_id));
-        parameters.add("scheme=" + ctx.getString(R.string.scheme_auth));
-        if (params != null && params.length > 0) {
-            parameters.addAll(Arrays.asList(params));
+        StringBuilder url = new StringBuilder(getDomain() + "auth?");
+        url.append("&scope=email,gaia");
+        url.append("&response_type=code");
+        url.append("&client_id=").append(ctx.getString(R.string.client_id));
+        url.append("&scheme=").append(ctx.getString(R.string.scheme_auth));
+        for (String param : params) {
+            url.append("&").append(param);
         }
-        return new Intent(Intent.ACTION_VIEW, Uri.parse(getDomain() + "auth?" + StringUtils.join(parameters, "&")));
+        return new Intent(Intent.ACTION_VIEW, Uri.parse(url.toString()));
     }
 
     public static String getDomain() {

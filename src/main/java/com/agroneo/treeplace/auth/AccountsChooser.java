@@ -4,7 +4,6 @@ import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.Intent;
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -100,7 +99,7 @@ public class AccountsChooser {
                             }
 
                             text.setText(Accounts.getAccountData(activity, accounts[position].name, "name"));
-                            email.setText(accounts[position].name);
+                            email.setText(Accounts.getAccountData(activity, accounts[position].name, "email"));
                             String logo = Accounts.getAccountData(activity, accounts[position].name, "avatar");
 
                             Glide.with(activity).load(Uri.parse(logo + "@128"))
