@@ -55,7 +55,7 @@ public class AuthService extends Service {
 
         @Override
         public Bundle addAccount(AccountAuthenticatorResponse response, String accountType, String authTokenType, String[] requiredFeatures, Bundle options) throws NetworkErrorException {
-            Intent intent = new Intent(mContext, AuthActivity.class);
+            Intent intent = Accounts.getAuthIntent(mContext);
             intent.putExtra(AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE, response);
             Bundle bundle = new Bundle();
             bundle.putParcelable(AccountManager.KEY_INTENT, intent);
@@ -111,9 +111,8 @@ public class AuthService extends Service {
                 }
             }
 
-            final Intent intent = new Intent(mContext, AuthActivity.class);
+            final Intent intent = Accounts.getAuthIntent(mContext);
             intent.putExtra(AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE, response);
-            intent.putExtra("accountName", account.name);
             final Bundle bundle = new Bundle();
             bundle.putParcelable(AccountManager.KEY_INTENT, intent);
             return bundle;

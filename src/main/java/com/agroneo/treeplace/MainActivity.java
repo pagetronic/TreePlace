@@ -56,6 +56,7 @@ public class MainActivity extends AppCompatActivity {
 
         AccountsChooser.make(this);
 
+        Accounts.intentCode(this);
 
     }
 
@@ -88,4 +89,6 @@ public class MainActivity extends AppCompatActivity {
         return NavigationUI.navigateUp(navController, mAppBarConfiguration)
                 || super.onSupportNavigateUp();
     }
+
+
 }

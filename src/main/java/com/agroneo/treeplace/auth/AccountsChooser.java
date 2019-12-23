@@ -79,7 +79,7 @@ public class AccountsChooser {
                                 @Override
                                 public void onClick(View v) {
                                     if (position >= accounts.length) {
-                                        activity.startActivityForResult(new Intent(activity, AuthActivity.class), 1);
+                                        activity.startActivity(Accounts.getAuthIntent(activity));
                                         dialog.cancel();
                                     } else {
                                         AuthService.setAccountActive(activity, accounts[position].name);
@@ -112,7 +112,7 @@ public class AccountsChooser {
                         }
                     });
                 } else {
-                    activity.startActivityForResult(new Intent(activity, AuthActivity.class), 1);
+                    activity.startActivity(Accounts.getAuthIntent(activity));
                 }
             }
         });

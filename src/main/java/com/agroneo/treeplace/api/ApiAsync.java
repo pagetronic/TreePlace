@@ -20,25 +20,31 @@ public class ApiAsync extends AsyncTask<Object, Integer, ApiResponse> {
         Accounts.getAccessToken(ctx, new Accounts.Token() {
             @Override
             public void get(final String access_token) {
-                new ApiAsync(new ApiResult() {
-
-                    @Override
-                    public void success(Json data) {
-                        func.success(data);
-                    }
-
-                    @Override
-                    public void error(int code, Json data) {
-                        if (code == 401 && "EXPIRED_ACCESS_TOKEN".equals(data.getString("error"))) {
-                            Accounts.invalidateAuthToken(ctx, access_token);
-                            post(ctx, url, data, func);
-                            return;
-                        }
-                        func.error(code, data);
-                    }
-                }, access_token).execute("POST", url, data);
+                post(access_token, ctx, url, data, func);
             }
         });
+    }
+
+    public static void post(final String access_token, final Context ctx, final String url, final Json data, final ApiResult func) {
+
+        new ApiAsync(new ApiResult() {
+
+            @Override
+            public void success(Json data) {
+                func.success(data);
+            }
+
+            @Override
+            public void error(int code, Json data) {
+                if (code == 401 && "EXPIRED_ACCESS_TOKEN".equals(data.getString("error"))) {
+                    Accounts.invalidateAuthToken(ctx, access_token);
+                    post(ctx, url, data, func);
+                    return;
+                }
+                func.error(code, data);
+            }
+        }, access_token).execute("POST", url, data);
+
     }
 
     public static void get(final Context ctx, final String url, final ApiResult func) {
@@ -46,33 +52,38 @@ public class ApiAsync extends AsyncTask<Object, Integer, ApiResponse> {
         Accounts.getAccessToken(ctx, new Accounts.Token() {
             @Override
             public void get(final String access_token) {
-
-                new ApiAsync(new ApiResult() {
-
-                    @Override
-                    public void success(Json data) {
-                        func.success(data);
-                    }
-
-                    @Override
-                    public void error(int code, Json data) {
-                        switch (data.getString("error")) {
-                            case "EXPIRED_ACCESS_TOKEN":
-                                Accounts.invalidateAuthToken(ctx, access_token);
-                                post(ctx, url, data, func);
-                                break;
-                            case "AUTHORIZATION_SCOPE_ERROR":
-                            case "INVALID_ACCESS_TOKEN":
-                                Accounts.invalidateAccount(ctx);
-                                break;
-                            default:
-                                func.error(code, data);
-                                break;
-                        }
-                    }
-                }, access_token).execute("GET", url);
+                ApiAsync.get(access_token, ctx, url, func);
             }
         });
+    }
+
+    public static void get(final String access_token, final Context ctx, final String url, final ApiResult func) {
+
+        new ApiAsync(new ApiResult() {
+
+            @Override
+            public void success(Json data) {
+                func.success(data);
+            }
+
+            @Override
+            public void error(int code, Json data) {
+                switch (data.getString("error")) {
+                    case "EXPIRED_ACCESS_TOKEN":
+                        Accounts.invalidateAuthToken(ctx, access_token);
+                        post(ctx, url, data, func);
+                        break;
+                    case "AUTHORIZATION_SCOPE_ERROR":
+                    case "INVALID_ACCESS_TOKEN":
+                        Accounts.invalidateAccount(ctx);
+                        break;
+                    default:
+                        func.error(code, data);
+                        break;
+                }
+            }
+        }, access_token).execute("GET", url);
+
     }
 
     @Override

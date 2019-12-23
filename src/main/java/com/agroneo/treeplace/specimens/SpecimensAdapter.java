@@ -87,7 +87,11 @@ public class SpecimensAdapter extends BaseAdapter {
 
     @Override
     public long getItemId(int position) {
-        return getItem(position).hashCode();
+        try {
+            return getItem(position).hashCode();
+        } catch (Exception e) {
+            return Long.MIN_VALUE;
+        }
     }
 
     @Override
