@@ -137,16 +137,13 @@ public class Accounts {
         am.invalidateAuthToken(ctx.getResources().getString(R.string.account_type), access_token);
     }
 
-    public static Intent getAuthIntent(Context ctx, String... params) {
-        StringBuilder url = new StringBuilder(getDomain() + "auth?");
-        url.append("scope=email,gaia");
-        url.append("&response_type=code");
-        url.append("&client_id=").append(ctx.getString(R.string.client_id));
-        url.append("&scheme=").append(ctx.getString(R.string.scheme_auth));
-        for (String param : params) {
-            url.append("&").append(param);
-        }
-        return new Intent(Intent.ACTION_VIEW, Uri.parse(url.toString()));
+    public static Intent getAuthIntent(Context ctx) {
+
+        String url = getDomain() + "auth?" + "scope=email,gaia" +
+                "&response_type=code" +
+                "&client_id=" + ctx.getString(R.string.client_id) +
+                "&scheme=" + ctx.getString(R.string.scheme_auth);
+        return new Intent(Intent.ACTION_VIEW, Uri.parse(url));
     }
 
     public static String getDomain() {

@@ -114,11 +114,16 @@ public class AuthService extends Service {
                 }
             }
 
-            final Intent intent = Accounts.getAuthIntent(mContext, "user=" + am.getUserData(account, "id"));
-            intent.putExtra(AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE, response);
-            final Bundle bundle = new Bundle();
-            bundle.putParcelable(AccountManager.KEY_INTENT, intent);
-            return bundle;
+            am.removeAccountExplicitly(account);
+            if (am.getAccounts().length == 0) {
+                final Intent intent = Accounts.getAuthIntent(mContext);
+                intent.putExtra(AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE, response);
+                final Bundle bundle = new Bundle();
+                bundle.putParcelable(AccountManager.KEY_INTENT, intent);
+                return bundle;
+            }
+
+            return new Bundle();
         }
 
 
