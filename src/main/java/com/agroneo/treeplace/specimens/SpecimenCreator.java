@@ -29,7 +29,7 @@ public class SpecimenCreator extends AppCompatActivity implements LocationListen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.specimen_creator);
 
-        Selectable.make(SpecimenCreator.this, "/species", (TextView) findViewById(R.id.species));
+        new Selectable(SpecimenCreator.this, "/species", findViewById(R.id.species));
 
         findViewById(R.id.localize).setOnClickListener(new View.OnClickListener() {
             @Override

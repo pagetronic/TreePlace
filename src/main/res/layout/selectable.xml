@@ -3,12 +3,18 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
+
     <EditText
         android:id="@+id/search"
-        android:hint="@string/search"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-   />
+        android:hint="@string/search" />
+
+    <ProgressBar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"/>
+
     <ListView
         android:id="@+id/list"
         android:layout_width="match_parent"
