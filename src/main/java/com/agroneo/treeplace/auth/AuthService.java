@@ -14,8 +14,8 @@ import android.os.IBinder;
 import android.text.TextUtils;
 
 import com.agroneo.treeplace.R;
+import com.agroneo.treeplace.api.ApiRequest;
 import com.agroneo.treeplace.api.ApiResponse;
-import com.agroneo.treeplace.api.ApiSync;
 import com.agroneo.treeplace.api.Json;
 
 import static android.accounts.AccountManager.KEY_BOOLEAN_RESULT;
@@ -71,7 +71,8 @@ public class AuthService extends Service {
             if (TextUtils.isEmpty(access_token)) {
                 String refresh_token = am.getPassword(account);
                 if (refresh_token != null) {
-                    ApiResponse rez = ApiSync.post(null, "/token",
+                    ApiRequest req = new ApiRequest(mContext, "/token");
+                    ApiResponse rez = req.post(
                             new Json()
                                     .put("grant_type", "refresh_token")
                                     .put("client_id", mContext.getString(R.string.client_id))
@@ -94,7 +95,9 @@ public class AuthService extends Service {
             }
             if (!TextUtils.isEmpty(access_token)) {
 
-                ApiResponse rez = ApiSync.get(access_token, "/profile");
+                ApiRequest req = new ApiRequest(mContext, "/profile");
+                req.setAuthToken(access_token);
+                ApiResponse rez = req.get();
 
                 if (rez != null && rez.getCode() == 200) {
                     Json data = rez.getResult();

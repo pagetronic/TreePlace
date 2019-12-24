@@ -132,10 +132,6 @@ public class Accounts {
         }
     }
 
-    public static void invalidateAuthToken(Context ctx, String access_token) {
-        AccountManager am = AccountManager.get(ctx);
-        am.invalidateAuthToken(ctx.getResources().getString(R.string.account_type), access_token);
-    }
 
     public static Intent getAuthIntent(Context ctx) {
 
