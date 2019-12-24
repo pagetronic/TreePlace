@@ -66,7 +66,9 @@ public class ApiRequest {
             String response = IOUtils.toString(connection.getResponseCode() != HttpURLConnection.HTTP_OK ? connection.getErrorStream() : connection.getInputStream());
             connection.disconnect();
             os.close();
-            return new ApiResponse(connection.getResponseCode(), response);
+            if (!isAbort()) {
+                return new ApiResponse(connection.getResponseCode(), response);
+            }
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -82,7 +84,9 @@ public class ApiRequest {
 
             String response = IOUtils.toString(connection.getResponseCode() != 200 ? connection.getErrorStream() : connection.getInputStream());
             connection.disconnect();
-            return new ApiResponse(connection.getResponseCode(), response);
+            if (!isAbort()) {
+                return new ApiResponse(connection.getResponseCode(), response);
+            }
 
         } catch (IOException e) {
             e.printStackTrace();

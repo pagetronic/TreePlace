@@ -8,6 +8,7 @@ import android.widget.Toast;
 
 import com.agroneo.treeplace.R;
 import com.agroneo.treeplace.api.ApiAsync;
+import com.agroneo.treeplace.api.ApiRequest;
 import com.agroneo.treeplace.api.ApiResult;
 import com.agroneo.treeplace.api.Json;
 
@@ -15,25 +16,28 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class ApiAdapter extends BaseAdapter {
+    protected Activity activity;
     private List<Json> items = new ArrayList<>();
     private ScrollEvent scroll = null;
-    private Activity activity;
     private int resource;
+    private ApiRequest req = null;
 
     public ApiAdapter(Activity activity, int resource) {
         this.activity = activity;
         this.resource = resource;
     }
 
-    public void post(final String url, Json data) {
-        //TODO abort
+    public void post(final String url, final Json data) {
         scroll = null;
-        ApiAsync.post(activity, url, data, new ApiResult() {
+        if (req != null) {
+            req.abort();
+        }
+        req = ApiAsync.post(activity, url, data, new ApiResult() {
 
             @Override
-            public void success(final Json data) {
-                items.addAll(data.getListJson("result"));
-                final String next = data.getJson("paging").getString("next");
+            public void success(final Json rez) {
+                items.addAll(rez.getListJson("result"));
+                final String next = rez.getJson("paging").getString("next");
                 scroll = new ScrollEvent() {
                     @Override
                     public void doNext() {
@@ -53,7 +57,10 @@ public abstract class ApiAdapter extends BaseAdapter {
     public void get(final String url) {
 
         scroll = null;
-        ApiAsync.get(activity, url, new ApiResult() {
+        if (req != null) {
+            req.abort();
+        }
+        req = ApiAsync.get(activity, url, new ApiResult() {
 
             @Override
             public void success(final Json data) {
@@ -104,7 +111,7 @@ public abstract class ApiAdapter extends BaseAdapter {
         return items.get(position).hashCode();
     }
 
-    abstract View getView(View view, Json item);
+    public abstract View getView(View view, Json item);
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
@@ -112,10 +119,14 @@ public abstract class ApiAdapter extends BaseAdapter {
         if (convertView == null) {
             convertView = activity.getLayoutInflater().inflate(resource, null);
         }
-        if (position == getCount() - 1) {
+        if (scroll != null && position == getCount() - 1) {
             scroll.doNext();
         }
         return getView(convertView, (Json) getItem(position));
+    }
+
+    public void setActivity(Activity activity) {
+        this.activity = activity;
     }
 
     private interface ScrollEvent {

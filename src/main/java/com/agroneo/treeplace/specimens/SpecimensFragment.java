@@ -14,14 +14,14 @@ import com.agroneo.treeplace.R;
 
 public class SpecimensFragment extends Fragment {
 
-    private final SpecimensAdapter specimensAdapter = new SpecimensAdapter();
+    private SpecimensAdapter specimensAdapter;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
-        specimensAdapter.setActivity(getActivity());
-        specimensAdapter.init();
+        specimensAdapter = new SpecimensAdapter(getActivity(), R.layout.specimen_view);
+        specimensAdapter.get("/gaia/specimens");
     }
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {

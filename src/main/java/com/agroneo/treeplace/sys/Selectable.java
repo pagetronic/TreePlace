@@ -29,7 +29,7 @@ public class Selectable {
 
                 ApiAdapter adapter = new ApiAdapter(activity, R.layout.species) {
                     @Override
-                    View getView(View view, Json item) {
+                    public View getView(View view, Json item) {
                         ((TextView) view.findViewById(R.id.name)).setText(item.getString("name"));
                         Fx.log(item.getString("name"));
                         return view;
