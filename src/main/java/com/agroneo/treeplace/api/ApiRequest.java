@@ -39,8 +39,7 @@ public class ApiRequest {
                 connection.setConnectTimeout(15000);
             }
             connection.setUseCaches(false);
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (IOException ignore) {
         }
     }
 
@@ -70,8 +69,7 @@ public class ApiRequest {
                 return new ApiResponse(connection.getResponseCode(), response);
             }
 
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (IOException ignore) {
         }
         return null;
     }
@@ -88,8 +86,7 @@ public class ApiRequest {
                 return new ApiResponse(connection.getResponseCode(), response);
             }
 
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (IOException ignore) {
         }
         return null;
     }
@@ -99,8 +96,7 @@ public class ApiRequest {
         abort = true;
         try {
             connection.disconnect();
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception ignore) {
         }
     }
 

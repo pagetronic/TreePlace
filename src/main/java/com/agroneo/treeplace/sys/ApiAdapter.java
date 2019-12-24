@@ -129,6 +129,15 @@ public abstract class ApiAdapter extends BaseAdapter {
         this.activity = activity;
     }
 
+    public void clear() {
+
+        if (req != null) {
+            req.abort();
+        }
+        items.clear();
+        notifyDataSetChanged();
+    }
+
     private interface ScrollEvent {
         void doNext();
     }

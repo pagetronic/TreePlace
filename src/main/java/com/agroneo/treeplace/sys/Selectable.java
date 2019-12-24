@@ -2,6 +2,9 @@ package com.agroneo.treeplace.sys;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -24,19 +27,37 @@ public class Selectable {
                 final AlertDialog dialog = builder.show();
                 dialog.show();
 
-                EditText search = dialog.findViewById(R.id.search);
+                final EditText search = dialog.findViewById(R.id.search);
                 ListView list = dialog.findViewById(R.id.list);
-
-                ApiAdapter adapter = new ApiAdapter(activity, R.layout.species) {
+                final Json data = new Json("action", "search").put("search", "");
+                final ApiAdapter adapter = new ApiAdapter(activity, R.layout.species) {
                     @Override
                     public View getView(View view, Json item) {
                         ((TextView) view.findViewById(R.id.name)).setText(item.getString("name"));
-                        Fx.log(item.getString("name"));
                         return view;
                     }
                 };
                 list.setAdapter(adapter);
-                adapter.post(url, new Json("action", "search").put("q", ""));
+                adapter.post(url, data);
+
+                search.addTextChangedListener(new TextWatcher() {
+                    @Override
+                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                    }
+
+                    @Override
+                    public void onTextChanged(CharSequence s, int start, int before, int count) {
+                        adapter.clear();
+                        data.put("search", search.getText().toString());
+                        adapter.post(url, data);
+                    }
+
+                    @Override
+                    public void afterTextChanged(Editable s) {
+                    }
+                });
+
 
             }
         });
