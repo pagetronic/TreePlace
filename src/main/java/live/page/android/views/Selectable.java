@@ -37,10 +37,10 @@ public class Selectable extends LinearLayout {
         setOrientation(LinearLayout.HORIZONTAL);
 
         if (attrs != null) {
-            TypedArray attributes = getContext().getTheme().obtainStyledAttributes(attrs, R.styleable.pagelive, 0, 0);
-            url = attributes.getString(R.styleable.pagelive_url);
-            hint = attributes.getString(R.styleable.pagelive_hint);
-            multiple = attributes.getBoolean(R.styleable.pagelive_multiple, false);
+            TypedArray attributes = getContext().getTheme().obtainStyledAttributes(attrs, R.styleable.selectable, 0, 0);
+            url = attributes.getString(R.styleable.selectable_url);
+            hint = attributes.getString(R.styleable.selectable_hint);
+            multiple = attributes.getBoolean(R.styleable.selectable_multiple, false);
             attributes.recycle();
         }
 
