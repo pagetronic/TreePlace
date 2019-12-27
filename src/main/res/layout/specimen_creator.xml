@@ -38,7 +38,7 @@
             android:layout_height="wrap_content"
             android:padding="10dp"
             pagelive:hint="@string/authors"
-            pagelive:url="/users"
+            pagelive:url="/switch"
             pagelive:multiple="true"/>
 
         <LinearLayout
