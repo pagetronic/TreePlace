@@ -47,8 +47,7 @@ public class Selectable extends LinearLayout {
         choices = new LinearLayout(context);
         choices.setOrientation(LinearLayout.HORIZONTAL);
         choices.setLayoutParams(new LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 10F));
-        addChoices(null);
-
+        setHint();
         addView(choices);
 
         arrow = new ImageView(context);
@@ -79,13 +78,10 @@ public class Selectable extends LinearLayout {
                             public void onClick(View v) {
                                 if (multiple) {
                                     if (!values.contains(item.getId())) {
-                                        values.add(item.getId());
-                                        addChoices(item.getString("name"));
+                                        addChoices(item);
                                     }
                                 } else {
-                                    values.clear();
-                                    values.add(item.getId());
-                                    setChoice(item.getString("name"));
+                                    setChoice(item);
 
                                 }
                                 dialog.cancel();
@@ -120,32 +116,42 @@ public class Selectable extends LinearLayout {
         });
     }
 
-    private void setChoice(String choice) {
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    private void setChoice(Json choice) {
+
         choices.removeAllViews();
         TextView text = new TextView(getContext());
         text.setLayoutParams(new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         if (choice == null) {
             text.setHint(hint);
         } else {
-            text.setText(choice);
+            text.setText(choice.getString("name"));
         }
+        values.clear();
+        values.add(choice.getId());
         choices.addView(text);
     }
 
-    private void addChoices(String choice) {
+    private void addChoices(Json choice) {
         TextView text = new TextView(getContext());
         text.setLayoutParams(new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-        if (choice == null) {
-            choices.removeAllViews();
-            text.setHint(hint);
-        } else {
-            text.setText(choice);
-        }
+        text.setText(choice.getString("name"));
+        values.add(choice.getId());
         choices.addView(text);
     }
 
-    public void setUrl(String url) {
-        this.url = url;
+
+    private void setHint() {
+        choices.removeAllViews();
+        TextView text = new TextView(getContext());
+        text.setLayoutParams(new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        text.setHint(hint);
+        choices.addView(text);
+
     }
 
     public List<String> getValues() {
