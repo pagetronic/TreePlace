@@ -44,7 +44,7 @@
             android:name=".specimens.SpecimenView"
             android:label="@string/specimen_view" />
 
-        <service android:name=".auth.AuthService">
+        <service android:name="live.page.android.auth.AuthService">
             <intent-filter>
                 <action android:name="android.accounts.AccountAuthenticator" />
             </intent-filter>

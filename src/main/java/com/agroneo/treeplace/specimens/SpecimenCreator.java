@@ -16,8 +16,8 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.agroneo.treeplace.R;
-import com.agroneo.treeplace.sys.LocationUtils;
-import com.agroneo.treeplace.sys.Selectable;
+import live.page.android.sys.LocationUtils;
+import live.page.android.sys.Selectable;
 
 public class SpecimenCreator extends AppCompatActivity implements LocationListener {
 
@@ -29,7 +29,7 @@ public class SpecimenCreator extends AppCompatActivity implements LocationListen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.specimen_creator);
 
-        new Selectable(SpecimenCreator.this, "/species", findViewById(R.id.species));
+        Selectable.select(this, "/species", R.id.species);
 
         findViewById(R.id.localize).setOnClickListener(new View.OnClickListener() {
             @Override

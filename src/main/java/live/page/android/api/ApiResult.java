@@ -1,4 +1,4 @@
-package com.agroneo.treeplace.api;
+package live.page.android.api;
 
 public class ApiResult {
     public void success(Json data) {

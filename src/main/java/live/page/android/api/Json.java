@@ -1,7 +1,7 @@
 /*
  * Copyright 2019 Laurent PAGE, Apache Licence 2.0
  */
-package com.agroneo.treeplace.api;
+package live.page.android.api;
 
 
 import com.google.gson.Gson;

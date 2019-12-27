@@ -22,11 +22,12 @@
             android:inputType="text"
             android:padding="10dp" />
 
-        <TextView
+        <live.page.android.views.Selectable
             android:id="@+id/species"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/species"
+            style="@style/Selectable"
             android:padding="10dp"  />
 
         <LinearLayout

@@ -1,4 +1,4 @@
-package com.agroneo.treeplace.sys;
+package live.page.android.sys;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -10,9 +10,16 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.agroneo.treeplace.R;
-import com.agroneo.treeplace.api.Json;
+
+import live.page.android.views.ApiAdapter;
+import live.page.android.api.Json;
 
 public class Selectable {
+
+
+    public static void select(Activity activity, String url, int id) {
+        new Selectable(activity, url, activity.findViewById(id));
+    }
 
     public Selectable(final Activity activity, final String url, final View view) {
 

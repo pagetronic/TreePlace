@@ -1,4 +1,4 @@
-package com.agroneo.treeplace.api;
+package live.page.android.api;
 
 public class ApiResponse {
     private int code;

@@ -14,8 +14,8 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
-import com.agroneo.treeplace.auth.Accounts;
-import com.agroneo.treeplace.auth.AccountsChooser;
+import live.page.android.auth.Accounts;
+import live.page.android.auth.AccountsChooser;
 import com.agroneo.treeplace.specimens.SpecimenCreator;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;

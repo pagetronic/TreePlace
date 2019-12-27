@@ -15,8 +15,8 @@ import android.widget.TextView;
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable;
 
 import com.agroneo.treeplace.R;
-import com.agroneo.treeplace.api.Json;
-import com.agroneo.treeplace.sys.ApiAdapter;
+import live.page.android.api.Json;
+import live.page.android.views.ApiAdapter;
 import com.bumptech.glide.Glide;
 
 public class SpecimensAdapter extends ApiAdapter {

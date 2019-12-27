@@ -1,4 +1,4 @@
-package com.agroneo.treeplace.auth;
+package live.page.android.auth;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;

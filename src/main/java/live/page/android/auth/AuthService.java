@@ -1,4 +1,4 @@
-package com.agroneo.treeplace.auth;
+package live.page.android.auth;
 
 import android.accounts.AbstractAccountAuthenticator;
 import android.accounts.Account;
@@ -14,9 +14,9 @@ import android.os.IBinder;
 import android.text.TextUtils;
 
 import com.agroneo.treeplace.R;
-import com.agroneo.treeplace.api.ApiRequest;
-import com.agroneo.treeplace.api.ApiResponse;
-import com.agroneo.treeplace.api.Json;
+import live.page.android.api.ApiRequest;
+import live.page.android.api.ApiResponse;
+import live.page.android.api.Json;
 
 import static android.accounts.AccountManager.KEY_BOOLEAN_RESULT;
 

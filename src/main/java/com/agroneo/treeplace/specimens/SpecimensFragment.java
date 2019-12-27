@@ -19,7 +19,6 @@ public class SpecimensFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setRetainInstance(true);
         specimensAdapter = new SpecimensAdapter(getActivity(), R.layout.specimen_view);
         specimensAdapter.get("/gaia/specimens");
     }

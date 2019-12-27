@@ -1,4 +1,4 @@
-package com.agroneo.treeplace.auth;
+package live.page.android.auth;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
@@ -12,10 +12,10 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import com.agroneo.treeplace.R;
-import com.agroneo.treeplace.api.ApiAsync;
-import com.agroneo.treeplace.api.ApiResult;
-import com.agroneo.treeplace.api.Json;
-import com.agroneo.treeplace.sys.Fx;
+import live.page.android.api.ApiAsync;
+import live.page.android.api.ApiResult;
+import live.page.android.api.Json;
+import live.page.android.sys.Fx;
 
 import java.util.Locale;
 
