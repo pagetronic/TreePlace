@@ -18,7 +18,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.agroneo.treeplace.R;
 
 import live.page.android.sys.LocationUtils;
-import live.page.android.views.Selectable;
 
 public class SpecimenCreator extends AppCompatActivity implements LocationListener {
 
