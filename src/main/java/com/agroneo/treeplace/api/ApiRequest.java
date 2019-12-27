@@ -9,7 +9,9 @@ import com.agroneo.treeplace.R;
 import org.apache.commons.io.IOUtils;
 
 import java.io.BufferedWriter;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
@@ -62,8 +64,9 @@ public class ApiRequest {
             writer.write(data.toString(true));
             writer.flush();
             writer.close();
-            String response = IOUtils.toString(connection.getResponseCode() != HttpURLConnection.HTTP_OK ? connection.getErrorStream() : connection.getInputStream());
-            connection.disconnect();
+
+
+            String response = read();
             os.close();
             if (!isAbort()) {
                 return new ApiResponse(connection.getResponseCode(), response);
@@ -73,6 +76,54 @@ public class ApiRequest {
         }
         return null;
     }
+
+    private String read() {
+
+        InputStream input = null;
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        try {
+            input = connection.getResponseCode() != HttpURLConnection.HTTP_OK ? connection.getErrorStream() : connection.getInputStream();
+            final int bufferSize = 1024;
+            byte[] buffer = new byte[bufferSize];
+            while (true) {
+                int count = input.read(buffer);
+                if (count == -1 || isAbort()) {
+                    break;
+                }
+                outputStream.write(buffer, 0, count);
+            }
+            if (!isAbort()) {
+                return new String(outputStream.toByteArray(), StandardCharsets.UTF_8);
+            }
+
+        } catch (IOException ignore) {
+
+        } finally {
+
+            if (input != null) {
+                try {
+                    input.close();
+                } catch (Exception ignore) {
+
+                }
+            }
+
+            try {
+                outputStream.close();
+            } catch (Exception ignore) {
+
+            }
+
+            try {
+                connection.disconnect();
+            } catch (Exception ignore) {
+
+            }
+
+        }
+        return null;
+    }
+
 
     public ApiResponse get() {
 
