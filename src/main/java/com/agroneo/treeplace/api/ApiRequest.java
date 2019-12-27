@@ -6,8 +6,6 @@ import android.content.Context;
 import com.agroneo.treeplace.BuildConfig;
 import com.agroneo.treeplace.R;
 
-import org.apache.commons.io.IOUtils;
-
 import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -58,16 +56,20 @@ public class ApiRequest {
 
             connection.setRequestMethod("POST");
             connection.setRequestProperty("Content-Type", "application/json");
-            OutputStream os = connection.getOutputStream();
+            OutputStream body = connection.getOutputStream();
 
-            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os, StandardCharsets.UTF_8));
-            writer.write(data.toString(true));
-            writer.flush();
-            writer.close();
+            BufferedWriter payload = new BufferedWriter(new OutputStreamWriter(body, StandardCharsets.UTF_8));
+            payload.write(data.toString(true));
+            payload.flush();
+            payload.close();
 
+            String response = null;
+            if (!isAbort()) {
+                response = read();
+            }
 
-            String response = read();
-            os.close();
+            body.close();
+
             if (!isAbort()) {
                 return new ApiResponse(connection.getResponseCode(), response);
             }
@@ -131,8 +133,8 @@ public class ApiRequest {
 
             connection.setRequestMethod("GET");
 
-            String response = IOUtils.toString(connection.getResponseCode() != 200 ? connection.getErrorStream() : connection.getInputStream());
-            connection.disconnect();
+            String response = read();
+
             if (!isAbort()) {
                 return new ApiResponse(connection.getResponseCode(), response);
             }
