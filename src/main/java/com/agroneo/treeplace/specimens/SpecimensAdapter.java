@@ -15,15 +15,18 @@ import android.widget.TextView;
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable;
 
 import com.agroneo.treeplace.R;
+import com.bumptech.glide.Glide;
+
 import live.page.android.api.Json;
 import live.page.android.views.ApiAdapter;
-import com.bumptech.glide.Glide;
 
 public class SpecimensAdapter extends ApiAdapter {
 
+    private Activity activity;
 
     public SpecimensAdapter(Activity activity, int resource) {
         super(activity, resource);
+        this.activity = activity;
     }
 
     @Override
@@ -37,7 +40,7 @@ public class SpecimensAdapter extends ApiAdapter {
         images.removeAllViews();
 
         for (Json image : specimen.getListJson("images")) {
-            ImageView imageView = new ImageView(activity);
+            ImageView imageView = new ImageView(context);
             images.addView(imageView);
             imageView.requestLayout();
             ViewGroup.LayoutParams layout = imageView.getLayoutParams();
@@ -49,8 +52,8 @@ public class SpecimensAdapter extends ApiAdapter {
             layout.height = width * 200 / 462;
             layout.width = width;
 
-            Glide.with(activity).load(Uri.parse(image.getString("url") + "@462x200.jpg"))
-                    .placeholder(new ImageProgress(activity))
+            Glide.with(context).load(Uri.parse(image.getString("url") + "@462x200.jpg"))
+                    .placeholder(new ImageProgress(context))
                     .error(R.drawable.logo)
                     .into(imageView);
         }
@@ -58,9 +61,9 @@ public class SpecimensAdapter extends ApiAdapter {
         convertView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(activity, SpecimenView.class);
+                Intent intent = new Intent(context, SpecimenView.class);
                 intent.putExtra("id", specimen.getId());
-                activity.startActivity(intent);
+                context.startActivity(intent);
             }
         });
         return convertView;

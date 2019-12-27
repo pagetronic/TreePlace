@@ -4,7 +4,11 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/border_grey"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    android:paddingStart="0dp"
+    android:paddingTop="6dp"
+    android:paddingEnd="0dp"
+    android:paddingBottom="10dp">
 
     <ImageView
         android:layout_width="wrap_content"
@@ -23,8 +27,6 @@
             style="@style/TextAppearance.AppCompat.Medium"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingStart="0dp"
-            android:paddingEnd="0dp"
             android:text="@string/species" />
 
         <TextView

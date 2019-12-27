@@ -37,4 +37,5 @@
     <string name="species">Species</string>
     <string name="search">search</string>
     <string name="network_error">Network error</string>
+    <string name="authors">Authors</string>
 </resources>

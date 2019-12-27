@@ -1,6 +1,7 @@
 package live.page.android.views;
 
-import android.app.Activity;
+import android.content.Context;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -8,16 +9,18 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.agroneo.treeplace.R;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import live.page.android.api.ApiAsync;
 import live.page.android.api.ApiRequest;
 import live.page.android.api.ApiResult;
 import live.page.android.api.Json;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public abstract class ApiAdapter extends BaseAdapter {
-    protected Activity activity;
+
+    protected Context context;
     private List<Json> items = new ArrayList<>();
     private Json progress = new Json("progress", true);
     private ScrollEvent scroll = null;
@@ -25,12 +28,12 @@ public abstract class ApiAdapter extends BaseAdapter {
     private ApiRequest req = null;
 
 
-    public ApiAdapter(Activity activity) {
-        this(activity, R.layout.selectable_option);
+    public ApiAdapter(Context context) {
+        this(context, R.layout.selectable_option);
     }
 
-    public ApiAdapter(Activity activity, int resource) {
-        this.activity = activity;
+    public ApiAdapter(Context context, int resource) {
+        this.context = context;
         this.resource = resource;
         items.add(progress);
     }
@@ -40,7 +43,7 @@ public abstract class ApiAdapter extends BaseAdapter {
         if (req != null) {
             req.abort();
         }
-        req = ApiAsync.post(activity, url, data, new ApiResult() {
+        req = ApiAsync.post(context, url, data, new ApiResult() {
 
             @Override
             public void success(final Json rez) {
@@ -65,7 +68,7 @@ public abstract class ApiAdapter extends BaseAdapter {
 
             @Override
             public void error(int code, Json data) {
-                Toast.makeText(activity, R.string.network_error, Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, R.string.network_error, Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -76,7 +79,7 @@ public abstract class ApiAdapter extends BaseAdapter {
         if (req != null) {
             req.abort();
         }
-        req = ApiAsync.get(activity, url, new ApiResult() {
+        req = ApiAsync.get(context, url, new ApiResult() {
 
             @Override
             public void success(final Json data) {
@@ -102,7 +105,7 @@ public abstract class ApiAdapter extends BaseAdapter {
 
             @Override
             public void error(int code, Json data) {
-                Toast.makeText(activity, R.string.network_error, Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, R.string.network_error, Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -140,13 +143,13 @@ public abstract class ApiAdapter extends BaseAdapter {
         Json item = (Json) getItem(position);
 
         if (item.getBoolean("progress", false)) {
-            ProgressBar progress = new ProgressBar(activity);
+            ProgressBar progress = new ProgressBar(context);
             progress.setPadding(5, 25, 5, 25);
             return progress;
         }
 
         if (convertView == null || convertView instanceof ProgressBar) {
-            convertView = activity.getLayoutInflater().inflate(resource, null);
+            convertView = LayoutInflater.from(context).inflate(resource, null);
         }
 
         if (scroll != null && position >= Math.max(1, getCount() - 3)) {
@@ -156,8 +159,8 @@ public abstract class ApiAdapter extends BaseAdapter {
         return getView(convertView, item);
     }
 
-    public void setActivity(Activity activity) {
-        this.activity = activity;
+    public void setContext(Context context) {
+        this.context = context;
     }
 
     public void clear() {

@@ -24,16 +24,13 @@ public class SpecimensFragment extends Fragment {
     }
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
-        View view = inflater.inflate(R.layout.specimens_list, container, false);
-
-        return view;
+        return inflater.inflate(R.layout.specimens_list, container, false);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
 
-        specimensAdapter.setActivity(getActivity());
+        specimensAdapter.setContext(getContext());
         ((ListView) view.findViewById(R.id.specimens)).setAdapter(specimensAdapter);
     }
 
