@@ -12,17 +12,20 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import com.agroneo.treeplace.R;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+
 import live.page.android.api.ApiAsync;
 import live.page.android.api.ApiResult;
 import live.page.android.api.Json;
-import live.page.android.sys.Fx;
-
-import java.util.Locale;
 
 public class Accounts {
 
     public static final String tokenType = "access";
     public static final String keyAccount = "account_name";
+    private static List<String> consumed = new ArrayList<>();
 
     public static void addAccount(final Context ctx, final String access_token, final String refresh_token, final ApiResult onresult) {
 
@@ -87,8 +90,10 @@ public class Accounts {
                             if (access_token != null) {
                                 token.get(access_token);
                             } else {
-                                Intent intent = (Intent) result.get(AccountManager.KEY_INTENT);
-                                ctx.startActivity(intent, result);
+                                Intent intent = result.getParcelable(AccountManager.KEY_INTENT);
+                                if (intent != null) {
+                                    ctx.startActivity(intent, result);
+                                }
                                 token.get(null);
                             }
                         } catch (Exception e) {
@@ -132,7 +137,6 @@ public class Accounts {
         }
     }
 
-
     public static Intent getAuthIntent(Context ctx) {
 
         String url = getDomain() + "auth?" + "scope=email,gaia" +
@@ -163,15 +167,18 @@ public class Accounts {
         Intent intent = activity.getIntent();
         String action = intent.getAction();
         if (action != null) {
-
             Uri data = intent.getData();
             if (action.equals(Intent.ACTION_VIEW) && data != null && data.getScheme().equals(activity.getString(R.string.scheme_auth))) {
-
+                String code = data.getHost();
+                if (consumed.contains(code)) {
+                    return;
+                }
+                consumed.add(code);
                 ApiAsync.post(null, activity, "/token", new Json()
                         .put("grant_type", "authorization_code")
                         .put("client_id", activity.getString(R.string.client_id))
                         .put("client_secret", activity.getString(R.string.client_secret))
-                        .put("code", data.getHost()), new ApiResult() {
+                        .put("code", code), new ApiResult() {
                     @Override
                     public void success(Json data) {
 
@@ -184,14 +191,14 @@ public class Accounts {
 
                             @Override
                             public void error(int code, Json data) {
-                                Fx.log(data);
+
+
                             }
                         });
                     }
 
                     @Override
                     public void error(int code, Json data) {
-                        Fx.log(data);
 
                     }
                 });

@@ -32,6 +32,7 @@ public class SpecimensFragment extends Fragment {
 
         specimensAdapter.setContext(getContext());
         ((ListView) view.findViewById(R.id.specimens)).setAdapter(specimensAdapter);
+        specimensAdapter.notifyDataSetChanged();
     }
 
 }
