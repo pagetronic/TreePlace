@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.agroneo.treeplace.R;
@@ -21,6 +22,10 @@ public abstract class ApiAdapter extends BaseAdapter {
     private ScrollEvent scroll = null;
     private int resource;
     private ApiRequest req = null;
+
+    public ApiAdapter(Activity activity) {
+        this(activity, R.layout.selectable_option);
+    }
 
     public ApiAdapter(Activity activity, int resource) {
         this.activity = activity;
@@ -115,11 +120,15 @@ public abstract class ApiAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
+        if (scroll != null && getCount() == position + 1) {
+            return new ProgressBar(activity);
+        }
+
 
         if (convertView == null) {
             convertView = activity.getLayoutInflater().inflate(resource, null);
         }
-        if (scroll != null && position == getCount() - 1) {
+        if (scroll != null && position >= Math.max(1, getCount() - 3)) {
             scroll.doNext();
         }
         return getView(convertView, (Json) getItem(position));

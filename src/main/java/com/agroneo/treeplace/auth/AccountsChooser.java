@@ -89,7 +89,7 @@ public class AccountsChooser {
                             });
 
                             ImageView avatar = view.findViewById(R.id.avatar);
-                            TextView text = view.findViewById(R.id.name);
+                            TextView text = view.findViewById(R.id.title);
                             TextView email = view.findViewById(R.id.email);
 
                             if (position >= accounts.length) {

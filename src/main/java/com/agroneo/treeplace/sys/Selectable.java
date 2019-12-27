@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.KeyEvent;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -23,17 +22,17 @@ public class Selectable {
 
                 final AlertDialog.Builder builder = new AlertDialog.Builder(activity);
                 builder.setCancelable(true);
-                builder.setView(R.layout.selectable);
+                builder.setView(R.layout.selectable_list);
                 final AlertDialog dialog = builder.show();
                 dialog.show();
 
                 final EditText search = dialog.findViewById(R.id.search);
                 ListView list = dialog.findViewById(R.id.list);
                 final Json data = new Json("action", "search").put("search", "");
-                final ApiAdapter adapter = new ApiAdapter(activity, R.layout.species) {
+                final ApiAdapter adapter = new ApiAdapter(activity) {
                     @Override
                     public View getView(View view, Json item) {
-                        ((TextView) view.findViewById(R.id.name)).setText(item.getString("name"));
+                        ((TextView) view.findViewById(R.id.title)).setText(item.getString("name"));
                         return view;
                     }
                 };
