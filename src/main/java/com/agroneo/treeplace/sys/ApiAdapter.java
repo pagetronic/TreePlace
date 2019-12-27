@@ -19,9 +19,11 @@ import java.util.List;
 public abstract class ApiAdapter extends BaseAdapter {
     protected Activity activity;
     private List<Json> items = new ArrayList<>();
+    private Json progress = new Json("progress", true);
     private ScrollEvent scroll = null;
     private int resource;
     private ApiRequest req = null;
+
 
     public ApiAdapter(Activity activity) {
         this(activity, R.layout.selectable_option);
@@ -30,6 +32,7 @@ public abstract class ApiAdapter extends BaseAdapter {
     public ApiAdapter(Activity activity, int resource) {
         this.activity = activity;
         this.resource = resource;
+        items.add(progress);
     }
 
     public void post(final String url, final Json data) {
@@ -41,14 +44,22 @@ public abstract class ApiAdapter extends BaseAdapter {
 
             @Override
             public void success(final Json rez) {
+                items.remove(progress);
                 items.addAll(rez.getListJson("result"));
                 final String next = rez.getJson("paging").getString("next");
-                scroll = new ScrollEvent() {
-                    @Override
-                    public void doNext() {
-                        post(url, data.put("paging", next));
-                    }
-                };
+                if (next != null) {
+                    items.add(progress);
+                    scroll = new ScrollEvent() {
+                        @Override
+                        public void doNext() {
+                            try {
+                                post(url, data.put("paging", next));
+                            } catch (Exception ignore) {
+
+                            }
+                        }
+                    };
+                }
                 notifyDataSetChanged();
             }
 
@@ -69,18 +80,23 @@ public abstract class ApiAdapter extends BaseAdapter {
 
             @Override
             public void success(final Json data) {
+                items.remove(progress);
                 items.addAll(data.getListJson("result"));
                 final String next = data.getJson("paging").getString("next");
-                scroll = new ScrollEvent() {
-                    @Override
-                    public void doNext() {
-                        try {
-                            get(addPaging(url, next));
-                        } catch (Exception ignore) {
 
+                if (next != null) {
+                    items.add(progress);
+                    scroll = new ScrollEvent() {
+                        @Override
+                        public void doNext() {
+                            try {
+                                get(addPaging(url, next));
+                            } catch (Exception ignore) {
+
+                            }
                         }
-                    }
-                };
+                    };
+                }
                 notifyDataSetChanged();
             }
 
@@ -120,18 +136,24 @@ public abstract class ApiAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        if (scroll != null && getCount() == position + 1) {
-            return new ProgressBar(activity);
+
+        Json item = (Json) getItem(position);
+
+        if (item.getBoolean("progress", false)) {
+            ProgressBar progress = new ProgressBar(activity);
+            progress.setPadding(5, 25, 5, 25);
+            return progress;
         }
 
-
-        if (convertView == null) {
+        if (convertView == null || convertView instanceof ProgressBar) {
             convertView = activity.getLayoutInflater().inflate(resource, null);
         }
+
         if (scroll != null && position >= Math.max(1, getCount() - 3)) {
             scroll.doNext();
         }
-        return getView(convertView, (Json) getItem(position));
+
+        return getView(convertView, item);
     }
 
     public void setActivity(Activity activity) {
