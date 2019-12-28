@@ -6,51 +6,51 @@ import '../settings.dart' as settings;
 import 'oauth.dart';
 
 class ApiRequest {
-  bool aborted = false;
-
-  bool isAbort() {
-    return aborted;
+  //Get method to Api
+  static ApiRequest get(String url, {Map<String, String> params}) {
+    ApiRequest apiRequest = new ApiRequest();
+    apiRequest._get(url, params: params);
+    return apiRequest;
   }
 
-  void abort() {
-    aborted = true;
+  //Post method to Api
+  static ApiRequest post(String url, dynamic data) {
+    ApiRequest apiRequest = new ApiRequest();
+    apiRequest._post(url, data);
+    return apiRequest;
   }
 
-  Function(dynamic rez) _onSuccess = (dynamic rez) {};
-
+  //Function to execute on success
   ApiRequest success(Function(dynamic rez) onSuccess) {
     this._onSuccess = onSuccess;
     return this;
   }
 
-  Function(int code, dynamic rez) _onError = (int code, dynamic rez) {};
-
+  //Function to execute on error
   ApiRequest error(Function(int code, dynamic rez) onError) {
     this._onError = onError;
     return this;
   }
 
-  static ApiRequest get(String url, {Map<String, String> params}) {
-    ApiRequest apiRequest = new ApiRequest();
-    _get(url, params: params, apiRequest: apiRequest);
-    return apiRequest;
+  bool _aborted = false;
+
+  //Abort request to Api
+  void abort() {
+    this._aborted = true;
   }
 
-  static ApiRequest post(String url, dynamic data) {
-    ApiRequest apiRequest = new ApiRequest();
-    _post(url, data, apiRequest: apiRequest);
-    return apiRequest;
-  }
+  Function(dynamic rez) _onSuccess = (dynamic rez) {};
 
-  static Future _get(String url,
-      {Map<String, String> params, ApiRequest apiRequest, int retry}) async {
-    if (apiRequest.isAbort()) {
+  Function(int code, dynamic rez) _onError = (int code, dynamic rez) {};
+
+  Future _get(String url, {Map<String, String> params, int retry}) async {
+    if (_aborted) {
       return;
     }
     if (retry == null) {
       retry = 5;
     } else if (retry == 0) {
-      apiRequest._onError(-1, {'error': 'Too many retry'});
+      _onError(-1, {'error': 'Too many retry'});
       return;
     }
     String query = "";
@@ -64,55 +64,53 @@ class ApiRequest {
     }
 
     var headers = await _getHeaders();
-    if (apiRequest.isAbort()) {
+    if (_aborted) {
       return;
     }
     http.Response response =
         await http.get(settings.apiUrl + url + query, headers: headers);
 
-    if (apiRequest.isAbort()) {
+    if (_aborted) {
       return;
     }
 
     int statusCode = response.statusCode;
     dynamic rez = json.decode(response.body);
 
-    if (apiRequest.isAbort()) {
+    if (_aborted) {
       return;
     }
     if (await refreshToken(statusCode, rez)) {
       retry--;
-      return await _get(url,
-          params: params, apiRequest: apiRequest, retry: retry);
+      return await _get(url, params: params, retry: retry);
     }
 
-    if (apiRequest.isAbort()) {
+    if (_aborted) {
       return;
     }
     if (statusCode != 200) {
-      apiRequest._onError(statusCode, rez);
+      _onError(statusCode, rez);
     } else {
-      apiRequest._onSuccess(rez);
+      _onSuccess(rez);
     }
   }
 
-  static Future _post(String url, dynamic data,
-      {ApiRequest apiRequest, int retry}) async {
-    if (apiRequest.isAbort()) {
+  Future _post(String url, dynamic data, {int retry}) async {
+    if (_aborted) {
       return;
     }
 
     if (retry == null) {
       retry = 5;
     } else if (retry == 0) {
-      apiRequest._onError(-1, {'error': 'Too many retry'});
+      _onError(-1, {'error': 'Too many retry'});
       return;
     }
 
     String jsonBody = json.encode(data);
     final encoding = Encoding.getByName('utf-8');
     var headers = await _getHeaders();
-    if (apiRequest.isAbort()) {
+    if (_aborted) {
       return;
     }
     headers.putIfAbsent('Content-Type', () => 'application/json');
@@ -123,26 +121,26 @@ class ApiRequest {
       encoding: encoding,
     );
 
-    if (apiRequest.isAbort()) {
+    if (_aborted) {
       return;
     }
     int statusCode = response.statusCode;
     dynamic rez = json.decode(response.body);
-    if (apiRequest.isAbort()) {
+    if (_aborted) {
       return;
     }
     if (await refreshToken(statusCode, rez)) {
       retry--;
-      await _post(url, data, apiRequest: apiRequest, retry: retry);
+      await _post(url, data, retry: retry);
       return;
     }
-    if (apiRequest.isAbort()) {
+    if (_aborted) {
       return;
     }
     if (statusCode != 200) {
-      apiRequest._onError(statusCode, rez);
+      _onError(statusCode, rez);
     } else {
-      apiRequest._onSuccess(rez);
+      _onSuccess(rez);
     }
   }
 
