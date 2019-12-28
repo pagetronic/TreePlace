@@ -5,6 +5,8 @@ import 'api/oauth.dart';
 
 void main() {
   runApp(MyApp());
+
+  //Test the api
   ApiRequest.get('/profile')
       .success((rez) => {print(rez['name'])})
       .error((code, rez) => {});
