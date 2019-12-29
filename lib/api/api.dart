@@ -29,17 +29,24 @@ class ApiRequest {
     this._aborted = true;
   }
 
+  bool _aborted = false;
+
+  //final callable success function
   Function(dynamic rez) _onSuccess = (dynamic rez) {};
 
+  //final error success function
   Function(int code, dynamic rez) _onError = (int code, dynamic rez) {};
 
+  //constructor, please prefer get() and post() functions
   ApiRequest(
       Function(dynamic rez) success, Function(int code, dynamic rez) error) {
-    _onSuccess = success;
-    _onError = error;
+    if (success != null) {
+      _onSuccess = success;
+    }
+    if (error != null) {
+      _onError = error;
+    }
   }
-
-  bool _aborted = false;
 
   Future _get(String url, {Map<String, String> params, int retry}) async {
     if (retry == null) {
