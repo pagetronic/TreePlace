@@ -6,14 +6,25 @@ import 'api/oauth.dart';
 void main() {
   runApp(MyApp());
 
-  //Test the api
-  ApiRequest.get('/profile')
-      .success((rez) => {print(rez['name'])})
-      .error((code, rez) => {});
 
-  ApiRequest api =
-      ApiRequest.post('/gaia/species', {'action': 'search', 'search': 'dal'});
-  api.success((rez) => {print(rez.toString())}).error((code, rez) => {});
+  //Test the api
+  ApiRequest.get('/profile',
+      success: ((rez) => {
+        print(rez['name'])
+      }),
+      error: ((code, rez) => {
+        print(rez['error'])
+      })
+  );
+
+  ApiRequest.post('/gaia/species', {'action': 'search', 'search': 'dal'},
+      success: ((rez) => {
+        print(rez['result'][0]['name'])
+      }),
+      error: ((code, rez) => {
+        print(rez['error']
+        )})
+  );
 
 }
 
