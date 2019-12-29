@@ -65,8 +65,10 @@ class ApiRequest {
     if (_aborted) {
       return;
     }
-    http.Response response =
-        await http.get(settings.apiUrl + url + query, headers: headers);
+    http.Response response = await http
+        .get(settings.apiUrl + url + query, headers: headers)
+        .timeout(new Duration(seconds: 60));
+    ;
 
     if (_aborted) {
       return;
@@ -91,10 +93,6 @@ class ApiRequest {
   }
 
   Future _post(String url, dynamic data, {int retry}) async {
-    if (_aborted) {
-      return;
-    }
-
     if (retry == null) {
       retry = 5;
     } else if (retry == 0) {
@@ -102,19 +100,19 @@ class ApiRequest {
       return;
     }
 
-    String jsonBody = json.encode(data);
-    final encoding = Encoding.getByName('utf-8');
     var headers = await _getHeaders();
     headers.putIfAbsent('Content-Type', () => 'application/json');
     if (_aborted) {
       return;
     }
-    http.Response response = await http.post(
-      settings.apiUrl + url,
-      headers: headers,
-      body: jsonBody,
-      encoding: encoding,
-    );
+    http.Response response = await http
+        .post(
+          settings.apiUrl + url,
+          headers: headers,
+          body: json.encode(data),
+          encoding: Encoding.getByName('utf-8'),
+        )
+        .timeout(new Duration(seconds: 60));
 
     if (_aborted) {
       return;
