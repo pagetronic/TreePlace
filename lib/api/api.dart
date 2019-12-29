@@ -42,15 +42,13 @@ class ApiRequest {
   bool _aborted = false;
 
   Future _get(String url, {Map<String, String> params, int retry}) async {
-    if (_aborted) {
-      return;
-    }
     if (retry == null) {
       retry = 5;
     } else if (retry == 0) {
       _onError(-1, {'error': 'Too many retry'});
       return;
     }
+
     String query = "";
     if (params != null) {
       Iterator<MapEntry<String, String>> it = params.entries.iterator;
@@ -77,11 +75,11 @@ class ApiRequest {
     int statusCode = response.statusCode;
     dynamic rez = json.decode(response.body);
 
-    if (_aborted) {
-      return;
-    }
     if (await refreshToken(statusCode, rez)) {
       retry--;
+      if (_aborted) {
+        return;
+      }
       return await _get(url, params: params, retry: retry);
     }
 
@@ -125,10 +123,10 @@ class ApiRequest {
       _onError(-1, 'json parse error');
       return;
     }
-    if (_aborted) {
-      return;
-    }
     if (await refreshToken(statusCode, rez)) {
+      if (_aborted) {
+        return;
+      }
       retry--;
       await _post(url, data, retry: retry);
       return;
@@ -158,11 +156,43 @@ class ApiRequest {
     return false;
   }
 
-  set success(Function value) {
-    _onSuccess = value;
+  ApiRequest success(Function(dynamic rez) onSuccess) {
+    this._onSuccess = onSuccess;
+    return this;
   }
 
-  set error(Function value) {
-    _onError = value;
+  ApiRequest error(Function(int statusCode, dynamic rez) onError) {
+    this._onError = onError;
+    return this;
+  }
+
+  static void test() {
+    //Test the api GET success/error as parameter
+    ApiRequest.get('/profile', success: ((rez) {
+      print(rez['name']);
+    }), error: ((code, rez) {
+      print(rez['error']);
+    }));
+    //Test the api GET success/error as Future style
+    ApiRequest.get('/profile').success((rez) {
+      print(rez['name']);
+    }).error((code, rez) {
+      print(rez['error']);
+    });
+
+    //Test the api POST success/error as parameter
+    ApiRequest.post('/gaia/species', {'action': 'search', 'search': 'dal'},
+        success: ((rez) {
+      print(rez['result'][0]['name']);
+    }), error: ((code, rez) {
+      print(rez['error']);
+    }));
+    //Test the api POST success/error as Future style
+    ApiRequest.post('/gaia/species', {'action': 'search', 'search': 'dal'})
+        .success((rez) {
+      print(rez['result'][0]['name']);
+    }).error(((code, rez) {
+      print(rez['error']);
+    }));
   }
 }
