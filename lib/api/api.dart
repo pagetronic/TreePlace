@@ -80,7 +80,13 @@ class ApiRequest {
     }
 
     int statusCode = response.statusCode;
-    dynamic rez = json.decode(response.body);
+    dynamic rez;
+    try {
+      rez = json.decode(response.body);
+    } catch (Exception) {
+      _onError(-1, {'error': 'json parse error'});
+      return;
+    }
 
     if (await refreshToken(statusCode, rez)) {
       retry--;
@@ -127,7 +133,7 @@ class ApiRequest {
     try {
       rez = json.decode(response.body);
     } catch (Exception) {
-      _onError(-1, 'json parse error');
+      _onError(-1, {'error': 'json parse error'});
       return;
     }
     if (await refreshToken(statusCode, rez)) {
