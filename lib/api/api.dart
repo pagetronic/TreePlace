@@ -73,7 +73,6 @@ class ApiRequest {
     http.Response response = await http
         .get(settings.apiUrl + url + query, headers: headers)
         .timeout(new Duration(seconds: 60));
-    ;
 
     if (_aborted) {
       return;

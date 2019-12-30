@@ -10,15 +10,21 @@ import '../settings.dart' as settings;
 class Oauth {
   static Future<dynamic> getAccessToken() async {
     SharedPreferences storage = await SharedPreferences.getInstance();
+    if (storage == null || !storage.containsKey("token")) {
+      return null;
+    }
     return storage.getStringList("token")[0];
   }
 
   static Future<dynamic> getRefreshToken() async {
     SharedPreferences storage = await SharedPreferences.getInstance();
+    if (storage == null || !storage.containsKey("token")) {
+      return null;
+    }
     return storage.getStringList("token")[1];
   }
 
-  static Future<String> setToken(dynamic token) async {
+  static Future<void> setToken(dynamic token) async {
     SharedPreferences storage = await SharedPreferences.getInstance();
     await storage.setStringList(
         "token", [token['access_token'], token['refresh_token']]);
@@ -38,7 +44,7 @@ class Oauth {
     'Content-Type': 'application/json'
   };
 
-  static listenCode() async {
+  static Future<void> listenCode() async {
     getUriLinksStream().listen((Uri uri) async {
       if (uri != null) {
         var params = uri.queryParameters;
@@ -69,7 +75,7 @@ class Oauth {
     });
   }
 
-  static refreshToken() async {
+  static Future<void> refreshToken() async {
     var refreshToken = await getRefreshToken();
     var action = {
       "grant_type": "refresh_token",

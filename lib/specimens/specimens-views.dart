@@ -23,7 +23,7 @@ class _SpecimensViewsState extends BaseState<SpecimensViews> {
         title: Text(widget.title),
         actions: <Widget>[connector],
       ),
-      body: new ListApi().get('/gaia/specimens', (dynamic json) {
+      body:  ListApi.get('/gaia/specimens', (dynamic json) {
         return specimenTile(theme,
             title: json['title'], text: json['text'], images: json['images']);
       }),
