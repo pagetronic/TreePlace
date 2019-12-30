@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 
 import 'api/oauth.dart';
 import 'settings.dart' as settings;
-import 'specimens/specimens.dart';
+import 'specimens/specimens-create.dart';
+import 'specimens/specimens-views.dart';
 
 void main() {
   Oauth.listenCode();
@@ -17,6 +18,11 @@ class TreePlaceApp extends StatelessWidget {
         theme: ThemeData(
           primaryColor: settings.primaryColor,
         ),
-        home: SpecimensPage(title: 'Specimens'));
+        initialRoute: '/specimens',
+        routes: {
+          '/specimens': (context) => SpecimensViews(title: 'Specimens'),
+          '/specimens/create': (context) =>
+              SpecimensCreate(title: 'Specimens create')
+        });
   }
 }

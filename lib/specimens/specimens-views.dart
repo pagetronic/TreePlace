@@ -4,24 +4,16 @@ import 'package:flutter/widgets.dart';
 import '../settings.dart' as settings;
 import '../ui/widgets.dart';
 
-class SpecimensPage extends StatefulWidget {
+class SpecimensViews extends StatefulWidget {
   final String title;
 
-  SpecimensPage({Key key, this.title}) : super(key: key);
+  SpecimensViews({Key key, this.title}) : super(key: key);
 
   @override
-  _SpecimensPageState createState() => _SpecimensPageState();
+  _SpecimensViewsState createState() => _SpecimensViewsState();
 }
 
-class _SpecimensPageState extends BaseState<SpecimensPage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
-
+class _SpecimensViewsState extends BaseState<SpecimensViews> {
   @override
   Widget build(BuildContext context) {
     try {
@@ -35,14 +27,16 @@ class _SpecimensPageState extends BaseState<SpecimensPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Text(
-                '$_counter',
+                'list',
                 style: Theme.of(context).textTheme.display1,
               ),
             ],
           ),
         ),
         floatingActionButton: FloatingActionButton(
-          onPressed: _incrementCounter,
+          onPressed: () {
+            Navigator.pushNamed(context, '/specimens/create');
+          },
           backgroundColor: settings.secondaryColor,
           tooltip: 'Increment',
           child: Icon(Icons.add),

@@ -12,6 +12,7 @@ abstract class BaseState<T extends StatefulWidget> extends State<T> {
     },
   );
 
+  //TODO to cache
   void updateConnection() {
     setState(() {
       connector = IconButton(
