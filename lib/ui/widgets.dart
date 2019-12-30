@@ -26,7 +26,7 @@ abstract class BaseState<T extends StatefulWidget> extends State<T> {
     ApiRequest.get('/profile', success: ((rez) {
       setState(() {
         connector = IconButton(
-          icon: new Image.network(rez['logo'] + '@32'),
+          icon: Image.network(rez['logo'] + '@64x64.png'),
           tooltip: rez['name'],
           onPressed: () {
             Oauth.choose();
