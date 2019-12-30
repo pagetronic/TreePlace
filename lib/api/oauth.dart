@@ -93,4 +93,6 @@ class Oauth {
       await setToken(json.decode(responseBody));
     }
   }
+
+  static void choose() {}
 }

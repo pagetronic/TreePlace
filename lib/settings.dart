@@ -19,3 +19,6 @@ final authDomain = () {
   return domain;
 }();
 final userAgent = "Agroneo TreePlace Android V3";
+
+Color primaryColor = Color(0xff31771d);
+Color secondaryColor = Color(0xffa96923);
