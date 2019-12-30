@@ -13,42 +13,57 @@ abstract class BaseState<T extends StatefulWidget> extends State<T> {
   );
 
   //TODO to cache
-  void updateConnection() {
-    setState(() {
-      connector = IconButton(
-        icon: const CircularProgressIndicator(),
-        tooltip: 'loading..',
+  void updateConnection(bool state) async {
+    IconButton button = IconButton(
+      icon: const CircularProgressIndicator(),
+      tooltip: 'loading..',
+      onPressed: () {
+        Oauth.choose();
+      },
+    );
+    if (state) {
+      setState(() {
+        connector = button;
+      });
+    } else {
+      connector = button;
+    }
+    ApiRequest.get('/profile', success: ((rez) {
+      button = IconButton(
+        icon: Image.network(rez['logo'] + '@64x64.png'),
+        tooltip: rez['name'],
         onPressed: () {
           Oauth.choose();
         },
       );
-    });
-    ApiRequest.get('/profile', success: ((rez) {
-      setState(() {
-        connector = IconButton(
-          icon: Image.network(rez['logo'] + '@64x64.png'),
-          tooltip: rez['name'],
-          onPressed: () {
-            Oauth.choose();
-          },
-        );
-      });
+      if (state) {
+        setState(() {
+          connector = button;
+        });
+      } else {
+        connector = button;
+      }
     }), error: ((code, rez) {
-      setState(() {
-        connector = IconButton(
-          icon: const Icon(Icons.account_circle),
-          tooltip: 'Connection',
-          onPressed: () {
-            Oauth.auth();
-          },
-        );
-      });
+      button = IconButton(
+        icon: const Icon(Icons.account_circle),
+        tooltip: 'Connection',
+        onPressed: () {
+          Oauth.auth();
+        },
+      );
+      if (state) {
+        setState(() {
+          connector = button;
+        });
+      } else {
+        connector = button;
+      }
     }));
   }
 
   @override
   void initState() {
     super.initState();
-    updateConnection();
+    updateConnection(mounted);
   }
 }

@@ -6,8 +6,9 @@ import 'specimens/specimens-create.dart';
 import 'specimens/specimens-views.dart';
 
 void main() {
-  Oauth.listenCode();
   runApp(TreePlaceApp());
+  Oauth.listenCode();
+
 }
 
 class TreePlaceApp extends StatelessWidget {
