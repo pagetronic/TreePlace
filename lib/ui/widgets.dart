@@ -3,7 +3,8 @@ import 'package:agroneo_treeplace/api/oauth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
-abstract class BaseState<T extends StatefulWidget> extends State<T> {
+abstract class BaseState<T extends StatefulWidget> extends State<T>
+    with AutomaticKeepAliveClientMixin {
   IconButton connector = IconButton(
     icon: const Icon(Icons.account_circle),
     tooltip: 'Connection',
@@ -76,4 +77,7 @@ abstract class BaseState<T extends StatefulWidget> extends State<T> {
     super.initState();
     updateConnection(mounted);
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }

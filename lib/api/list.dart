@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 class ListApi extends StatefulWidget {
-  final ListApiState state;
+  ListApiState state;
 
   ListApi(this.state);
 
@@ -30,7 +30,6 @@ class ListApi extends StatefulWidget {
   ListApiState createState() {
     return state;
   }
-
 }
 
 class ListApiState extends BaseState<ListApi> {

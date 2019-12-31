@@ -1,5 +1,4 @@
 import 'package:agroneo_treeplace/api/list.dart';
-import 'package:agroneo_treeplace/ui/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
@@ -17,10 +16,9 @@ class _ForumsState extends State<ForumsViews> {
   Widget build(BuildContext context) {
     var theme = Theme.of(context);
     return Scaffold(
-
         body: ListApi.get('/questions?lng=fr', (dynamic json) {
-          return threadTile(theme, title: json['title'], text: json['text']);
-        }, key: 'threads'));
+      return threadTile(theme, title: json['title'], text: json['text']);
+    }, key: 'threads'));
   }
 }
 

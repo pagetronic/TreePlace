@@ -57,7 +57,7 @@ class ApiRequest {
     }
 
     String query = "";
-    if (params != null && params.length>0) {
+    if (params != null && params.length > 0) {
       Iterator<MapEntry<String, String>> it = params.entries.iterator;
       String sep = "?";
       while (it.moveNext()) {

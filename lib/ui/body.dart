@@ -9,10 +9,10 @@ class BodyViews extends StatefulWidget {
   BodyViews({Key key, this.children, this.title}) : super(key: key);
 
   @override
-  _BodyState createState() => _BodyState();
+  BodyState createState() => BodyState();
 }
 
-class _BodyState extends BaseState<BodyViews> {
+class BodyState extends BaseState<BodyViews> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -21,11 +21,11 @@ class _BodyState extends BaseState<BodyViews> {
           actions: <Widget>[connector],
         ),
         body: DefaultTabController(
+            initialIndex: 0,
             length: widget.children.length,
             child: Scaffold(
                 body: TabBarView(
               children: widget.children,
-            )))
-    );
+            ))));
   }
 }

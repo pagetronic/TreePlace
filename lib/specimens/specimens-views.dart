@@ -1,6 +1,5 @@
 import 'package:agroneo_treeplace/api/list.dart';
 import 'package:agroneo_treeplace/settings.dart' as settings;
-import 'package:agroneo_treeplace/ui/widgets.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -14,12 +13,13 @@ class SpecimensViews extends StatefulWidget {
   _SpecimensViewsState createState() => _SpecimensViewsState();
 }
 
-class _SpecimensViewsState extends State<SpecimensViews> {
+class _SpecimensViewsState extends State<SpecimensViews>
+    with AutomaticKeepAliveClientMixin {
   @override
   Widget build(BuildContext context) {
     var theme = Theme.of(context);
     return Scaffold(
-      body:  ListApi.get('/gaia/specimens', (dynamic json) {
+      body: ListApi.get('/gaia/specimens', (dynamic json) {
         return specimenTile(theme,
             title: json['title'], text: json['text'], images: json['images']);
       }),
@@ -33,6 +33,9 @@ class _SpecimensViewsState extends State<SpecimensViews> {
       ),
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }
 
 specimenTile(theme, {String title, String text, List<dynamic> images}) {

@@ -23,8 +23,8 @@ class TreePlaceApp extends StatelessWidget {
         initialRoute: '/specimens',
         routes: {
           '/specimens': (context) => BodyViews(
-            title: "Agroneo",
-            children: <Widget>[
+                title: "Agroneo",
+                children: <Widget>[
                   SpecimensViews(title: 'Specimens'),
                   ForumsViews(title: 'Forum')
                 ],
