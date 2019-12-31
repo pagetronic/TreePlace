@@ -45,6 +45,7 @@ specimenTile(theme, {String title, String text, List<dynamic> images}) {
         aspectRatio: 462.0 / 200.0,
         child: CachedNetworkImage(
           imageUrl: images[0]['url'] + '@462x200.jpg',
+          fit: BoxFit.cover,
           placeholder: (context, url) =>
               new Center(child: CircularProgressIndicator()),
           errorWidget: (context, url, error) => new Icon(Icons.error),
@@ -56,5 +57,5 @@ specimenTile(theme, {String title, String text, List<dynamic> images}) {
   if (text != null) {
     childrens.add(Text(text, style: theme.textTheme.body1, softWrap: true));
   }
-  return Wrap(spacing: 8.0, runSpacing: 4.0, children: childrens);
+  return Card(child: Wrap(children: childrens));
 }
