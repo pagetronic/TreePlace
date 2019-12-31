@@ -11,16 +11,20 @@ class ListApi extends StatefulWidget {
   ListApi(this.state);
 
   static ListApi get(String url, Widget Function(dynamic) builder,
-      {String key}) {
+      {Map<String, String> params, String key}) {
     ListApiState state;
     state = new ListApiState(builder, (paging) {
-      var params = new Map<String, String>();
+      if (params == null) {
+        params = new Map<String, String>();
+      }
       if (paging != null) {
         params.addAll({"paging": paging});
       }
       ApiRequest.get(url, params: params, success: (json) {
         var result = (key != null) ? json[key] : json;
         state.update(result);
+      }, error: (code, json) {
+        print(json.toString());
       });
     });
     return new ListApi(state);

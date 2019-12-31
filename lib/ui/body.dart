@@ -5,8 +5,10 @@ import 'package:flutter/widgets.dart';
 class BodyViews extends StatefulWidget {
   final String title;
   final List<Widget> children;
+  final int initialIndex;
 
-  BodyViews({Key key, this.children, this.title}) : super(key: key);
+  BodyViews({Key key, this.children, this.title, this.initialIndex})
+      : super(key: key);
 
   @override
   BodyState createState() => BodyState();
@@ -21,7 +23,7 @@ class BodyState extends BaseState<BodyViews> {
           actions: <Widget>[connector],
         ),
         body: DefaultTabController(
-            initialIndex: 0,
+            initialIndex: widget.initialIndex == null ? 0 : widget.initialIndex,
             length: widget.children.length,
             child: Scaffold(
                 body: TabBarView(

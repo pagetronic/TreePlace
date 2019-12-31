@@ -16,9 +16,9 @@ class _ForumsState extends State<ForumsViews> {
   Widget build(BuildContext context) {
     var theme = Theme.of(context);
     return Scaffold(
-        body: ListApi.get('/questions?lng=fr', (dynamic json) {
+        body: ListApi.get('/questions', (dynamic json) {
       return threadTile(theme, title: json['title'], text: json['text']);
-    }, key: 'threads'));
+    }, key: 'threads', params: {'lng': 'fr'}));
   }
 }
 
