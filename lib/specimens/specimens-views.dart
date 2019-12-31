@@ -1,6 +1,5 @@
 import 'package:agroneo_treeplace/api/list.dart';
 import 'package:agroneo_treeplace/settings.dart' as settings;
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
@@ -43,13 +42,11 @@ specimenTile(theme, {String title, String text, List<dynamic> images}) {
   if (images.length > 0 && images[0]['url'] != null) {
     childrens.add(AspectRatio(
         aspectRatio: 462.0 / 200.0,
-        child: CachedNetworkImage(
-          imageUrl: images[0]['url'] + '@462x200.jpg',
-          fit: BoxFit.cover,
-          placeholder: (context, url) =>
-              new Center(child: CircularProgressIndicator()),
-          errorWidget: (context, url, error) => new Icon(Icons.error),
-        )));
+        child: FadeInImage.assetNetwork(
+            fadeInDuration: Duration(milliseconds: 500),
+            image: images[0]['url'] + '@462x200.jpg',
+            fit: BoxFit.cover,
+            placeholder: 'assets/arbre.png')));
   }
   if (title != null) {
     childrens.add(Text(title, style: theme.textTheme.title, softWrap: true));
