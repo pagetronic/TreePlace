@@ -44,16 +44,9 @@ class BodyState extends BaseState<BodyViews>
             UserAccountsDrawerHeader(
                 accountName: Text("User Name"),
                 accountEmail: Text("email@gafa.com"),
-                onDetailsPressed: () {
-
-                },
+                onDetailsPressed: () {},
                 currentAccountPicture:
-                    Image.network("https://agroneo.net/ui/logo@64"),
-                otherAccountsPictures: [
-                  Image.network("https://agroneo.net/ui/logo@64"),
-                  Image.network("https://agroneo.net/ui/logo_red@64"),
-                  Image.network("https://agroneo.net/ui/logo@64")
-                ]),
+                    Image.network("https://agroneo.net/ui/logo@64")),
             ListTile(
               selected: initialIndex == 0,
               title: Text('Specimens'),
