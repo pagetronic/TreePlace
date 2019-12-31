@@ -46,7 +46,7 @@ class BodyState extends BaseState<BodyViews>
                 accountEmail: Text("email@gafa.com"),
                 onDetailsPressed: () {},
                 currentAccountPicture:
-                    Image.asset("assets/champagne.png")),
+                    Image.asset("assets/logo.png")),
             ListTile(
               selected: initialIndex == 0,
               title: Text('Specimens'),
