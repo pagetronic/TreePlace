@@ -40,6 +40,7 @@ class ListApiState extends BaseState<ListApi> {
   dynamic base;
   List<dynamic> result = [];
   String paging = "";
+  int scrolldist = 0;
 
   Widget Function(dynamic) builder;
   Function(String) getNext;
@@ -68,7 +69,7 @@ class ListApiState extends BaseState<ListApi> {
             getNext(null);
             paging = null;
           } else if (paging != null &&
-              index == Math.max(0, result.length - 1)) {
+              index == Math.max(0, result.length - scrolldist)) {
             getNext(paging);
             paging = null;
           } else if (first != null && index == 0 && base != null) {
@@ -89,20 +90,24 @@ class ListApiState extends BaseState<ListApi> {
   }
 
   void update(json, base) {
+    int limit =
+        json['paging'] != null ? (json['paging']['limit'] / 3).round() : 0;
     var next = json['paging'] != null ? json['paging']['next'] : null;
     var result_ = json['result'] != null ? json['result'] : [];
-    if (!mounted) {
+    doit() {
       loading = false;
       this.base = base;
       paging = next;
+      scrolldist = limit;
       this.result.addAll(result_);
+    }
+
+    if (!mounted) {
+      doit();
       return;
     }
     setState(() {
-      loading = false;
-      this.base = base;
-      paging = next;
-      this.result.addAll(result_);
+      doit();
     });
   }
 }
