@@ -46,10 +46,6 @@ postTile(context, theme, {String id, String title, String text, dynamic user}) {
   if (text == null) text = '';
   return Card(
       child: ListTile(
-    onTap: () {
-      Navigator.pushNamed(context, '/thread',
-          arguments: {'id': id, 'title': title});
-    },
     leading: Image.network(logo + '@40x40'),
     title: Text(unescape.convert(title)),
     subtitle: Text(unescape.convert(text)),

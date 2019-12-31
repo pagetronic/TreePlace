@@ -21,11 +21,10 @@ class TreePlaceApp extends StatelessWidget {
         theme: ThemeData(
           primaryColor: settings.primaryColor,
         ),
-        initialRoute: '/specimens',
+        initialRoute: '/initial',
         routes: {
-          '/specimens': (context) => BodyViews(
+          '/initial': (context) => BodyViews(
                 title: "Agroneo",
-                initialIndex: 1,
                 children: <Widget>[
                   SpecimensViews(title: 'Specimens'),
                   ForumsViews(title: 'Forum')

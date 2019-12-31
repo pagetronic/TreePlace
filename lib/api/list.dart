@@ -74,6 +74,7 @@ class ListApiState extends BaseState<ListApi> {
           } else if (first != null && index == 0 && base != null) {
             return first(base);
           }
+
           if (result.length == 0 && !loading) {
             return first == null
                 ? new Center(child: Text("Empty"))
