@@ -2,8 +2,6 @@ import 'package:agroneo_treeplace/ui/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
-import '../settings.dart' as settings;
-
 class BodyViews extends StatefulWidget {
   final String title;
   final List<Widget> children;
@@ -43,13 +41,19 @@ class BodyState extends BaseState<BodyViews>
         ),
         drawer: Drawer(
           child: ListView(padding: EdgeInsets.zero, children: <Widget>[
-            DrawerHeader(
-              child: Text('Agroneo',
-                  style: Theme.of(context).textTheme.title, softWrap: true),
-              decoration: BoxDecoration(
-                color: settings.secondaryColor,
-              ),
-            ),
+            UserAccountsDrawerHeader(
+                accountName: Text("User Name"),
+                accountEmail: Text("email@gafa.com"),
+                onDetailsPressed: () {
+
+                },
+                currentAccountPicture:
+                    Image.network("https://agroneo.net/ui/logo@64"),
+                otherAccountsPictures: [
+                  Image.network("https://agroneo.net/ui/logo@64"),
+                  Image.network("https://agroneo.net/ui/logo_red@64"),
+                  Image.network("https://agroneo.net/ui/logo@64")
+                ]),
             ListTile(
               selected: initialIndex == 0,
               title: Text('Specimens'),
