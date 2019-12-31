@@ -33,7 +33,7 @@ class TreePlaceApp extends StatelessWidget {
               ),
           '/specimens/create': (context) =>
               SpecimensCreate(title: 'Specimens create'),
-          '/thread': (context) => ThreadView(title: 'Thread')
+          '/thread': (context) => ThreadView()
         });
   }
 }

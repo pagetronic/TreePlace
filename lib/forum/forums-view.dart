@@ -36,7 +36,8 @@ threadTile(context, theme,
   return Card(
       child: ListTile(
     onTap: () {
-      Navigator.pushNamed(context, '/thread', arguments: {'id': id});
+      Navigator.pushNamed(context, '/thread',
+          arguments: {'id': id, 'title': title});
     },
     leading: Image.network(logo + '@40x40'),
     title: Text(unescape.convert(title)),

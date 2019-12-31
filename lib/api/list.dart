@@ -11,7 +11,7 @@ class ListApi extends StatefulWidget {
   ListApi(this.state);
 
   static ListApi get(String url, Widget Function(dynamic) builder,
-      {Map<String, String> params, String key}) {
+      {Function(dynamic) first, Map<String, String> params, String key}) {
     ListApiState state;
     state = new ListApiState(builder, (paging) {
       if (params == null) {
@@ -22,11 +22,11 @@ class ListApi extends StatefulWidget {
       }
       ApiRequest.get(url, params: params, success: (json) {
         var result = (key != null) ? json[key] : json;
-        state.update(result);
+        state.update(result, json);
       }, error: (code, json) {
         print(json.toString());
       });
-    });
+    }, first: first);
     return new ListApi(state);
   }
 
@@ -37,22 +37,32 @@ class ListApi extends StatefulWidget {
 }
 
 class ListApiState extends BaseState<ListApi> {
+  dynamic base;
   List<dynamic> result = [];
   String paging = "";
 
   Widget Function(dynamic) builder;
   Function(String) getNext;
+  Function(dynamic) first;
+  bool loading = false;
 
-  ListApiState(Widget Function(dynamic) builder, Function(String) getNext) {
+  ListApiState(Widget Function(dynamic) builder, Function(String) getNext,
+      {Function(dynamic) first}) {
     this.builder = builder;
-    this.getNext = getNext;
+    this.getNext = (paging) {
+      loading = true;
+      getNext(paging);
+    };
+    this.first = first;
   }
 
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
-        itemCount:
-            result.length + (paging != null || result.length == 0 ? 1 : 0),
+        itemCount: result.length +
+            (paging != null || result.length == 0
+                ? 1
+                : (first != null ? 1 : 0)),
         itemBuilder: (context, index) {
           if (result.length == 0 && paging == "") {
             getNext(null);
@@ -61,27 +71,37 @@ class ListApiState extends BaseState<ListApi> {
               index == Math.max(0, result.length - 1)) {
             getNext(paging);
             paging = null;
+          } else if (first != null && index == 0 && base != null) {
+            return first(base);
           }
-          if (index >= result.length) {
+          if (result.length == 0 && !loading) {
+            return first == null
+                ? new Center(child: Text("Empty"))
+                : new Center();
+          }
+          if (index >= result.length || (result.length == 0 && loading)) {
             return new Center(
                 child: CircularProgressIndicator(), heightFactor: 3.5);
-          } else {
-            return builder(result[index]);
           }
+          return builder(result[index]);
         });
   }
 
-  void update(json) {
+  void update(json, base) {
     var next = json['paging'] != null ? json['paging']['next'] : null;
     var result_ = json['result'] != null ? json['result'] : [];
     if (!mounted) {
+      loading = false;
+      this.base = base;
       paging = next;
-      result.addAll(result_);
+      this.result.addAll(result_);
       return;
     }
     setState(() {
+      loading = false;
+      this.base = base;
       paging = next;
-      result.addAll(result_);
+      this.result.addAll(result_);
     });
   }
 }
