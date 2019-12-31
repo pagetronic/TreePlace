@@ -1,6 +1,7 @@
 import 'package:agroneo_treeplace/api/list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:html_unescape/html_unescape_small.dart';
 
 class ForumsViews extends StatefulWidget {
   final String title;
@@ -17,19 +18,30 @@ class _ForumsState extends State<ForumsViews> {
     var theme = Theme.of(context);
     return Scaffold(
         body: ListApi.get('/questions', (dynamic json) {
-      return threadTile(theme, title: json['title'], text: json['text']);
+      return threadTile(theme,
+          title: json['title'], text: json['text'], user: json['user']);
     }, key: 'threads', params: {'lng': 'fr'}));
   }
 }
 
-threadTile(theme, {String title, String text}) {
-  List<Widget> childrens = [];
-
-  if (title != null) {
-    childrens.add(Text(title, style: theme.textTheme.title, softWrap: true));
+threadTile(theme, {String title, String text, dynamic user}) {
+  var unescape = new HtmlUnescape();
+  var logo = null;
+  if (user != null) {
+    if (user['avatar'] != null) {
+      logo = user['avatar'];
+    }
   }
-  if (text != null) {
-    childrens.add(Text(text, style: theme.textTheme.body1, softWrap: true));
+  if (title == null) {
+    title = '';
   }
-  return Wrap(spacing: 8.0, runSpacing: 4.0, children: childrens);
+  if (text == null) {
+    text = '';
+  }
+  return Card(
+      child: ListTile(
+    leading: Image.network(logo + '@40x40'),
+    title: Text(unescape.convert(title)),
+    subtitle: Text(unescape.convert(text)),
+  ));
 }
