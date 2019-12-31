@@ -26,18 +26,10 @@ class _ForumsState extends State<ForumsViews> {
 
 threadTile(theme, {String title, String text, dynamic user}) {
   var unescape = new HtmlUnescape();
-  var logo = null;
-  if (user != null) {
-    if (user['avatar'] != null) {
-      logo = user['avatar'];
-    }
-  }
-  if (title == null) {
-    title = '';
-  }
-  if (text == null) {
-    text = '';
-  }
+  var logo = (user != null && user['avatar'] != null) ? user['avatar'] : null;
+  if (title == null) title = '';
+  if (text == null) text = '';
+
   return Card(
       child: ListTile(
     leading: Image.network(logo + '@40x40'),
