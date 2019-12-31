@@ -3,7 +3,7 @@ import 'dart:ui';
 final clientId = 'QULU2HS2DY2LK663AONAMELHYQC3MG6JUW9QAF6NV1M49YQ7QM0P';
 final clientSecret = '11I5G3W36JWZ940IS4R78ZCAVH8SIIQJJ0Q4P61EWAC64MEJ1IT4';
 final redirectUri = 'agroneo-auth://';
-final scopes = 'email,gaia';
+final scopes = 'email,gaia,forums,threads';
 final tokenUrl = 'https://api.agroneo.com/token';
 final apiUrl = 'https://api.agroneo.com';
 final authDomain = () {

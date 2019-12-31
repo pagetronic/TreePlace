@@ -135,6 +135,10 @@ class ApiRequest {
       _onError(-1, {'error': 'json parse error'});
       return;
     }
+    if (statusCode == 401 && rez['error'] == 'AUTHORIZATION_SCOPE_ERROR') {
+      Oauth.auth();
+      return;
+    }
     if (await refreshToken(statusCode, rez)) {
       if (_aborted) {
         return;
