@@ -87,6 +87,11 @@ class ApiRequest {
       return;
     }
 
+    if (statusCode == 401 && rez['error'] == 'AUTHORIZATION_SCOPE_ERROR') {
+      Oauth.auth();
+      return;
+    }
+
     if (await refreshToken(statusCode, rez)) {
       retry--;
       if (_aborted) {
