@@ -6,12 +6,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 class ListApi extends StatefulWidget {
-
   final ListApiState state;
 
   ListApi(this.state);
 
-  static ListApi get(String url, Widget Function(dynamic) builder, {Key key}) {
+  static ListApi get(String url, Widget Function(dynamic) builder,
+      {String key}) {
     ListApiState state;
     state = new ListApiState(builder, (paging) {
       var params = new Map<String, String>();
@@ -19,7 +19,8 @@ class ListApi extends StatefulWidget {
         params.addAll({"paging": paging});
       }
       ApiRequest.get(url, params: params, success: (json) {
-        state.update(json);
+        var result = (key != null) ? json[key] : json;
+        state.update(result);
       });
     });
     return new ListApi(state);
@@ -29,6 +30,7 @@ class ListApi extends StatefulWidget {
   ListApiState createState() {
     return state;
   }
+
 }
 
 class ListApiState extends BaseState<ListApi> {

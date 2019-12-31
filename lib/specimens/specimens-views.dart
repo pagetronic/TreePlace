@@ -14,15 +14,11 @@ class SpecimensViews extends StatefulWidget {
   _SpecimensViewsState createState() => _SpecimensViewsState();
 }
 
-class _SpecimensViewsState extends BaseState<SpecimensViews> {
+class _SpecimensViewsState extends State<SpecimensViews> {
   @override
   Widget build(BuildContext context) {
     var theme = Theme.of(context);
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-        actions: <Widget>[connector],
-      ),
       body:  ListApi.get('/gaia/specimens', (dynamic json) {
         return specimenTile(theme,
             title: json['title'], text: json['text'], images: json['images']);
