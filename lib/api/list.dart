@@ -38,7 +38,7 @@ class ListApi extends StatefulWidget {
 
 class ListApiState extends BaseState<ListApi> {
   List<dynamic> result = [];
-  String paging;
+  String paging = "";
 
   Widget Function(dynamic) builder;
   Function(String) getNext;
@@ -46,19 +46,28 @@ class ListApiState extends BaseState<ListApi> {
   ListApiState(Widget Function(dynamic) builder, Function(String) getNext) {
     this.builder = builder;
     this.getNext = getNext;
-    getNext(null);
   }
 
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
-        itemCount: result.length,
+        itemCount:
+            result.length + (paging != null || result.length == 0 ? 1 : 0),
         itemBuilder: (context, index) {
-          if (paging != null && index == Math.max(0, result.length - 1)) {
+          if (result.length == 0 && paging == "") {
+            getNext(null);
+            paging = null;
+          } else if (paging != null &&
+              index == Math.max(0, result.length - 1)) {
             getNext(paging);
             paging = null;
           }
-          return builder(result[index]);
+          if (index >= result.length) {
+            return new Center(
+                child: CircularProgressIndicator(), heightFactor: 3.5);
+          } else {
+            return builder(result[index]);
+          }
         });
   }
 
