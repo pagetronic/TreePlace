@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'api/oauth.dart';
 import 'forum/forums-view.dart';
+import 'forum/threads-view.dart';
 import 'settings.dart' as settings;
 import 'specimens/specimens-create.dart';
 import 'specimens/specimens-views.dart';
@@ -31,7 +32,8 @@ class TreePlaceApp extends StatelessWidget {
                 ],
               ),
           '/specimens/create': (context) =>
-              SpecimensCreate(title: 'Specimens create')
+              SpecimensCreate(title: 'Specimens create'),
+          '/thread': (context) => ThreadView(title: 'Thread')
         });
   }
 }

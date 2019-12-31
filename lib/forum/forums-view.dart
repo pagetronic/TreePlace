@@ -18,20 +18,26 @@ class _ForumsState extends State<ForumsViews> {
     var theme = Theme.of(context);
     return Scaffold(
         body: ListApi.get('/questions', (dynamic json) {
-      return threadTile(theme,
-          title: json['title'], text: json['text'], user: json['user']);
+      return threadTile(context, theme,
+          id: json['id'],
+          title: json['title'],
+          text: json['text'],
+          user: json['user']);
     }, key: 'threads', params: {'lng': 'fr'}));
   }
 }
 
-threadTile(theme, {String title, String text, dynamic user}) {
+threadTile(context, theme,
+    {String id, String title, String text, dynamic user}) {
   var unescape = new HtmlUnescape();
   var logo = (user != null && user['avatar'] != null) ? user['avatar'] : null;
   if (title == null) title = '';
   if (text == null) text = '';
-
   return Card(
       child: ListTile(
+    onTap: () {
+      Navigator.pushNamed(context, '/thread', arguments: {'id': id});
+    },
     leading: Image.network(logo + '@40x40'),
     title: Text(unescape.convert(title)),
     subtitle: Text(unescape.convert(text)),
