@@ -46,7 +46,7 @@ class BodyState extends BaseState<BodyViews>
                 accountEmail: Text("email@gafa.com"),
                 onDetailsPressed: () {},
                 currentAccountPicture:
-                    Image.network("https://agroneo.net/ui/logo@64")),
+                    Image.asset("assets/champagne.png")),
             ListTile(
               selected: initialIndex == 0,
               title: Text('Specimens'),
