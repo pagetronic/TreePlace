@@ -72,14 +72,16 @@ class ListApiState extends BaseState<ListApi> {
   }
 
   void update(json) {
+    var next = json['paging'] != null ? json['paging']['next'] : null;
+    var result_ = json['result'] != null ? json['result'] : [];
     if (!mounted) {
-      paging = json['paging']['next'];
-      result.addAll(json['result']);
+      paging = next;
+      result.addAll(result_);
       return;
     }
     setState(() {
-      paging = json['paging']['next'];
-      result.addAll(json['result']);
+      paging = next;
+      result.addAll(result_);
     });
   }
 }
