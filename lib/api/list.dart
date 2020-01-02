@@ -21,8 +21,7 @@ class ListApi extends StatefulWidget {
         params.addAll({"paging": paging});
       }
       ApiRequest.get(url, params: params, success: (json) {
-        var result = (key != null) ? json[key] : json;
-        state.update(result, json);
+        state.update(json, key);
       }, error: (code, json) {
         state.error();
       });
@@ -37,7 +36,6 @@ class ListApi extends StatefulWidget {
 }
 
 class ListApiState extends BaseState<ListApi> {
-  dynamic base;
   List<dynamic> result = [];
   String paging;
   int scrolldist = 0;
@@ -61,8 +59,7 @@ class ListApiState extends BaseState<ListApi> {
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
-        itemCount:
-            result.length + (paging != null || loading ? 1 : 0) + (first != null ? 1 : 0),
+        itemCount: result.length + (paging != null || loading ? 1 : 0),
         itemBuilder: (context, index) {
           if (paging != null &&
               index == Math.max(0, result.length - scrolldist)) {
@@ -75,17 +72,15 @@ class ListApiState extends BaseState<ListApi> {
                 child: CircularProgressIndicator(), heightFactor: 3.5);
           }
 
-          if (first != null && index == 0 && base != null) {
-            return first(base);
-          }
-
           if (result.length == 0 && !loading) {
             return first == null
                 ? new Center(child: Text("Empty"))
                 : new Center();
           }
 
-          return builder(result[index]);
+          return (first != null && index == 0)
+              ? first(result[0])
+              : builder(result[index]);
         });
   }
 
@@ -95,19 +90,26 @@ class ListApiState extends BaseState<ListApi> {
     });
   }
 
-  void update(json, base) {
+  void update(dynamic json_, String key) {
+    var json = (key != null) ? json_[key] : json_;
+
+    if (result.length == 0 && first != null) {
+      if (key != null) {
+        json_.remove(key);
+      }
+      result.add(json_);
+    }
+
     int dist =
         json['paging'] != null ? (json['paging']['limit'] / 3).round() : 0;
     var next = json['paging'] != null ? json['paging']['next'] : null;
-    var result_ = json['result'] != null ? json['result'] : [];
 
     if (mounted) {
       setState(() {
         loading = false;
-        this.base = base;
         paging = next;
         scrolldist = dist;
-        this.result.addAll(result_);
+        result.addAll(json['result'] != null ? json['result'] : []);
       });
     }
   }

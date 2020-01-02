@@ -25,11 +25,10 @@ class ThreadViewState extends BaseState<ThreadView> {
       body: ListApi.get("/threads/" + args['id'], (json) {
         return postTile(context, theme,
             id: json['id'],
-            title: json['title'],
             text: json['text'],
             user: json['user']);
       }, first: (json) {
-        return postTile(context, theme,
+        return threadTile(context, theme,
             id: json['id'],
             title: json['title'],
             text: json['text'],
@@ -39,15 +38,27 @@ class ThreadViewState extends BaseState<ThreadView> {
   }
 }
 
-postTile(context, theme, {String id, String title, String text, dynamic user}) {
+threadTile(context, theme, {String id, String title, String text, dynamic user}) {
   var unescape = new HtmlUnescape();
   var logo = (user != null && user['avatar'] != null) ? user['avatar'] : null;
   if (title == null) title = '';
   if (text == null) text = '';
   return Card(
       child: ListTile(
-    leading: Image.network(logo + '@40x40'),
-    title: Text(unescape.convert(title)),
-    subtitle: Text(unescape.convert(text)),
-  ));
+        leading: Image.network(logo + '@40x40'),
+        title: Text(unescape.convert(title)),
+        subtitle: Text(unescape.convert(text)),
+      ));
+}
+
+
+postTile(context, theme, {String id, String text, dynamic user}) {
+  var unescape = new HtmlUnescape();
+  var logo = (user != null && user['avatar'] != null) ? user['avatar'] + '@40x40' : "https://agroneo.net/ui/logo@64";
+  if (text == null) text = '';
+  return Card(
+      child: ListTile(
+        leading: Image.network(logo),
+        subtitle: Text(unescape.convert(text)),
+      ));
 }
