@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
 import 'api/oauth.dart';
-import 'forum/forums-view.dart';
-import 'forum/threads-view.dart';
+import 'forum/forum.dart';
+import 'forum/thread.dart';
 import 'settings.dart' as settings;
-import 'specimens/specimens-create.dart';
-import 'specimens/specimens-views.dart';
+import 'specimens/create.dart';
+import 'specimens/specimens.dart';
 import 'ui/body.dart';
 
 void main() {
