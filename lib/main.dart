@@ -1,3 +1,4 @@
+import 'package:agroneo_treeplace/specimens/specimen.dart';
 import 'package:flutter/material.dart';
 
 import 'api/oauth.dart';
@@ -32,6 +33,8 @@ class TreePlaceApp extends StatelessWidget {
               ),
           '/specimens/create': (context) =>
               SpecimensCreate(title: 'Specimens create'),
+          '/specimens/view': (context) =>
+              SpecimenView(title: 'Specimen view'),
           '/thread': (context) => ThreadView()
         });
   }

@@ -19,8 +19,11 @@ class _SpecimensViewsState extends State<SpecimensViews>
     var theme = Theme.of(context);
     return Scaffold(
       body: ListApi.get('/gaia/specimens', (dynamic json) {
-        return specimenTile(theme,
-            title: json['title'], text: json['text'], images: json['images']);
+        return specimenTile(context, theme,
+            id: json['id'],
+            title: json['title'],
+            text: json['text'],
+            images: json['images']);
       }),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
@@ -37,7 +40,8 @@ class _SpecimensViewsState extends State<SpecimensViews>
   bool get wantKeepAlive => true;
 }
 
-specimenTile(theme, {String title, String text, List<dynamic> images}) {
+specimenTile(context, theme,
+    {String id, String title, String text, List<dynamic> images}) {
   List<Widget> childrens = [];
   if (images.length > 0 && images[0]['url'] != null) {
     childrens.add(AspectRatio(
@@ -54,5 +58,12 @@ specimenTile(theme, {String title, String text, List<dynamic> images}) {
   if (text != null) {
     childrens.add(Text(text, style: theme.textTheme.body1, softWrap: true));
   }
-  return Card(child: Wrap(children: childrens));
+  return Card(
+    child: InkWell(
+        child: Wrap(children: childrens),
+        onTap: () {
+          Navigator.pushNamed(context, '/specimens/view',
+              arguments: {'id': id, 'title': title});
+        }),
+  );
 }

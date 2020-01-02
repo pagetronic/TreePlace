@@ -20,7 +20,7 @@ class BodyState extends BaseState<BodyViews>
   void initState() {
     super.initState();
     _controller = new TabController(length: 2, vsync: this);
-    _controller.index = 1;
+    _controller.index = 0;
   }
 
   @override
