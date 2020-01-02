@@ -23,17 +23,40 @@ class SpecimenViewState extends BaseState<SpecimenView> {
     var theme = Theme.of(context);
 
     ApiRequest.get("/gaia/" + args['id'], success: (json) {
+      List<Widget> childrens = [];
+      if (json['images'].length > 0) {
+        for (var image in json['images']) {
+          childrens.add(AspectRatio(
+              aspectRatio: 462.0 / 200.0,
+              child: FadeInImage.assetNetwork(
+                  fadeInDuration: Duration(milliseconds: 500),
+                  image: image['url'] + '@462x200.jpg',
+                  fit: BoxFit.cover,
+                  placeholder: 'assets/arbre.png')));
+        }
+      }
+      if (json['title'] != null) {
+        childrens.add(
+            Text(json['title'], style: theme.textTheme.title, softWrap: true));
+      }
+      if (json['family'] != null) {
+        childrens.add(Text(json['family']['name'],
+            style: theme.textTheme.body1, softWrap: true));
+      }
+      if (json['species'] != null) {
+        childrens.add(Text(json['species']['name'],
+            style: theme.textTheme.body1, softWrap: true));
+      }
+      if (json['text'] != null) {
+        childrens.add(
+            Text(json['text'], style: theme.textTheme.body1, softWrap: true));
+      }
+
       setState(() {
-        body = Scaffold(
-          body: Wrap(children: [
-            Text(json['title'], style: theme.textTheme.title, softWrap: true),
-            Text(json['date'], style: theme.textTheme.title, softWrap: true),
-            Text(json['species']['name'], style: theme.textTheme.body1, softWrap: true),
-            Text(json['family']['name'], style: theme.textTheme.body1, softWrap: true),
-            Text(json['genus']['name'], style: theme.textTheme.body1, softWrap: true),
-            Text(json['text'], style: theme.textTheme.body1, softWrap: true)
-          ]),
-        );
+        body = SingleChildScrollView(
+            child: Column(
+                children: childrens,
+                crossAxisAlignment: CrossAxisAlignment.start));
       });
     });
     return Scaffold(

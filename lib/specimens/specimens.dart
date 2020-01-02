@@ -16,7 +16,7 @@ class _SpecimensViewsState extends State<SpecimensViews>
     with AutomaticKeepAliveClientMixin {
   @override
   Widget build(BuildContext context) {
-    var theme = Theme.of(context);
+    ThemeData theme = Theme.of(context);
     return Scaffold(
       body: ListApi.get('/gaia/specimens', (dynamic json) {
         return specimenTile(context, theme,
@@ -40,7 +40,7 @@ class _SpecimensViewsState extends State<SpecimensViews>
   bool get wantKeepAlive => true;
 }
 
-specimenTile(context, theme,
+specimenTile(BuildContext context, ThemeData theme,
     {String id, String title, String text, List<dynamic> images}) {
   List<Widget> childrens = [];
   if (images.length > 0 && images[0]['url'] != null) {
@@ -60,7 +60,8 @@ specimenTile(context, theme,
   }
   return Card(
     child: InkWell(
-        child: Wrap(children: childrens),
+        child: Column(
+            children: childrens, crossAxisAlignment: CrossAxisAlignment.start),
         onTap: () {
           Navigator.pushNamed(context, '/specimens/view',
               arguments: {'id': id, 'title': title});
