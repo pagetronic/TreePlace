@@ -24,7 +24,7 @@ class ListApi extends StatefulWidget {
         var result = (key != null) ? json[key] : json;
         state.update(result, json);
       }, error: (code, json) {
-        print(json.toString());
+        state.error();
       });
     }, first: first);
     return new ListApi(state);
@@ -39,13 +39,13 @@ class ListApi extends StatefulWidget {
 class ListApiState extends BaseState<ListApi> {
   dynamic base;
   List<dynamic> result = [];
-  String paging = "";
+  String paging;
   int scrolldist = 0;
 
   Widget Function(dynamic) builder;
   Function(String) getNext;
   Function(dynamic) first;
-  bool loading = false;
+  bool loading = true;
 
   ListApiState(Widget Function(dynamic) builder, Function(String) getNext,
       {Function(dynamic) first}) {
@@ -55,24 +55,27 @@ class ListApiState extends BaseState<ListApi> {
       getNext(paging);
     };
     this.first = first;
+    getNext(null);
   }
 
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
-        itemCount: result.length +
-            (paging != null || result.length == 0
-                ? 1
-                : (first != null ? 1 : 0)),
+        itemCount:
+            result.length + (paging != null || loading ? 1 : 0) + (first != null ? 1 : 0),
         itemBuilder: (context, index) {
-          if (result.length == 0 && paging == "") {
-            getNext(null);
-            paging = null;
-          } else if (paging != null &&
+          if (paging != null &&
               index == Math.max(0, result.length - scrolldist)) {
             getNext(paging);
             paging = null;
-          } else if (first != null && index == 0 && base != null) {
+          }
+
+          if (index >= result.length && loading) {
+            return new Center(
+                child: CircularProgressIndicator(), heightFactor: 3.5);
+          }
+
+          if (first != null && index == 0 && base != null) {
             return first(base);
           }
 
@@ -81,33 +84,31 @@ class ListApiState extends BaseState<ListApi> {
                 ? new Center(child: Text("Empty"))
                 : new Center();
           }
-          if (index >= result.length || (result.length == 0 && loading)) {
-            return new Center(
-                child: CircularProgressIndicator(), heightFactor: 3.5);
-          }
+
           return builder(result[index]);
         });
   }
 
+  void error() {
+    setState(() {
+      loading = false;
+    });
+  }
+
   void update(json, base) {
-    int limit =
+    int dist =
         json['paging'] != null ? (json['paging']['limit'] / 3).round() : 0;
     var next = json['paging'] != null ? json['paging']['next'] : null;
     var result_ = json['result'] != null ? json['result'] : [];
-    doit() {
-      loading = false;
-      this.base = base;
-      paging = next;
-      scrolldist = limit;
-      this.result.addAll(result_);
-    }
 
-    if (!mounted) {
-      doit();
-      return;
+    if (mounted) {
+      setState(() {
+        loading = false;
+        this.base = base;
+        paging = next;
+        scrolldist = dist;
+        this.result.addAll(result_);
+      });
     }
-    setState(() {
-      doit();
-    });
   }
 }
