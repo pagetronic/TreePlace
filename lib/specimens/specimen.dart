@@ -28,11 +28,16 @@ class SpecimenViewState extends BaseState<SpecimenView> {
         for (var image in json['images']) {
           childrens.add(AspectRatio(
               aspectRatio: 462.0 / 200.0,
-              child: FadeInImage.assetNetwork(
-                  fadeInDuration: Duration(milliseconds: 500),
-                  image: image['url'] + '@462x200.jpg',
-                  fit: BoxFit.cover,
-                  placeholder: 'assets/arbre.png')));
+              child: InkWell(
+                  child: FadeInImage.assetNetwork(
+                      fadeInDuration: Duration(milliseconds: 500),
+                      image: image['url'] + '@462x200.jpg',
+                      fit: BoxFit.cover,
+                      placeholder: 'assets/arbre.png'),
+                  onTap: () {
+                    Navigator.pushNamed(context, '/images',
+                        arguments: {'url': image['url']});
+                  })));
         }
       }
       if (json['title'] != null) {
