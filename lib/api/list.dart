@@ -37,7 +37,6 @@ class ListApi extends StatefulWidget {
 
 class ListApiState extends BaseState<ListApi> {
   List<dynamic> result = [];
-  String paging;
   int scrolldist = 0;
 
   Widget Function(dynamic) builder;
@@ -59,23 +58,24 @@ class ListApiState extends BaseState<ListApi> {
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
-        itemCount: result.length + (paging != null || loading ? 1 : 0),
+        itemCount: result.length +
+            (result.length > 0 && result.last['@next'] != null || loading
+                ? 1
+                : 0),
         itemBuilder: (context, index) {
-          if (paging != null &&
-              index == Math.max(0, result.length - scrolldist)) {
-            getNext(paging);
-            paging = null;
+          if (index == Math.max(0, result.length - scrolldist) &&
+              result.length > 0 &&
+              result.last['@next'] != null) {
+            getNext(result.last['@next']);
           }
 
           if (index >= result.length && loading) {
-            return new Center(
+            return Center(
                 child: CircularProgressIndicator(), heightFactor: 3.5);
           }
 
           if (result.length == 0 && !loading) {
-            return first == null
-                ? new Center(child: Text("Empty"))
-                : new Center();
+            return first == null ? Center(child: Text("Empty")) : Center();
           }
 
           return (first != null && index == 0)
@@ -100,16 +100,24 @@ class ListApiState extends BaseState<ListApi> {
       result.add(json_);
     }
 
-    int dist =
-        json['paging'] != null ? (json['paging']['limit'] / 3).round() : 0;
-    var next = json['paging'] != null ? json['paging']['next'] : null;
+    List<dynamic> result_ = json['result'] != null ? json['result'] : [];
+    int dist = 0;
+    if (json['paging'] != null) {
+      dynamic paging = json['paging'];
+      dist = (paging['limit'] / 3).round();
+      if (paging['next'] != null) {
+        result_.last['@next'] = paging['next'];
+      }
+      if (paging['prev'] != null) {
+        result_.first['@prev'] = paging['prev'];
+      }
+    }
 
     if (mounted) {
       setState(() {
         loading = false;
-        paging = next;
         scrolldist = dist;
-        result.addAll(json['result'] != null ? json['result'] : []);
+        result.addAll(result_);
       });
     }
   }
