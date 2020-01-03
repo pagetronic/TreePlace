@@ -22,14 +22,24 @@ class SpecimenViewState extends BaseState<SpecimenView> {
 
     var theme = Theme.of(context);
 
-    ApiRequest.get("/gaia/" + args['id'], success: (json) {
-
+    ApiRequest.get("/gaia/" + args['id'], success: (final json) {
       //todo abort
       if (!mounted) {
         return;
       }
 
       List<Widget> childrens = [];
+
+      if (json['location'] != null) {
+        childrens.add(IconButton(
+          icon: const Icon(Icons.map),
+          tooltip: 'View on map',
+          onPressed: () {
+            Navigator.pushNamed(context, '/maps', arguments: json);
+          },
+        ));
+      }
+
       if (json['images'].length > 0) {
         for (var image in json['images']) {
           childrens.add(AspectRatio(
@@ -62,6 +72,7 @@ class SpecimenViewState extends BaseState<SpecimenView> {
         childrens.add(
             Text(json['text'], style: theme.textTheme.body1, softWrap: true));
       }
+
       if (mounted) {
         setState(() {
           body = SingleChildScrollView(

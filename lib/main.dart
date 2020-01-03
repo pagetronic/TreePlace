@@ -5,6 +5,7 @@ import 'forum/forum.dart';
 import 'forum/thread.dart';
 import 'settings.dart' as settings;
 import 'specimens/create.dart';
+import 'specimens/maps.dart';
 import 'specimens/specimen.dart';
 import 'specimens/specimens.dart';
 import 'ui/body.dart';
@@ -36,7 +37,8 @@ class TreePlaceApp extends StatelessWidget {
               SpecimensCreate(title: 'Specimens create'),
           '/specimens/view': (context) => SpecimenView(title: 'Specimen view'),
           '/thread': (context) => ThreadView(),
-          '/images': (context) => ImageView()
+          '/images': (context) => ImageView(),
+          '/maps': (context) => SpecimensMap(key: Key("maps")),
         });
   }
 }
