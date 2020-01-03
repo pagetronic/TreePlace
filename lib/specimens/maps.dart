@@ -42,10 +42,15 @@ class SpecimensMapState extends State<SpecimensMap> {
     );
   }
 
+  BitmapDescriptor markerBitmap = null;
+
   void setMarker(LatLng latLng, dynamic json) async {
+    if (markerBitmap == null) {
+      markerBitmap = BitmapDescriptor.fromBytes(
+          await getBytesFromAsset('assets/marker.png', 64));
+    }
     Marker marker = Marker(
-      icon: BitmapDescriptor.fromBytes(
-          await getBytesFromAsset('assets/marker.png', 64)),
+      icon: markerBitmap,
       markerId: new MarkerId("xxxxx"),
       position: latLng,
       onTap: () {
