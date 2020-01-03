@@ -23,6 +23,12 @@ class SpecimenViewState extends BaseState<SpecimenView> {
     var theme = Theme.of(context);
 
     ApiRequest.get("/gaia/" + args['id'], success: (json) {
+
+      //todo abort
+      if (!mounted) {
+        return;
+      }
+
       List<Widget> childrens = [];
       if (json['images'].length > 0) {
         for (var image in json['images']) {
@@ -56,13 +62,14 @@ class SpecimenViewState extends BaseState<SpecimenView> {
         childrens.add(
             Text(json['text'], style: theme.textTheme.body1, softWrap: true));
       }
-
-      setState(() {
-        body = SingleChildScrollView(
-            child: Column(
-                children: childrens,
-                crossAxisAlignment: CrossAxisAlignment.start));
-      });
+      if (mounted) {
+        setState(() {
+          body = SingleChildScrollView(
+              child: Column(
+                  children: childrens,
+                  crossAxisAlignment: CrossAxisAlignment.start));
+        });
+      }
     });
     return Scaffold(
       appBar: AppBar(
