@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -40,12 +41,8 @@ class SpecimensMapState extends State<SpecimensMap> {
   }
 
   void setMarker(LatLng latLng, dynamic json) async {
-    MediaQueryData mediaQueryData = MediaQuery.of(context);
-    BitmapDescriptor icon = await BitmapDescriptor.fromAssetImage(
-        ImageConfiguration(
-            size: Size(32, 32),
-            devicePixelRatio: mediaQueryData.devicePixelRatio),
-        'assets/marker.png');
+    BitmapDescriptor icon =
+        await BitmapDescriptor.fromAssetImage(createLocalImageConfiguration(context, size: Size(30, 30)), 'assets/marker.png');
     Marker marker = Marker(
       icon: icon,
       markerId: new MarkerId("xxxxx"),
