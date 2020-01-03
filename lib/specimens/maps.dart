@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class SpecimensMap extends StatefulWidget {
-
   SpecimensMap({Key key}) : super(key: key);
 
   @override
@@ -34,13 +33,13 @@ class SpecimensMapState extends State<SpecimensMap> {
         initialCameraPosition: kspecimen,
         onMapCreated: (GoogleMapController controller) {
           _controller.complete(controller);
-          setMarker(LatLng(coordinates[1], coordinates[0]));
+          setMarker(LatLng(coordinates[1], coordinates[0]), json);
         },
       ),
     );
   }
 
-  void setMarker(LatLng latLng) async {
+  void setMarker(LatLng latLng, dynamic json) async {
     MediaQueryData mediaQueryData = MediaQuery.of(context);
     BitmapDescriptor icon = await BitmapDescriptor.fromAssetImage(
         ImageConfiguration(
@@ -51,8 +50,10 @@ class SpecimensMapState extends State<SpecimensMap> {
       icon: icon,
       markerId: new MarkerId("xxxxx"),
       position: latLng,
-      infoWindow: InfoWindow(title: "xxx", snippet: '*'),
-      onTap: () {},
+      onTap: () {
+        Navigator.pushNamed(context, '/specimens/view',
+            arguments: {'id': json['id'], 'title': json['title']});
+      },
     );
     setState(() {
       markers.add(marker);
