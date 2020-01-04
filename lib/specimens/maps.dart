@@ -18,7 +18,6 @@ class SpecimensMapState extends State<SpecimensMap> {
   GoogleMapController _controller;
 
   Set<Marker> markers = Set<Marker>();
-  Set<Polygon> polygons = Set<Polygon>();
   GoogleMap map;
   int zoom = 14;
 
@@ -35,7 +34,6 @@ class SpecimensMapState extends State<SpecimensMap> {
 
     map = GoogleMap(
         markers: markers,
-        polygons: polygons,
         mapType: MapType.hybrid,
         initialCameraPosition: kspecimen,
         onMapCreated: (GoogleMapController controller) {
@@ -82,14 +80,19 @@ class SpecimensMapState extends State<SpecimensMap> {
         .asUint8List();
   }
 
+  ApiRequest req;
+
   void updateSpecimens() async {
     BitmapDescriptor markerBitmap = BitmapDescriptor.fromBytes(
         await getBytesFromAsset('assets/marker.png', 64));
     BitmapDescriptor clusterBitmap = BitmapDescriptor.fromBytes(
-        await getBytesFromAsset('assets/cluster.png', 64));
+        await getBytesFromAsset('assets/cluster.png', 92));
 
     LatLngBounds bounds = await _controller.getVisibleRegion();
-    ApiRequest.post("/gaia", {
+    if (req != null) {
+      req.abort();
+    }
+    req = ApiRequest.post("/gaia", {
       'action': 'specimens',
       'bounds': {
         'south': bounds.southwest.latitude,
@@ -97,13 +100,11 @@ class SpecimensMapState extends State<SpecimensMap> {
         'north': bounds.northeast.latitude,
         'east': bounds.northeast.longitude,
       },
-      'zoom': zoom,
-      'lng': 'fr'
+      'zoom': zoom
     }, error: (code, json) {
       print(json);
-    }, success: (json) {
+    }, success: (json) async {
       Set<Marker> markers = Set<Marker>();
-      Set<Polygon> polygons = Set<Polygon>();
       for (var item in json['result']) {
         if (item['specimens'] != null) {
           for (final specimen in item['specimens']) {
@@ -124,21 +125,48 @@ class SpecimensMapState extends State<SpecimensMap> {
         }
         if (item['count'] != null) {
           List<LatLng> points = [];
-          for (List polycoord in item['location']['coordinates']) {
-            for (List coord in polycoord) {
-              points.add(LatLng(coord[1], coord[0]));
+          var geo = item['location'];
+          if (geo['type'] == 'MultiPolygon') {
+            for (List polycoords in geo['coordinates']) {
+              for (List polycoord in polycoords) {
+                for (List coord in polycoord) {
+                  points.add(LatLng(coord[1], coord[0]));
+                }
+              }
             }
-
-            Polygon polygon =
-                Polygon(polygonId: new PolygonId('xx'), points: points);
-            polygons.add(polygon);
+          } else if (geo['type'] == 'Polygon') {
+            for (List polycoords in geo['coordinates']) {
+              for (List coord in polycoords) {
+                points.add(LatLng(coord[1], coord[0]));
+              }
+            }
           }
+
+          Marker marker = Marker(
+            icon: clusterBitmap,
+            markerId: new MarkerId("xxxxx"),
+            position: getCenter(points),
+            onTap: () {},
+          );
+          markers.add(marker);
         }
       }
       setState(() {
         this.markers = markers;
-        this.polygons = polygons;
       });
     });
+  }
+
+  LatLng getCenter(List<LatLng> points) {
+    double latitude = 0;
+    double longitude = 0;
+    int length = points.length;
+
+    for (LatLng point in points) {
+      latitude += point.latitude;
+      longitude += point.longitude;
+    }
+
+    return new LatLng(latitude / length, longitude / length);
   }
 }
