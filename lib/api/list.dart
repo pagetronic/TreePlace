@@ -11,7 +11,10 @@ class ListApi extends StatefulWidget {
   ListApi(this.state);
 
   static ListApi get(String url, Widget Function(dynamic) builder,
-      {Function(dynamic) first, Map<String, String> params, String key}) {
+      {Function(dynamic) first,
+      Function(dynamic) last,
+      Map<String, String> params,
+      String key}) {
     ListApiState state;
     state = new ListApiState(builder, (paging) {
       if (params == null) {
@@ -25,7 +28,7 @@ class ListApi extends StatefulWidget {
       }, error: (code, json) {
         state.error();
       });
-    }, first: first);
+    }, first: first, last: last);
     return new ListApi(state);
   }
 
@@ -42,16 +45,18 @@ class ListApiState extends BaseState<ListApi> {
   Widget Function(dynamic) builder;
   Function(String) getNext;
   Function(dynamic) first;
+  Function(dynamic) last;
   bool loading = true;
 
   ListApiState(Widget Function(dynamic) builder, Function(String) getNext,
-      {Function(dynamic) first}) {
+      {Function(dynamic) first, Function(dynamic) last}) {
     this.builder = builder;
     this.getNext = (paging) {
       loading = true;
       getNext(paging);
     };
     this.first = first;
+    this.last = last;
     getNext(null);
   }
 
@@ -61,7 +66,8 @@ class ListApiState extends BaseState<ListApi> {
         itemCount: result.length +
             (result.length > 0 && result.last['@next'] != null || loading
                 ? 1
-                : 0),
+                : 0) +
+            (last != null ? 1 : 0),
         itemBuilder: (context, index) {
           if (index == Math.max(0, result.length - scrolldist) &&
               result.length > 0 &&
@@ -69,18 +75,23 @@ class ListApiState extends BaseState<ListApi> {
             getNext(result.last['@next']);
           }
 
-          if (index >= result.length && loading) {
+          if (index == result.length && loading) {
             return Center(
                 child: CircularProgressIndicator(), heightFactor: 3.5);
           }
 
           if (result.length == 0 && !loading) {
-            return first == null ? Center(child: Text("Empty")) : Center();
+            return first == null ? Center(child: Text("Empty")) : null;
           }
-
-          return (first != null && index == 0)
-              ? first(result[0])
-              : builder(result[index]);
+          if (first != null && index == 0) {
+            return first(result[0]);
+          } else if (last != null && index == result.length) {
+            return last(result[0]);
+          } else if (index < result.length) {
+            return builder(result[index]);
+          } else {
+            return null;
+          }
         });
   }
 
