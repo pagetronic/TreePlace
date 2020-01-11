@@ -1,5 +1,3 @@
-import 'dart:html';
-
 import 'package:agroneo_treeplace/api/list.dart';
 import 'package:agroneo_treeplace/ui/inputs.dart';
 import 'package:agroneo_treeplace/ui/widgets.dart';
@@ -77,5 +75,5 @@ threadReply(context, theme, {String id}) {
   return Card(
       child: Padding(
           padding: EdgeInsets.all(8.0),
-          child: Column(children: <Widget>[TextField()])));
+          child: Column(children: <Widget>[TextObjects.getTextarea()])));
 }
