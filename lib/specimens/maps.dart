@@ -160,13 +160,13 @@ class SpecimensMapState extends State<SpecimensMap> {
   LatLng getCenter(List<LatLng> points) {
     double latitude = 0;
     double longitude = 0;
-    int length = points.length;
+    int n = points.length;
 
     for (LatLng point in points) {
       latitude += point.latitude;
       longitude += point.longitude;
     }
 
-    return new LatLng(latitude / length, longitude / length);
+    return new LatLng(latitude / n, longitude / n);
   }
 }
