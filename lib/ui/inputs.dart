@@ -1,3 +1,4 @@
+import 'package:agroneo_treeplace/api/docs.dart';
 import 'package:flutter/material.dart';
 
 // Define a custom Form widget.
@@ -26,7 +27,8 @@ class TextObjectsState extends State<TextObjects> {
       toolbarOptions: ToolbarOptions(copy: true, cut: true, paste: true),
     );
 
-    var obj = Column(children: <Widget>[
+    var obj =
+        Column(mainAxisAlignment: MainAxisAlignment.start, children: <Widget>[
       area,
       SingleChildScrollView(
           scrollDirection: Axis.horizontal,
@@ -43,7 +45,9 @@ class TextObjectsState extends State<TextObjects> {
               OutlineButton(
                 padding: EdgeInsets.all(0.0),
                 child: Text('doc'),
-                onPressed: null,
+                onPressed: Documents.upload((json) {
+
+                }),
               ),
               OutlineButton(
                 padding: EdgeInsets.all(0.0),
@@ -54,7 +58,6 @@ class TextObjectsState extends State<TextObjects> {
                 },
               ),
               OutlineButton(
-                padding: EdgeInsets.all(0.0),
                 child: Text('italic',
                     style: TextStyle(fontStyle: FontStyle.italic)),
                 onPressed: () {

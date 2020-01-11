@@ -6,6 +6,7 @@ final redirectUri = 'agroneo-auth://';
 final scopes = 'email,gaia,forums,threads';
 final tokenUrl = 'https://api.agroneo.com/token';
 final apiUrl = 'https://api.agroneo.com';
+final upSocket = 'wss://api.agroneo.com/up';
 final authDomain = () {
   var domain = 'en.agroneo.com';
   String lng = Locale.cachedLocaleString;
