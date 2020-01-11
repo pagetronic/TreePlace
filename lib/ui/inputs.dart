@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 // Define a custom Form widget.
 class TextObjects extends StatefulWidget {
   TextObjectsState state;
+  TextEditingController controller = TextEditingController();
 
   @override
   TextObjectsState createState() {
@@ -11,21 +12,18 @@ class TextObjects extends StatefulWidget {
   }
 
   String text() {
-    return state.controller.text;
+    return controller.text;
   }
 }
 
 class TextObjectsState extends State<TextObjects> {
-  final controller = TextEditingController();
-
   @override
   Widget build(BuildContext context) {
     TextField area = TextField(
-      controller: controller,
+      controller: widget.controller,
       minLines: 3,
       maxLines: 10000,
-      toolbarOptions:
-          ToolbarOptions(copy: true, cut: true, paste: true, selectAll: true),
+      toolbarOptions: ToolbarOptions(copy: true, cut: true, paste: true),
     );
 
     var obj = Column(children: <Widget>[
@@ -34,33 +32,41 @@ class TextObjectsState extends State<TextObjects> {
           scrollDirection: Axis.horizontal,
           child: Row(
             children: <Widget>[
-              RaisedButton(
-                padding: const EdgeInsets.all(0.0),
-                child: new Text('link',
+              OutlineButton(
+                padding: EdgeInsets.all(0.0),
+                child: Text('link',
                     style: TextStyle(decoration: TextDecoration.underline)),
+                onPressed: () {
+                  insert("[url]", "[/url]");
+                },
+              ),
+              OutlineButton(
+                padding: EdgeInsets.all(0.0),
+                child: Text('doc'),
                 onPressed: null,
               ),
-              RaisedButton(
-                padding: const EdgeInsets.all(0.0),
-                child: new Text('doc'),
-                onPressed: null,
+              OutlineButton(
+                padding: EdgeInsets.all(0.0),
+                child:
+                    Text('bold', style: TextStyle(fontWeight: FontWeight.bold)),
+                onPressed: () {
+                  insert("[bold]", "[/bold]");
+                },
               ),
-              RaisedButton(
-                padding: const EdgeInsets.all(0.0),
-                child: new Text('bold',
-                    style: TextStyle(fontWeight: FontWeight.bold)),
-                onPressed: null,
-              ),
-              RaisedButton(
-                padding: const EdgeInsets.all(0.0),
-                child: new Text('italic',
+              OutlineButton(
+                padding: EdgeInsets.all(0.0),
+                child: Text('italic',
                     style: TextStyle(fontStyle: FontStyle.italic)),
-                onPressed: null,
+                onPressed: () {
+                  insert("[italic]", "[/italic]");
+                },
               ),
-              RaisedButton(
-                padding: const EdgeInsets.all(0.0),
-                child: new Text('quote'),
-                onPressed: null,
+              OutlineButton(
+                padding: EdgeInsets.all(0.0),
+                child: Text('quote'),
+                onPressed: () {
+                  insert("[quote]", "[/quote]");
+                },
               )
             ],
           ))
@@ -70,7 +76,18 @@ class TextObjectsState extends State<TextObjects> {
 
   @override
   void dispose() {
-    controller.dispose();
+    widget.controller.dispose();
     super.dispose();
+  }
+
+  void insert(String before, String after) {
+    var selection = widget.controller.selection;
+    String old = widget.controller.text;
+    String newText = old.substring(0, selection.start) +
+        before +
+        old.substring(selection.start, selection.end) +
+        after +
+        old.substring(selection.end, old.length);
+    widget.controller.text = newText;
   }
 }

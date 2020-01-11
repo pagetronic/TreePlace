@@ -38,7 +38,7 @@ class ThreadViewState extends BaseState<ThreadView> {
                 user: json['user']);
           },
           last: (json) {
-            return threadReply(widget.ctx, theme, id: json['id']);
+            return threadReply(context, theme, id: json['id']);
           }),
     );
   }
