@@ -38,7 +38,7 @@ class ThreadViewState extends BaseState<ThreadView> {
                 user: json['user']);
           },
           last: (json) {
-            return threadReply(context, theme, id: json['id']);
+            return threadReply(widget.ctx, theme, id: json['id']);
           }),
     );
   }
@@ -71,9 +71,23 @@ postTile(context, theme, {String id, String text, dynamic user}) {
   ));
 }
 
-threadReply(context, theme, {String id}) {
+threadReply(ctx, theme, {String id}) {
+  TextObjects area = TextObjects();
   return Card(
-      child: Padding(
+      child:
+      Padding(
           padding: EdgeInsets.all(8.0),
-          child: Column(children: <Widget>[TextObjects.getTextarea()])));
+          child: Column(children: <Widget>[
+            area,
+            RaisedButton(
+              padding: const EdgeInsets.all(0.0),
+              child: new Text('submit',
+                  style: TextStyle(fontWeight: FontWeight.bold)),
+              onPressed: () {
+                print(area.text());
+                /*  ApiRequest.post("/threads", {'id': id, 'text': area.text()},
+                    success: (json) {}, error: (code, json) {});*/
+              },
+            ),
+          ])));
 }
