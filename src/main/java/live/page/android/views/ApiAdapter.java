@@ -73,6 +73,10 @@ public abstract class ApiAdapter extends BaseAdapter {
         });
     }
 
+    protected Json getData(final Json data) {
+        return data;
+    }
+
     public void get(final String url) {
 
         scroll = null;
@@ -82,7 +86,8 @@ public abstract class ApiAdapter extends BaseAdapter {
         req = ApiAsync.get(context, url, new ApiResult() {
 
             @Override
-            public void success(final Json data) {
+            public void success(final Json data_) {
+                Json data = getData(data_);
                 items.remove(progress);
                 items.addAll(data.getListJson("result"));
                 final String next = data.getJson("paging").getString("next");

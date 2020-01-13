@@ -3,18 +3,18 @@
             xmlns:app="http://schemas.android.com/apk/res-auto"
             xmlns:tools="http://schemas.android.com/tools"
             android:id="@+id/mobile_navigation"
-            app:startDestination="@+id/nav_search">
+            app:startDestination="@+id/nav_specimens">
 
     <fragment
-            android:id="@+id/nav_search"
+            android:id="@+id/nav_specimens"
             android:name="com.agroneo.droid.specimens.SpecimensFragment"
-            android:label="@string/menu_home"
+            android:label="@string/menu_specimens"
             tools:layout="@layout/specimens_list"/>
 
     <fragment
-            android:id="@+id/nav_creation"
-            android:name="com.agroneo.droid.creation.CreationFragment"
-            android:label="@string/menu_gallery"
-            tools:layout="@layout/fragment_creation"/>
+            android:id="@+id/nav_forums"
+            android:name="com.agroneo.droid.threads.ForumsFragment"
+            android:label="@string/menu_forums"
+            tools:layout="@layout/threads_list"/>
 
 </navigation>
