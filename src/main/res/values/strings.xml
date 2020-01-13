@@ -3,7 +3,7 @@
     <string name="account_type">com.agroneo</string>
 
     <string name="apiUrl">https://api.agroneo.com</string>
-    <string name="schemeAuth">agroneo-oauth://</string>
+    <string name="schemeAuth">agroneo-oauth</string>
     <string name="scopes">email,gaia,threads</string>
 
     <string name="upSocket">wss://api.agroneo.com/up</string>

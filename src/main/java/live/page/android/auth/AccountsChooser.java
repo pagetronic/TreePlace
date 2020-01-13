@@ -78,6 +78,7 @@ public class AccountsChooser {
                                 @Override
                                 public void onClick(View v) {
                                     Accounts.authBrowser(activity);
+                                    dialog.cancel();
                                 }
                             });
 

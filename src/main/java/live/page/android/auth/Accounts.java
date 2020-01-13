@@ -139,32 +139,6 @@ public class Accounts {
         }
     }
 
-    public static void authBrowser(Context ctx) {
-
-        String url = getDomain() + "auth?" +
-                "scope=" + ctx.getString(R.string.scopes) +
-                "&response_type=code" +
-                "&client_id=" + ctx.getString(R.string.client_id) +
-                "&redirect_uri=" + ctx.getString(R.string.schemeAuth);
-
-        CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
-        builder.setColorScheme(CustomTabsIntent.COLOR_SCHEME_DARK);
-        builder.setToolbarColor(ctx.getColor(R.color.colorGreen));
-        CustomTabsIntent customTabsIntent = builder.build();
-        customTabsIntent.launchUrl(ctx, Uri.parse(url));
-    }
-
-
-    public static Intent getAuthIntent(Context ctx) {
-
-        String url = getDomain() + "auth?" +
-                "scope=" + ctx.getString(R.string.scopes) +
-                "&response_type=code" +
-                "&client_id=" + ctx.getString(R.string.client_id) +
-                "&redirect_uri=" + ctx.getString(R.string.schemeAuth);
-
-        return new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-    }
 
     public static String getDomain() {
 
@@ -182,14 +156,43 @@ public class Accounts {
 
     }
 
+    public static void authBrowser(Context ctx) {
+
+        String url = getDomain() + "auth?" +
+                "scope=" + ctx.getString(R.string.scopes) +
+                "&response_type=code" +
+                "&client_id=" + ctx.getString(R.string.client_id) +
+                "&redirect_uri=" + ctx.getString(R.string.schemeAuth) + "://";
+
+        CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
+        builder.setColorScheme(CustomTabsIntent.COLOR_SCHEME_DARK);
+        builder.setToolbarColor(ctx.getColor(R.color.colorGreen));
+        CustomTabsIntent customTabsIntent = builder.build();
+        customTabsIntent.intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+        customTabsIntent.intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        customTabsIntent.launchUrl(ctx, Uri.parse(url));
+    }
+
+
+    public static Intent getAuthIntent(Context ctx) {
+
+        String url = getDomain() + "auth?" +
+                "scope=" + ctx.getString(R.string.scopes) +
+                "&response_type=code" +
+                "&client_id=" + ctx.getString(R.string.client_id) +
+                "&redirect_uri=" + ctx.getString(R.string.schemeAuth) + "://";
+
+        return new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+    }
+
     public static void intentCode(final Activity activity) {
 
         Intent intent = activity.getIntent();
         String action = intent.getAction();
-        if (action != null) {
+        if (action != null && action.equals(Intent.ACTION_VIEW)) {
             Uri data = intent.getData();
-            if (action.equals(Intent.ACTION_VIEW) && data != null && data.getScheme().equals(activity.getString(R.string.schemeAuth))) {
-                String code = data.getHost();
+            if (data != null && data.getScheme().equals(activity.getString(R.string.schemeAuth))) {
+                String code = data.getQueryParameter("code");
                 if (consumed.contains(code)) {
                     return;
                 }
