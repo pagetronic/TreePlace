@@ -7,13 +7,13 @@
 
     <fragment
             android:id="@+id/nav_search"
-            android:name="com.agroneo.treeplace.specimens.SpecimensFragment"
+            android:name="com.agroneo.droid.specimens.SpecimensFragment"
             android:label="@string/menu_home"
             tools:layout="@layout/specimens_list"/>
 
     <fragment
             android:id="@+id/nav_creation"
-            android:name="com.agroneo.treeplace.creation.CreationFragment"
+            android:name="com.agroneo.droid.creation.CreationFragment"
             android:label="@string/menu_gallery"
             tools:layout="@layout/fragment_creation"/>
 

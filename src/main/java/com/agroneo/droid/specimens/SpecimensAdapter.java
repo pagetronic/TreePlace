@@ -1,4 +1,4 @@
-package com.agroneo.treeplace.specimens;
+package com.agroneo.droid.specimens;
 
 import android.app.Activity;
 import android.content.Context;
@@ -14,7 +14,7 @@ import android.widget.TextView;
 
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable;
 
-import com.agroneo.treeplace.R;
+import com.agroneo.droid.R;
 import com.bumptech.glide.Glide;
 
 import live.page.android.api.Json;

@@ -3,8 +3,8 @@ package live.page.android.api;
 import android.accounts.AccountManager;
 import android.content.Context;
 
-import com.agroneo.treeplace.BuildConfig;
-import com.agroneo.treeplace.R;
+import com.agroneo.droid.BuildConfig;
+import com.agroneo.droid.R;
 
 import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;

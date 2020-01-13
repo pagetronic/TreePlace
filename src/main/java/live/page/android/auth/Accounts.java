@@ -11,7 +11,9 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 
-import com.agroneo.treeplace.R;
+import androidx.browser.customtabs.CustomTabsIntent;
+
+import com.agroneo.droid.R;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -137,12 +139,30 @@ public class Accounts {
         }
     }
 
-    public static Intent getAuthIntent(Context ctx) {
+    public static void authBrowser(Context ctx) {
 
-        String url = getDomain() + "auth?" + "scope=email,gaia" +
+        String url = getDomain() + "auth?" +
+                "scope=" + ctx.getString(R.string.scopes) +
                 "&response_type=code" +
                 "&client_id=" + ctx.getString(R.string.client_id) +
-                "&scheme=" + ctx.getString(R.string.scheme_auth);
+                "&redirect_uri=" + ctx.getString(R.string.schemeAuth);
+
+        CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
+        builder.setColorScheme(CustomTabsIntent.COLOR_SCHEME_DARK);
+        builder.setToolbarColor(ctx.getColor(R.color.colorGreen));
+        CustomTabsIntent customTabsIntent = builder.build();
+        customTabsIntent.launchUrl(ctx, Uri.parse(url));
+    }
+
+
+    public static Intent getAuthIntent(Context ctx) {
+
+        String url = getDomain() + "auth?" +
+                "scope=" + ctx.getString(R.string.scopes) +
+                "&response_type=code" +
+                "&client_id=" + ctx.getString(R.string.client_id) +
+                "&redirect_uri=" + ctx.getString(R.string.schemeAuth);
+
         return new Intent(Intent.ACTION_VIEW, Uri.parse(url));
     }
 
@@ -168,7 +188,7 @@ public class Accounts {
         String action = intent.getAction();
         if (action != null) {
             Uri data = intent.getData();
-            if (action.equals(Intent.ACTION_VIEW) && data != null && data.getScheme().equals(activity.getString(R.string.scheme_auth))) {
+            if (action.equals(Intent.ACTION_VIEW) && data != null && data.getScheme().equals(activity.getString(R.string.schemeAuth))) {
                 String code = data.getHost();
                 if (consumed.contains(code)) {
                     return;

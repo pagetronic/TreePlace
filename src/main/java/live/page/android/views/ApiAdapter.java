@@ -8,7 +8,7 @@ import android.widget.BaseAdapter;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.agroneo.treeplace.R;
+import com.agroneo.droid.R;
 
 import java.util.ArrayList;
 import java.util.List;

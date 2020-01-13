@@ -1,4 +1,4 @@
-package com.agroneo.treeplace.specimens;
+package com.agroneo.droid.specimens;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -10,7 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.agroneo.treeplace.R;
+import com.agroneo.droid.R;
 
 public class SpecimensFragment extends Fragment {
 

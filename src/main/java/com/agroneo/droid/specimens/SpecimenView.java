@@ -1,10 +1,10 @@
-package com.agroneo.treeplace.specimens;
+package com.agroneo.droid.specimens;
 
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.agroneo.treeplace.R;
+import com.agroneo.droid.R;
 
 public class SpecimenView extends AppCompatActivity {
     @Override

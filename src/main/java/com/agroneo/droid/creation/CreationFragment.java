@@ -1,4 +1,4 @@
-package com.agroneo.treeplace.creation;
+package com.agroneo.droid.creation;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -12,7 +12,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
-import com.agroneo.treeplace.R;
+import com.agroneo.droid.R;
 
 public class CreationFragment extends Fragment {
 

@@ -13,7 +13,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.agroneo.treeplace.R;
+import com.agroneo.droid.R;
 import com.bumptech.glide.Glide;
 
 public class AccountsChooser {
@@ -77,14 +77,7 @@ public class AccountsChooser {
                             view.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
-                                    if (position >= accounts.length) {
-                                        activity.startActivity(Accounts.getAuthIntent(activity));
-                                        dialog.cancel();
-                                    } else {
-                                        AuthService.setAccountActive(activity, accounts[position].name);
-                                        dialog.cancel();
-                                        activity.recreate();
-                                    }
+                                    Accounts.authBrowser(activity);
                                 }
                             });
 
@@ -111,7 +104,7 @@ public class AccountsChooser {
                         }
                     });
                 } else {
-                    activity.startActivity(Accounts.getAuthIntent(activity));
+                    Accounts.authBrowser(activity);
                 }
             }
         });

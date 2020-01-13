@@ -1,8 +1,13 @@
 <resources>
     <string name="app_name">TreePlace</string>
     <string name="account_type">com.agroneo</string>
-    <string name="scheme_auth">agroneo-auth</string>
 
+    <string name="apiUrl">https://api.agroneo.com</string>
+    <string name="schemeAuth">agroneo-oauth://</string>
+    <string name="scopes">email,gaia,threads</string>
+
+    <string name="upSocket">wss://api.agroneo.com/up</string>
+    <string name="socket">wss://api.agroneo.com/socket</string>
 
     <string name="client_id">QULU2HS2DY2LK663AONAMELHYQC3MG6JUW9QAF6NV1M49YQ7QM0P</string>
     <string name="client_secret">11I5G3W36JWZ940IS4R78ZCAVH8SIIQJJ0Q4P61EWAC64MEJ1IT4</string>

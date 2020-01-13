@@ -1,4 +1,4 @@
-package com.agroneo.treeplace.specimens;
+package com.agroneo.droid.specimens;
 
 import android.Manifest;
 import android.content.Context;
@@ -15,7 +15,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.agroneo.treeplace.R;
+import com.agroneo.droid.R;
 
 import live.page.android.sys.LocationUtils;
 

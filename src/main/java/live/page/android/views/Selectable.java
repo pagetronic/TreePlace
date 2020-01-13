@@ -16,7 +16,7 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 
-import com.agroneo.treeplace.R;
+import com.agroneo.droid.R;
 
 import java.util.ArrayList;
 import java.util.List;

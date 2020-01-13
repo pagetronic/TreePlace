@@ -1,4 +1,4 @@
-package com.agroneo.treeplace;
+package com.agroneo.droid;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,7 +15,7 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
-import com.agroneo.treeplace.specimens.SpecimenCreator;
+import com.agroneo.droid.specimens.SpecimenCreator;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 
