@@ -1,4 +1,4 @@
-package com.agroneo.droid.creation;
+package com.agroneo.droid.specimens.creation;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;

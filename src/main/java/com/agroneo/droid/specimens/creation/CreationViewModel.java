@@ -1,4 +1,4 @@
-package com.agroneo.droid.creation;
+package com.agroneo.droid.specimens.creation;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
