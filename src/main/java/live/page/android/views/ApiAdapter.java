@@ -44,6 +44,7 @@ public abstract class ApiAdapter extends BaseAdapter {
             last = !getClass().getMethod("getLast").isAnnotationPresent(Overridable.class);
         } catch (Exception ignore) {
         }
+
     }
 
     public void post(final String url, final Json data) {
@@ -140,7 +141,7 @@ public abstract class ApiAdapter extends BaseAdapter {
 
     @Override
     public Object getItem(int position) {
-        if (items != null && items.size() > position) {
+        if (items != null && position >= 0 && items.size() > position) {
             return items.get(position);
         }
         return null;
@@ -160,7 +161,7 @@ public abstract class ApiAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        Json item = (Json) getItem(position);
+        Json item = (Json) getItem(position - (first ? 1 : 0));
 
         if (item != null && item.getBoolean("progress", false)) {
             ProgressBar progress = new ProgressBar(context);
@@ -180,8 +181,9 @@ public abstract class ApiAdapter extends BaseAdapter {
             return new View(context);
         }
 
-        if (convertView == null || convertView instanceof ProgressBar) {
+        if (convertView == null || convertView.getId() != R.id.original) {
             convertView = LayoutInflater.from(context).inflate(resource, null);
+            convertView.setId(R.id.original);
         }
 
         if (scroll != null && position >= Math.max(1, getCount() - 3)) {

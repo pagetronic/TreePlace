@@ -19,14 +19,17 @@ import live.page.android.views.ApiAdapter;
 public class ThreadsView extends AppCompatActivity {
 
 
-    private ApiAdapter adapter = new ThreadAdapter();
+    private ApiAdapter adapter = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.thread_view);
+        if (adapter == null) {
+            adapter = new ThreadAdapter();
+            adapter.get("/threads/" + getIntent().getStringExtra("id"));
+        }
         ((ListView) findViewById(R.id.thread)).setAdapter(adapter);
-        adapter.get("/threads/" + getIntent().getStringExtra("id"));
     }
 
     private class ThreadAdapter extends ApiAdapter {
