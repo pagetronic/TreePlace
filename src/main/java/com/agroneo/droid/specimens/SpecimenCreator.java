@@ -13,13 +13,12 @@ import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import com.agroneo.droid.R;
 
 import live.page.android.sys.LocationUtils;
+import live.page.android.sys.PageActivity;
 
-public class SpecimenCreator extends AppCompatActivity implements LocationListener {
+public class SpecimenCreator extends PageActivity implements LocationListener {
 
     private int ACCESS_LOCATION = 105;
     private LocationManager lm = null;

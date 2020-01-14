@@ -6,7 +6,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.agroneo.droid.R;
 
-public class SpecimenView extends AppCompatActivity {
+import live.page.android.sys.PageActivity;
+
+public class SpecimenView extends PageActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
