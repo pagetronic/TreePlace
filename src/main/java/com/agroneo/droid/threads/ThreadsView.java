@@ -84,6 +84,8 @@ public class ThreadsView extends AppCompatActivity {
 
         @Override
         protected Json getData(final Json data) {
+
+            getSupportActionBar().setTitle(data.getString("title"));
             this.data = data;
             return data.getJson("posts");
         }

@@ -51,6 +51,6 @@
     <string name="search">search</string>
     <string name="network_error">Network error</string>
     <string name="authors">Authors</string>
-    <string name="thread_view">Threads View</string>
+    <string name="hellip">…</string>
     <string name="post_reply">Post a reply</string>
 </resources>

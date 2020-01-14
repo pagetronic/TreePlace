@@ -52,7 +52,7 @@
         <activity
             android:name="com.agroneo.droid.threads.ThreadsView"
             android:configChanges="orientation|screenSize"
-            android:label="@string/thread_view" />
+            android:label="@string/hellip" />
 
         <service
             android:name="live.page.android.auth.AuthService"
