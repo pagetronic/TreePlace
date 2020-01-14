@@ -10,15 +10,14 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import com.agroneo.droid.R;
 import com.bumptech.glide.Glide;
 
 import live.page.android.api.Json;
+import live.page.android.sys.PageActivity;
 import live.page.android.views.ApiAdapter;
 
-public class ThreadsView extends AppCompatActivity {
+public class ThreadsView extends PageActivity {
 
 
     private View firstView = null;
