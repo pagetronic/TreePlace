@@ -135,8 +135,7 @@ public abstract class ApiAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-
-        return items.size() + (first ? 1 : 0) + (last ? 1 : 0);
+        return items.size() + (items.size() == 0 ? 0 : ((first ? 1 : 0) + (last ? 1 : 0)));
     }
 
     @Override
@@ -162,18 +161,23 @@ public abstract class ApiAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
 
         Json item = (Json) getItem(position);
+
+        if (item != null && item.getBoolean("progress", false)) {
+            ProgressBar progress = new ProgressBar(context);
+            progress.setPadding(5, 25, 5, 25);
+            return progress;
+        }
+
         if (first && position == 0) {
             return getFirst();
         }
 
-        if (last && position == getCount()) {
+        if (last && position == getCount() - 1) {
             return getLast();
         }
 
-        if (item == null || item.getBoolean("progress", false)) {
-            ProgressBar progress = new ProgressBar(context);
-            progress.setPadding(5, 25, 5, 25);
-            return progress;
+        if (item == null) {
+            return new View(context);
         }
 
         if (convertView == null || convertView instanceof ProgressBar) {
