@@ -22,9 +22,9 @@ import live.page.android.api.Json;
 
 public abstract class ApiAdapter extends BaseAdapter {
 
+    private final boolean first = controllable("getFirst");
+    private final boolean last = controllable("getLast");
     protected Context context;
-    private boolean first = false;
-    private boolean last = false;
     private List<Json> items = new ArrayList<>();
     private Json progress = new Json("progress", true);
     private ScrollEvent scroll = null;
@@ -39,12 +39,6 @@ public abstract class ApiAdapter extends BaseAdapter {
         this.context = context;
         this.resource = resource;
         items.add(progress);
-        try {
-            first = !getClass().getMethod("getFirst").isAnnotationPresent(Overridable.class);
-            last = !getClass().getMethod("getLast").isAnnotationPresent(Overridable.class);
-        } catch (Exception ignore) {
-        }
-
     }
 
     public void post(final String url, final Json data) {
@@ -193,16 +187,6 @@ public abstract class ApiAdapter extends BaseAdapter {
         return getView(convertView, item);
     }
 
-    @Overridable
-    public View getFirst() {
-        return null;
-    }
-
-    @Overridable
-    public View getLast() {
-        return null;
-    }
-
     public void setContext(Context context) {
         this.context = context;
     }
@@ -216,12 +200,31 @@ public abstract class ApiAdapter extends BaseAdapter {
         notifyDataSetChanged();
     }
 
+    @Controlable
+    public View getFirst() {
+        return null;
+    }
+
+    @Controlable
+    public View getLast() {
+        return null;
+    }
+
+    private boolean controllable(String method) {
+        try {
+            return !getClass().getMethod(method).isAnnotationPresent(Controlable.class);
+        } catch (NoSuchMethodException | SecurityException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+
     private interface ScrollEvent {
         void doNext();
     }
 
-
     @Retention(RetentionPolicy.RUNTIME)
-    private @interface Overridable {
+    private @interface Controlable {
     }
 }
