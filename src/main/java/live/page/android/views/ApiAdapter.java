@@ -10,6 +10,8 @@ import android.widget.Toast;
 
 import com.agroneo.droid.R;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,12 +23,13 @@ import live.page.android.api.Json;
 public abstract class ApiAdapter extends BaseAdapter {
 
     protected Context context;
+    private boolean first = false;
+    private boolean last = false;
     private List<Json> items = new ArrayList<>();
     private Json progress = new Json("progress", true);
     private ScrollEvent scroll = null;
     private int resource;
     private ApiRequest req = null;
-
 
     public ApiAdapter(Context context) {
         this(context, R.layout.selectable_option);
@@ -36,6 +39,11 @@ public abstract class ApiAdapter extends BaseAdapter {
         this.context = context;
         this.resource = resource;
         items.add(progress);
+        try {
+            first = !getClass().getMethod("getFirst").isAnnotationPresent(Overridable.class);
+            last = !getClass().getMethod("getLast").isAnnotationPresent(Overridable.class);
+        } catch (Exception ignore) {
+        }
     }
 
     public void post(final String url, final Json data) {
@@ -127,17 +135,25 @@ public abstract class ApiAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        return items.size();
+
+        return items.size() + (first ? 1 : 0) + (last ? 1 : 0);
     }
 
     @Override
     public Object getItem(int position) {
-        return items.get(position);
+        if (items != null && items.size() > position) {
+            return items.get(position);
+        }
+        return null;
     }
 
     @Override
     public long getItemId(int position) {
-        return items.get(position).hashCode();
+        Object item = getItem(position);
+        if (item == null) {
+            return -1;
+        }
+        return item.hashCode();
     }
 
     public abstract View getView(View view, Json item);
@@ -146,8 +162,15 @@ public abstract class ApiAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
 
         Json item = (Json) getItem(position);
+        if (first && position == 0) {
+            return getFirst();
+        }
 
-        if (item.getBoolean("progress", false)) {
+        if (last && position == getCount()) {
+            return getLast();
+        }
+
+        if (item == null || item.getBoolean("progress", false)) {
             ProgressBar progress = new ProgressBar(context);
             progress.setPadding(5, 25, 5, 25);
             return progress;
@@ -162,6 +185,16 @@ public abstract class ApiAdapter extends BaseAdapter {
         }
 
         return getView(convertView, item);
+    }
+
+    @Overridable
+    public View getFirst() {
+        return null;
+    }
+
+    @Overridable
+    public View getLast() {
+        return null;
     }
 
     public void setContext(Context context) {
@@ -179,5 +212,10 @@ public abstract class ApiAdapter extends BaseAdapter {
 
     private interface ScrollEvent {
         void doNext();
+    }
+
+
+    @Retention(RetentionPolicy.RUNTIME)
+    private @interface Overridable {
     }
 }
