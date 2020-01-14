@@ -16,6 +16,8 @@ import android.widget.TextView;
 import com.agroneo.droid.R;
 import com.bumptech.glide.Glide;
 
+import live.page.android.api.Json;
+
 public class AccountsChooser {
 
     public static void make(final Activity activity) {
@@ -25,7 +27,8 @@ public class AccountsChooser {
         final String account_name = Accounts.getAccountNameActive(activity);
 
         if (account_name != null) {
-            String logo = Accounts.getAccountData(activity, account_name, "avatar");
+
+            String logo = Accounts.getProfile(activity, account_name).getString("logo");
             if (logo != null) {
                 Glide.with(activity).load(Uri.parse(logo + "@128"))
                         .error(R.drawable.logo)
@@ -91,12 +94,11 @@ public class AccountsChooser {
                                 text.setText(R.string.new_account);
                                 return view;
                             }
+                            Json profile = Accounts.getProfile(activity, account_name);
+                            text.setText(profile.getString("name"));
+                            email.setText(profile.getString("email"));
 
-                            text.setText(Accounts.getAccountData(activity, accounts[position].name, "name"));
-                            email.setText(Accounts.getAccountData(activity, accounts[position].name, "email"));
-                            String logo = Accounts.getAccountData(activity, accounts[position].name, "avatar");
-
-                            Glide.with(activity).load(Uri.parse(logo + "@128"))
+                            Glide.with(activity).load(Uri.parse(profile.getString("logo") + "@128"))
                                     .error(R.drawable.logo)
                                     .circleCrop()
                                     .into(avatar);

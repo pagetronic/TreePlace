@@ -103,10 +103,7 @@ public class AuthService extends Service {
                 if (rez != null && rez.getCode() == 200) {
                     Json data = rez.getResult();
 
-                    am.setUserData(account, "id", data.getId());
-                    am.setUserData(account, "email", data.getString("email"));
-                    am.setUserData(account, "avatar", data.getString("logo"));
-                    am.setUserData(account, "name", data.getString("name"));
+                    am.setUserData(account, "profile", data.toString(true));
 
                     final Bundle result = new Bundle();
                     result.putString(AccountManager.KEY_ACCOUNT_NAME, account.name);

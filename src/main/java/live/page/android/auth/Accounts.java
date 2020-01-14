@@ -44,11 +44,7 @@ public class Accounts {
                 am.setPassword(account, refresh_token);
                 am.setAuthToken(account, tokenType, access_token);
                 AuthService.setAccountActive(ctx, email);
-
-                am.setUserData(account, "id", data.getId());
-                am.setUserData(account, "email", data.getString("email"));
-                am.setUserData(account, "avatar", data.getString("logo"));
-                am.setUserData(account, "name", data.getString("name"));
+                am.setUserData(account, "profile", data.toString(true));
                 onresult.success(data);
             }
 
@@ -110,12 +106,19 @@ public class Accounts {
         token.get(null);
     }
 
-    public static String getAccountData(Context ctx, String account_name, String key) {
-        AccountManager am = AccountManager.get(ctx);
-        for (Account account : am.getAccountsByType(ctx.getResources().getString(R.string.account_type))) {
-            if (account.name.equals(account_name)) {
-                return am.getUserData(account, key);
+
+    public static Json getProfile(Context ctx, String account_name) {
+        try {
+            AccountManager am = AccountManager.get(ctx);
+
+            for (Account account : am.getAccountsByType(ctx.getResources().getString(R.string.account_type))) {
+                if (account.name.equals(account_name)) {
+                    Json profile = new Json(am.getUserData(account, "profile"));
+                    return profile;
+                }
             }
+        } catch (Exception ignore) {
+
         }
         return null;
     }
