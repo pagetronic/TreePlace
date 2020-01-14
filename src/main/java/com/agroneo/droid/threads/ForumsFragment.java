@@ -15,15 +15,6 @@ import com.agroneo.droid.R;
 public class ForumsFragment extends Fragment {
 
 
-    private ForumAdapter forumAdapter;
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        forumAdapter = new ForumAdapter(getActivity(), R.layout.threads_view);
-        forumAdapter.get("/questions?lng=fr");
-    }
-
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.threads_list, container, false);
     }
@@ -31,7 +22,8 @@ public class ForumsFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
 
-        forumAdapter.setContext(getContext());
+        ForumAdapter forumAdapter = new ForumAdapter(getActivity(), R.layout.threads_view);
+        forumAdapter.get("/questions?lng=fr");
         ((ListView) view.findViewById(R.id.threads)).setAdapter(forumAdapter);
         forumAdapter.notifyDataSetChanged();
     }

@@ -130,7 +130,7 @@ public abstract class ApiAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        return items.size() + (items.size() == 0 ? 0 : ((first ? 1 : 0) + (last ? 1 : 0)));
+        return items.size() + ((first ? 1 : 0) + (last ? 1 : 0));
     }
 
     @Override
@@ -185,10 +185,6 @@ public abstract class ApiAdapter extends BaseAdapter {
         }
 
         return getView(convertView, item);
-    }
-
-    public void setContext(Context context) {
-        this.context = context;
     }
 
     public void clear() {

@@ -3,8 +3,10 @@ package com.agroneo.droid.threads;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -19,22 +21,25 @@ import live.page.android.views.ApiAdapter;
 public class ThreadsView extends AppCompatActivity {
 
 
-    private ApiAdapter adapter = null;
+    private View firstView = null;
+    private View lastView = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.thread_view);
-        if (adapter == null) {
-            adapter = new ThreadAdapter();
-            adapter.get("/threads/" + getIntent().getStringExtra("id"));
-        }
+        final ThreadAdapter adapter = new ThreadAdapter();
         ((ListView) findViewById(R.id.thread)).setAdapter(adapter);
+        adapter.get("/threads/" + getIntent().getStringExtra("id"));
+        final LayoutInflater inflater = getLayoutInflater();
+        firstView = inflater.inflate(R.layout.thread_posts, new LinearLayout(this));
+        lastView = inflater.inflate(R.layout.thread_reply, new LinearLayout(this));
+
     }
 
-    private class ThreadAdapter extends ApiAdapter {
-        private Json data;
 
+    private class ThreadAdapter extends ApiAdapter {
+        private Json data = null;
 
         private ThreadAdapter() {
             super(ThreadsView.this, R.layout.thread_posts);
@@ -45,8 +50,7 @@ public class ThreadsView extends AppCompatActivity {
             if (data == null) {
                 return new View(context);
             }
-            View view = getLayoutInflater().inflate(R.layout.thread_posts, null);
-            return getView(view, data);
+            return getView(firstView, data);
         }
 
         @Override
@@ -54,8 +58,7 @@ public class ThreadsView extends AppCompatActivity {
             if (data == null) {
                 return new View(context);
             }
-            View view = getLayoutInflater().inflate(R.layout.thread_reply, null);
-            return view;
+            return lastView;
         }
 
         @Override

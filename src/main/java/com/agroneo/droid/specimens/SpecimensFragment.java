@@ -14,14 +14,6 @@ import com.agroneo.droid.R;
 
 public class SpecimensFragment extends Fragment {
 
-    private SpecimensAdapter specimensAdapter;
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        specimensAdapter = new SpecimensAdapter(getActivity(), R.layout.specimen_view);
-        specimensAdapter.get("/gaia/specimens");
-    }
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.specimens_list, container, false);
@@ -30,7 +22,8 @@ public class SpecimensFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
 
-        specimensAdapter.setContext(getContext());
+        SpecimensAdapter specimensAdapter = new SpecimensAdapter(getActivity(), R.layout.specimen_view);
+        specimensAdapter.get("/gaia/specimens");
         ((ListView) view.findViewById(R.id.specimens)).setAdapter(specimensAdapter);
         specimensAdapter.notifyDataSetChanged();
     }
