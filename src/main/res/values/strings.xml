@@ -6,6 +6,13 @@
     <string name="schemeAuth">agroneo-oauth</string>
     <string name="scopes">email,gaia,threads</string>
 
+    <string-array name="domains">
+        <item>en@https://en.agroneo.com</item>
+        <item>fr@https://fr.agroneo.com</item>
+        <item>es@https://es.agroneo.com</item>
+        <item>pt@https://pt.agroneo.com</item>
+    </string-array>
+
     <string name="upSocket">wss://api.agroneo.com/up</string>
     <string name="socket">wss://api.agroneo.com/socket</string>
 

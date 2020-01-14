@@ -113,8 +113,7 @@ public class Accounts {
 
             for (Account account : am.getAccountsByType(ctx.getResources().getString(R.string.account_type))) {
                 if (account.name.equals(account_name)) {
-                    Json profile = new Json(am.getUserData(account, "profile"));
-                    return profile;
+                    return new Json(am.getUserData(account, "profile"));
                 }
             }
         } catch (Exception ignore) {
@@ -142,50 +141,45 @@ public class Accounts {
         }
     }
 
-
-    public static String getDomain() {
-
-        String lng = Locale.getDefault().getDisplayLanguage();
-        if (lng.startsWith("fr")) {
-            return "https://fr.agroneo.com/";
-        }
-        if (lng.startsWith("pt")) {
-            return "https://pt.agroneo.com/";
-        }
-        if (lng.startsWith("es")) {
-            return "https://es.agroneo.com/";
-        }
-        return "https://en.agroneo.com/";
-
-    }
-
     public static void authBrowser(Context ctx) {
-
-        String url = getDomain() + "auth?" +
-                "scope=" + ctx.getString(R.string.scopes) +
-                "&response_type=code" +
-                "&client_id=" + ctx.getString(R.string.client_id) +
-                "&redirect_uri=" + ctx.getString(R.string.schemeAuth) + "://";
-
         CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
-        builder.setColorScheme(CustomTabsIntent.COLOR_SCHEME_DARK);
+        builder.setColorScheme(CustomTabsIntent.COLOR_SCHEME_SYSTEM);
         builder.setToolbarColor(ctx.getColor(R.color.colorGreen));
         CustomTabsIntent customTabsIntent = builder.build();
         customTabsIntent.intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
         customTabsIntent.intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        customTabsIntent.launchUrl(ctx, Uri.parse(url));
+        customTabsIntent.launchUrl(ctx, getLoginUri(ctx));
     }
 
 
     public static Intent getAuthIntent(Context ctx) {
+        return new Intent(Intent.ACTION_VIEW, getLoginUri(ctx));
+    }
 
-        String url = getDomain() + "auth?" +
+    private static Uri getLoginUri(Context ctx) {
+        return Uri.parse(getDomain(ctx) + "/auth?" +
                 "scope=" + ctx.getString(R.string.scopes) +
                 "&response_type=code" +
                 "&client_id=" + ctx.getString(R.string.client_id) +
-                "&redirect_uri=" + ctx.getString(R.string.schemeAuth) + "://";
+                "&redirect_uri=" + ctx.getString(R.string.schemeAuth) + "://");
+    }
 
-        return new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+
+    private static String getDomain(Context ctx) {
+        String[] domains = ctx.getResources().getStringArray(R.array.domains);
+        String lng = Locale.getDefault().getLanguage();
+        for (String domain : domains) {
+            if (domain.startsWith(lng + "@")) {
+                return domain.split("@")[1];
+            }
+        }
+        lng = lng.split("_")[0];
+        for (String domain : domains) {
+            if (domain.startsWith(lng + "@")) {
+                return domain.split("@")[1];
+            }
+        }
+        return domains[0].split("@")[1];
     }
 
     public static void intentCode(final Activity activity) {
