@@ -62,7 +62,7 @@ public class Selectable extends LinearLayout {
 
                 final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
                 builder.setCancelable(true);
-                builder.setView(R.layout.selectable_list);
+                builder.setView(R.layout.selectable);
                 final AlertDialog dialog = builder.show();
                 dialog.show();
 
