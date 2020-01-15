@@ -26,7 +26,7 @@ public class SpecimenCreator extends PageActivity implements LocationListener {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.specimen_creator);
+        setView(R.layout.specimen_creator);
         //Selectable species = findViewById(R.id.species);
 
         findViewById(R.id.localize).setOnClickListener(new View.OnClickListener() {

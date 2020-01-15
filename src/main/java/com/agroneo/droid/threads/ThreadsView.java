@@ -26,7 +26,7 @@ public class ThreadsView extends PageActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.thread_view);
+        setView(R.layout.thread_view);
         final ThreadAdapter adapter = new ThreadAdapter();
         ((ListView) findViewById(R.id.thread)).setAdapter(adapter);
         adapter.get("/threads/" + getIntent().getStringExtra("id"));
@@ -84,7 +84,7 @@ public class ThreadsView extends PageActivity {
         @Override
         protected Json getData(final Json data) {
 
-            getActionBar().setTitle(data.getString("title"));
+            getSupportActionBar().setTitle(data.getString("title"));
             this.data = data;
             return data.getJson("posts");
         }

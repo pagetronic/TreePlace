@@ -18,12 +18,12 @@
         android:supportsRtl="true"
         tools:ignore="AllowBackup,GoogleAppIndexingWarning">
         <activity
+            android:theme="@style/AppTheme.NoActionBar"
             android:name="com.agroneo.droid.MainActivity"
             android:configChanges="orientation|screenSize"
             android:exported="true"
             android:label="@string/app_name"
-            android:launchMode="singleTop"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -39,16 +39,19 @@
         </activity>
 
         <activity
+            android:theme="@style/AppTheme.NoActionBar"
             android:name="com.agroneo.droid.specimens.SpecimenCreator"
             android:configChanges="orientation|screenSize"
             android:label="@string/specimen_creator" />
 
         <activity
+            android:theme="@style/AppTheme.NoActionBar"
             android:name="com.agroneo.droid.specimens.SpecimenView"
             android:configChanges="orientation|screenSize"
             android:label="@string/specimen_view" />
 
         <activity
+            android:theme="@style/AppTheme.NoActionBar"
             android:name="com.agroneo.droid.threads.ThreadsView"
             android:configChanges="orientation|screenSize"
             android:label="@string/hellip" />
