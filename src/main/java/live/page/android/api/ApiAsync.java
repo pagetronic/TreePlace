@@ -109,6 +109,10 @@ public class ApiAsync extends AsyncTask<Object, Integer, ApiResponse> {
                 if (req.isAbort()) {
                     return;
                 }
+                if (data == null) {
+                    func.error(code, data);
+                    return;
+                }
                 switch (data.getString("error")) {
                     case "EXPIRED_ACCESS_TOKEN":
                         req.invalidateAuthToken();
