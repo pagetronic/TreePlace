@@ -75,7 +75,7 @@ public class AccountsChooser {
                         @Override
                         public View getView(final int position, View convertView, ViewGroup parent) {
 
-                            View view = inflater.inflate(R.layout.accounts_item, null);
+                            View view = inflater.inflate(R.layout.accounts_view, null);
 
                             view.setOnClickListener(new View.OnClickListener() {
                                 @Override
