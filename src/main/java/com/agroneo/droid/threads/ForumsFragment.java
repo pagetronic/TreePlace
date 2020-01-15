@@ -58,7 +58,7 @@ public class ForumsFragment extends Fragment {
                 public void onClick(View view) {
                     Intent intent = new Intent(context, ThreadsView.class);
                     intent.putExtra("id", thread.getId());
-                    context.startActivity(intent);
+                    startActivity(intent);
                 }
             });
             return convertView;
