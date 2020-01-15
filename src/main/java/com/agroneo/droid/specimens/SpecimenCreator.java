@@ -24,9 +24,13 @@ public class SpecimenCreator extends PageActivity implements LocationListener {
     private LocationManager lm = null;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setView(R.layout.specimen_creator);
+    protected int getLayout() {
+        return R.layout.specimen_creator;
+    }
+
+    @Override
+    protected void onCreate() {
+
         //Selectable species = findViewById(R.id.species);
 
         findViewById(R.id.localize).setOnClickListener(new View.OnClickListener() {
@@ -56,6 +60,7 @@ public class SpecimenCreator extends PageActivity implements LocationListener {
             }
         });
     }
+
 
     @Override
     public void onLocationChanged(Location location) {

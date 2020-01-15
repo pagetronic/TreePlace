@@ -1,6 +1,5 @@
 package live.page.android.sys;
 
-import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
@@ -15,8 +14,7 @@ import com.agroneo.droid.R;
 import live.page.android.auth.Accounts;
 import live.page.android.auth.AccountsChooser;
 
-@SuppressLint("Registered")
-public class PageActivity extends AppCompatActivity {
+public abstract class PageActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -35,11 +33,14 @@ public class PageActivity extends AppCompatActivity {
         }
 
         Accounts.intentCode(this);
+
+        ((LinearLayout) findViewById(R.id.host)).addView(getLayoutInflater().inflate(getLayout(), null));
+        onCreate();
     }
 
-    public void setView(int layout) {
-        ((LinearLayout) findViewById(R.id.host)).addView(getLayoutInflater().inflate(layout, null));
-    }
+    protected abstract int getLayout();
+
+    protected abstract void onCreate();
 
     @Override
     public boolean onSupportNavigateUp() {

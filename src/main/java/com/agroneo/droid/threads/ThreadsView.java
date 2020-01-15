@@ -2,7 +2,6 @@ package com.agroneo.droid.threads;
 
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -23,10 +22,14 @@ public class ThreadsView extends PageActivity {
     private View firstView = null;
     private View lastView = null;
 
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setView(R.layout.thread_view);
+    protected int getLayout() {
+        return R.layout.thread_view;
+    }
+
+    @Override
+    protected void onCreate() {
         final ThreadAdapter adapter = new ThreadAdapter();
         ((ListView) findViewById(R.id.thread)).setAdapter(adapter);
         adapter.get("/threads/" + getIntent().getStringExtra("id"));
@@ -35,7 +38,6 @@ public class ThreadsView extends PageActivity {
         lastView = inflater.inflate(R.layout.thread_reply, new LinearLayout(this));
 
     }
-
 
     private class ThreadAdapter extends ApiAdapter {
         private Json data = null;
