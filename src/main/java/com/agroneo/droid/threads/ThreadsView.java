@@ -25,7 +25,7 @@ public class ThreadsView extends PageActivity {
 
     @Override
     protected int getLayout() {
-        return R.layout.thread_view;
+        return R.layout.thread;
     }
 
     @Override
@@ -34,7 +34,7 @@ public class ThreadsView extends PageActivity {
         ((ListView) findViewById(R.id.thread)).setAdapter(adapter);
         adapter.get("/threads/" + getIntent().getStringExtra("id"));
         final LayoutInflater inflater = getLayoutInflater();
-        firstView = inflater.inflate(R.layout.thread_posts, new LinearLayout(this));
+        firstView = inflater.inflate(R.layout.thread_post, new LinearLayout(this));
         lastView = inflater.inflate(R.layout.thread_reply, new LinearLayout(this));
 
     }
@@ -43,7 +43,7 @@ public class ThreadsView extends PageActivity {
         private Json data = null;
 
         private ThreadAdapter() {
-            super(ThreadsView.this, R.layout.thread_posts);
+            super(ThreadsView.this, R.layout.thread_post);
         }
 
         @Override

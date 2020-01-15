@@ -8,7 +8,7 @@ public class SpecimenView extends PageActivity {
 
     @Override
     protected int getLayout() {
-        return R.layout.specimen_view;
+        return R.layout.specimen;
     }
 
     @Override
