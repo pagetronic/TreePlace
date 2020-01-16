@@ -27,13 +27,15 @@ public class AccountsChooser {
         final String account_name = Accounts.getAccountNameActive(activity);
 
         if (account_name != null) {
-
-            String logo = Accounts.getProfile(activity, account_name).getString("logo");
-            if (logo != null) {
-                Glide.with(activity).load(Uri.parse(logo + "@128"))
-                        .error(R.drawable.logo)
-                        .circleCrop()
-                        .into(avatar);
+            Json profile = Accounts.getProfile(activity, account_name);
+            if (profile != null) {
+                String logo = profile.getString("logo");
+                if (logo != null) {
+                    Glide.with(activity).load(Uri.parse(logo + "@128"))
+                            .error(R.drawable.logo)
+                            .circleCrop()
+                            .into(avatar);
+                }
             }
         }
 
