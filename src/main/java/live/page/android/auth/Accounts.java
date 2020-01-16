@@ -182,9 +182,8 @@ public class Accounts {
         return domains[0].split("@")[1];
     }
 
-    public static void intentCode(final Activity activity) {
+    public static void intentCode(final Activity activity, Intent intent) {
 
-        Intent intent = activity.getIntent();
         String action = intent.getAction();
         if (action != null && action.equals(Intent.ACTION_VIEW)) {
             Uri data = intent.getData();

@@ -11,7 +11,6 @@ import androidx.appcompat.widget.Toolbar;
 import com.agroneo.droid.BuildConfig;
 import com.agroneo.droid.R;
 
-import live.page.android.auth.Accounts;
 import live.page.android.auth.AccountsChooser;
 
 public abstract class PageActivity extends AppCompatActivity {
@@ -31,8 +30,6 @@ public abstract class PageActivity extends AppCompatActivity {
         if (BuildConfig.DEBUG) {
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         }
-
-        Accounts.intentCode(this);
 
         ((LinearLayout) findViewById(R.id.host)).addView(getLayoutInflater().inflate(getLayout(), null));
         onCreate();

@@ -48,7 +48,12 @@ public class MainActivity extends AppCompatActivity {
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         }
 
-        Accounts.intentCode(this);
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        Accounts.intentCode(this, intent);
+        super.onNewIntent(intent);
     }
 
     @Override
