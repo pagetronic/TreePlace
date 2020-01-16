@@ -1,53 +1,37 @@
 <resources>
-    <string name="app_name">TreePlace</string>
-    <string name="account_type">com.agroneo</string>
+    <string name="app_name">HubD</string>
+    <string name="account_type">com.domain</string>
 
-    <string name="apiHost">api.agroneo.com</string>
-    <string name="schemeAuth">agroneo-oauth</string>
-    <string name="scopes">email,gaia,threads</string>
+    <string name="apiHost">api.domain.com</string>
+    <string name="schemeAuth">domain-oauth</string>
+    <string name="scopes">email,threads</string>
 
     <string-array name="domains">
-        <item>en@https://en.agroneo.com</item>
-        <item>fr@https://fr.agroneo.com</item>
-        <item>es@https://es.agroneo.com</item>
-        <item>pt@https://pt.agroneo.com</item>
+        <item>en@https://en.domain.com</item>
+        <item>fr@https://fr.domain.com</item>
+        <item>es@https://es.domain.com</item>
+        <item>pt@https://pt.domain.com</item>
     </string-array>
 
     <string name="upSocket">/up</string>
     <string name="socket">/socket</string>
 
-    <string name="client_id">QULU2HS2DY2LK663AONAMELHYQC3MG6JUW9QAF6NV1M49YQ7QM0P</string>
-    <string name="client_secret">11I5G3W36JWZ940IS4R78ZCAVH8SIIQJJ0Q4P61EWAC64MEJ1IT4</string>
+    <string name="client_id">XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX</string>
+    <string name="client_secret">XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="connect">Connect to Agroneo</string>
-    <string name="nav_header_subtitle">Share plant on the cloud</string>
-    <string name="nav_header_desc">Agroneo TreePlace</string>
+    <string name="connect">Connect to HubD</string>
+    <string name="nav_header_subtitle">Share on HubD</string>
+    <string name="nav_header_desc">HubD Place</string>
     <string name="action_settings">Settings</string>
 
-    <string name="menu_specimens">Specimens</string>
-    <string name="menu_forums">Forums</string>
-    <string name="menu_creation">Create</string>
-    <string name="add_specimen">Add Specimen</string>
-    <string name="authenticator_label">Agroneo</string>
-    <string name="password">Password</string>
-    <string name="create_account">Create Account</string>
-    <string name="email_address">Email address</string>
+    <string name="authenticator_label">HubD</string>
     <string name="name">Name</string>
     <string name="select_account">Select account</string>
     <string name="new_account">New account</string>
     <string name="empty"> </string>
 
-    <string name="specimen_title">Specimen title</string>
-    <string name="specimen_creator">Specimen creator</string>
-    <string name="specimen_view">Specimen view</string>
-
-    <string name="specimen_publish">publish specimen</string>
-    <string name="specimen_draft">save as draft</string>
-    <string name="localization">localization</string>
-    <string name="location_disable">Location functions are disabled</string>
-    <string name="species">Species</string>
     <string name="search">search</string>
     <string name="network_error">Network error</string>
     <string name="authors">Authors</string>
