@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/mobile_navigation"
+            app:startDestination="@+id/nav_specimens">
+
+    <fragment
+            android:id="@+id/nav_specimens"
+            android:name="com.agroneo.droid.specimens.SpecimensFragment"
+            android:label="@string/menu_specimens"
+            tools:layout="@layout/specimens"/>
+
+    <fragment
+            android:id="@+id/nav_forums"
+            android:name="live.page.android.threads.ForumsFragment"
+            android:label="@string/menu_forums"
+            tools:layout="@layout/forums"/>
+
+</navigation>

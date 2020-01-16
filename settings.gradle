@@ -1,0 +1,2 @@
+include ':nextmatches', ':agroneo', ':hubd', ':renseigner'
+rootProject.name='TreePlace'
