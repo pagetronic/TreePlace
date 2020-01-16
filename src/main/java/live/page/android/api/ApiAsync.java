@@ -113,7 +113,7 @@ public class ApiAsync extends AsyncTask<Object, Integer, ApiResponse> {
                     func.error(code, data);
                     return;
                 }
-                switch (data.getString("error")) {
+                switch (data.getString("error","")) {
                     case "EXPIRED_ACCESS_TOKEN":
                         req.invalidateAuthToken();
                         post(ctx, url, data, func);
