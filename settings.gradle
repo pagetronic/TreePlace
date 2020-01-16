@@ -1,2 +1,2 @@
-include ':nextmatches', ':agroneo', ':hubd', ':renseigner'
+include ':hubd', ':nextmatches', ':agroneo', ':renseigner'
 rootProject.name='TreePlace'
