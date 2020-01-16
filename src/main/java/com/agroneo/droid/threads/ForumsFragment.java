@@ -3,6 +3,7 @@ package com.agroneo.droid.threads;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,10 +30,8 @@ import live.page.android.views.ApiAdapter;
 public class ForumsFragment extends Fragment {
 
 
-    private TabLayout tabs;
-    private ViewPager pager;
-    private ForumsAdapter adapter;
-    private List<Json> forums = new ArrayList<>();
+    private final List<Json> forums = new ArrayList<>();
+    private final ForumsAdapter adapter = new ForumsAdapter();
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.forums, container, false);
@@ -40,10 +39,10 @@ public class ForumsFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        pager = view.findViewById(R.id.forum);
-        tabs = view.findViewById(R.id.tabs);
+        ViewPager pager = view.findViewById(R.id.forum);
+        TabLayout tabs = view.findViewById(R.id.tabs);
         forums.add(new Json("id", "ROOT").put("url", "/questions").put("title", "Question"));
-        adapter = new ForumsAdapter();
+
         pager.setAdapter(adapter);
         tabs.setupWithViewPager(pager);
     }
@@ -56,6 +55,8 @@ public class ForumsFragment extends Fragment {
     }
 
     private class ForumsAdapter extends PagerAdapter {
+
+        private final SparseArray<ListView> lists = new SparseArray<>();
 
         @Override
         public int getCount() {
@@ -76,12 +77,16 @@ public class ForumsFragment extends Fragment {
         @NonNull
         @Override
         public Object instantiateItem(@NonNull ViewGroup container, int position) {
-            ListView list = new ListView(getContext());
-            list.setLayoutParams(new ListView.LayoutParams(-1, -1));
-            ThreadsAdapter threadsAdapter = new ThreadsAdapter();
-            threadsAdapter.get(forums.get(position).getString("url") + "?lng=fr");
-            list.setAdapter(threadsAdapter);
-            container.addView(list);
+            ListView list = lists.get(position);
+            if (list == null) {
+                list = new ListView(getContext());
+                list.setLayoutParams(new ListView.LayoutParams(-1, -1));
+                ThreadsAdapter threadsAdapter = new ThreadsAdapter();
+                threadsAdapter.get(forums.get(position).getString("url") + "?lng=fr");
+                list.setAdapter(threadsAdapter);
+                container.addView(list);
+                lists.append(position, list);
+            }
             return list;
         }
 
@@ -120,7 +125,9 @@ public class ForumsFragment extends Fragment {
         }
 
         protected Json getData(final Json data) {
-           makeTabs(data);
+            if (forums.size() == 1) {
+                makeTabs(data);
+            }
             return data.getJson("threads");
         }
     }
