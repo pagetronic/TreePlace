@@ -15,6 +15,6 @@
             android:id="@+id/nav_forums"
             android:name="com.agroneo.droid.threads.ForumsFragment"
             android:label="@string/menu_forums"
-            tools:layout="@layout/threads"/>
+            tools:layout="@layout/forums"/>
 
 </navigation>

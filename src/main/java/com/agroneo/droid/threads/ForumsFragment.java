@@ -13,9 +13,15 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.viewpager.widget.PagerAdapter;
+import androidx.viewpager.widget.ViewPager;
 
 import com.agroneo.droid.R;
 import com.bumptech.glide.Glide;
+import com.google.android.material.tabs.TabLayout;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import live.page.android.api.Json;
 import live.page.android.views.ApiAdapter;
@@ -23,22 +29,71 @@ import live.page.android.views.ApiAdapter;
 public class ForumsFragment extends Fragment {
 
 
+    private TabLayout tabs;
+    private ViewPager pager;
+    private ForumsAdapter adapter;
+    private List<Json> forums = new ArrayList<>();
+
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.threads, container, false);
+        return inflater.inflate(R.layout.forums, container, false);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-
-        ForumAdapter forumAdapter = new ForumAdapter();
-        forumAdapter.get("/questions?lng=fr");
-        ((ListView) view.findViewById(R.id.threads)).setAdapter(forumAdapter);
-        forumAdapter.notifyDataSetChanged();
+        pager = view.findViewById(R.id.forum);
+        tabs = view.findViewById(R.id.tabs);
+        forums.add(new Json("id", "ROOT").put("url", "/questions").put("title", "Question"));
+        adapter = new ForumsAdapter();
+        pager.setAdapter(adapter);
+        tabs.setupWithViewPager(pager);
     }
 
-    private class ForumAdapter extends ApiAdapter {
+    private void makeTabs(Json data) {
+        forums.clear();
+        forums.add(new Json("id", data.getId()).put("url", data.getString("url")).put("title", data.getString("title")));
+        forums.addAll(data.getListJson("childrens"));
+        adapter.notifyDataSetChanged();
+    }
 
-        private ForumAdapter() {
+    private class ForumsAdapter extends PagerAdapter {
+
+        @Override
+        public int getCount() {
+            return forums.size();
+        }
+
+        @Override
+        public boolean isViewFromObject(@NonNull View view, @NonNull Object object) {
+            return view == object;
+        }
+
+        @Nullable
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return forums.get(position).getString("title");
+        }
+
+        @NonNull
+        @Override
+        public Object instantiateItem(@NonNull ViewGroup container, int position) {
+            ListView list = new ListView(getContext());
+            list.setLayoutParams(new ListView.LayoutParams(-1, -1));
+            ThreadsAdapter threadsAdapter = new ThreadsAdapter();
+            threadsAdapter.get(forums.get(position).getString("url") + "?lng=fr");
+            list.setAdapter(threadsAdapter);
+            container.addView(list);
+            return list;
+        }
+
+        @Override
+        public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
+
+        }
+    }
+
+    private class ThreadsAdapter extends ApiAdapter {
+
+        private ThreadsAdapter() {
             super(getContext(), R.layout.threads_view);
         }
 
@@ -65,7 +120,9 @@ public class ForumsFragment extends Fragment {
         }
 
         protected Json getData(final Json data) {
+           makeTabs(data);
             return data.getJson("threads");
         }
     }
+
 }
