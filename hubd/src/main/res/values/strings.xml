@@ -1,16 +1,16 @@
 <resources>
     <string name="app_name">HubD</string>
-    <string name="account_type">com.domain</string>
+    <string name="account_type">live.page</string>
 
-    <string name="apiHost">api.domain.com</string>
+    <string name="apiHost">api.page.live</string>
     <string name="schemeAuth">domain-oauth</string>
     <string name="scopes">email,threads</string>
 
     <string-array name="domains">
-        <item>en@https://en.domain.com</item>
-        <item>fr@https://fr.domain.com</item>
-        <item>es@https://es.domain.com</item>
-        <item>pt@https://pt.domain.com</item>
+        <item>en@https://en.page.live</item>
+        <item>fr@https://fr.page.live</item>
+        <item>es@https://es.page.live</item>
+        <item>pt@https://pt.page.live</item>
     </string-array>
 
     <string name="upSocket">/up</string>
@@ -19,8 +19,7 @@
     <string name="client_id">XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX</string>
     <string name="client_secret">XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX</string>
 
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
+
     <string name="connect">Connect to HubD</string>
     <string name="nav_header_subtitle">Share on HubD</string>
     <string name="nav_header_desc">HubD Place</string>
