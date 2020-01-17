@@ -1,3 +1,25 @@
 <resources>
     <string name="app_name">Renseigner</string>
+    <string name="account_type">com.renseigner</string>
+
+    <string name="apiHost">api.renseigner.com</string>
+    <string name="schemeAuth">renseigner-oauth</string>
+    <string name="scopes">email,threads,pm,accounts</string>
+
+    <string-array name="domains">
+        <item>fr@https://renseigner.com</item>
+    </string-array>
+
+    <string name="upSocket">/up</string>
+    <string name="socket">/socket</string>
+
+    <string name="client_id">15UZD6UCPYA26K0TLZQB2NLCOZPKC2QXR8IUTIVX197EB63YRKFF</string>
+    <string name="client_secret">3L35BSDIU5SW73BGGVM7EUS0Q05KESRZBIFGQUGZNIFCOFMMMPM8</string>
+
+    <string name="connect">Connect to NextMatches</string>
+    <string name="nav_header_subtitle">Share on NextMatches</string>
+    <string name="nav_header_desc">NextMatches Sports</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="authenticator_label">NextMatches</string>
 </resources>

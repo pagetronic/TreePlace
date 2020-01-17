@@ -19,7 +19,7 @@ import com.google.android.material.navigation.NavigationView;
 import live.page.android.auth.Accounts;
 import live.page.android.auth.AccountsChooser;
 
-public class MainActivity extends AppCompatActivity {
+public class MainAgroneo extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
 
@@ -36,17 +36,14 @@ public class MainActivity extends AppCompatActivity {
 
         NavigationView navigationView = findViewById(R.id.nav_view);
 
-        mAppBarConfiguration = new AppBarConfiguration.Builder(R.id.nav_specimens, R.id.nav_forums).setDrawerLayout(drawer).build();
+        mAppBarConfiguration = new AppBarConfiguration.Builder(R.id.nav_forums, R.id.nav_specimens).setDrawerLayout(drawer).build();
         NavController navController = Navigation.findNavController(this, R.id.host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
-        navController.navigate(R.id.nav_forums);
+
 
         AccountsChooser.make(this);
 
-        if (BuildConfig.DEBUG) {
-            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-        }
 
     }
 

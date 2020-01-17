@@ -92,8 +92,7 @@ public abstract class ApiAdapter extends BaseAdapter {
                 Json data = getData(data_);
                 items.remove(progress);
                 items.addAll(data.getListJson("result"));
-                final String next = data.getJson("paging").getString("next");
-
+                final String next = data.getJson("paging") != null ? data.getJson("paging").getString("next") : null;
                 if (next != null) {
                     items.add(progress);
                     scroll = new ScrollEvent() {

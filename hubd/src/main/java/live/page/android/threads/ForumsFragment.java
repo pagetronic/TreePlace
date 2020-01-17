@@ -33,6 +33,14 @@ public class ForumsFragment extends Fragment {
     private final List<Json> forums = new ArrayList<>();
     private final ForumsAdapter adapter = new ForumsAdapter();
 
+    public ForumsFragment(Json base) {
+        forums.add(base);
+    }
+
+    public ForumsFragment() {
+        forums.add(new Json("id", "ROOT").put("url", "/threads").put("title", "Threads"));
+    }
+
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.forums, container, false);
     }
@@ -41,7 +49,6 @@ public class ForumsFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         ViewPager pager = view.findViewById(R.id.forum);
         TabLayout tabs = view.findViewById(R.id.tabs);
-        forums.add(new Json("id", "ROOT").put("url", "/questions").put("title", "Question"));
 
         pager.setAdapter(adapter);
         tabs.setupWithViewPager(pager);
