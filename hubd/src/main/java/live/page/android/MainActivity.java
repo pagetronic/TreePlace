@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
         final NavigationView navigationView = findViewById(R.id.nav_view);
         final Menu menus = navigationView.getMenu();
 
-
+//TODO make all dynamic !
         mAppBarConfiguration = new AppBarConfiguration.Builder(R.id.nav_forums).setDrawerLayout(drawer).build();
         final NavController navController = Navigation.findNavController(this, R.id.host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
