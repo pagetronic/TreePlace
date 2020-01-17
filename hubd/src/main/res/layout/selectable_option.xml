@@ -27,7 +27,7 @@
             style="@style/TextAppearance.AppCompat.Medium"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/species" />
+            android:text="@string/title" />
 
         <TextView
             android:id="@+id/infos"
@@ -36,7 +36,7 @@
             android:layout_height="wrap_content"
             android:paddingStart="0dp"
             android:paddingEnd="0dp"
-            android:text="@string/species"
+            android:text="@string/title"
             android:visibility="gone" />
     </LinearLayout>
 </LinearLayout>

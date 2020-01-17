@@ -20,6 +20,10 @@
     <string name="client_secret">XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX</string>
 
 
+    <string name="title">Title</string>
+    <string name="date">21/12/2012</string>
+    <string name="text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras eleifend, nunc et eleifend dapibus, est nunc elementum augue, at lobortis tortor odio quis diam. Suspendisse pellentesque ante massa, et lacinia purus sollicitudin ut. Proin vel finibus arcu. Aenean varius sapien a ex hendrerit dapibus. Proin id metus sed nisi maximus interdum vehicula eu tortor. Maecenas venenatis purus in arcu venenatis finibus. Suspendisse sodales mollis viverra.</string>
+
     <string name="connect">Connect to HubD</string>
     <string name="nav_header_subtitle">Share on HubD</string>
     <string name="nav_header_desc">HubD Place</string>

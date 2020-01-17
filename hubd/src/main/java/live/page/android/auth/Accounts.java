@@ -144,7 +144,7 @@ public class Accounts {
     public static void authBrowser(Context ctx) {
         CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
         builder.setColorScheme(CustomTabsIntent.COLOR_SCHEME_SYSTEM);
-        builder.setToolbarColor(ctx.getColor(R.color.colorGreen));
+        builder.setToolbarColor(ctx.getColor(R.color.colorPrimary));
         CustomTabsIntent customTabsIntent = builder.build();
         customTabsIntent.intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
         customTabsIntent.intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
