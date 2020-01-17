@@ -32,6 +32,7 @@ public class ForumsFragment extends Fragment {
 
     private final List<Json> forums = new ArrayList<>();
     private final ForumsAdapter adapter = new ForumsAdapter();
+    private TabLayout tabs;
 
     public ForumsFragment(Json base) {
         forums.add(base);
@@ -48,7 +49,7 @@ public class ForumsFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         ViewPager pager = view.findViewById(R.id.forum);
-        TabLayout tabs = view.findViewById(R.id.tabs);
+        tabs = view.findViewById(R.id.tabs);
 
         pager.setAdapter(adapter);
         tabs.setupWithViewPager(pager);
@@ -56,8 +57,14 @@ public class ForumsFragment extends Fragment {
 
     private void makeTabs(Json data) {
         forums.clear();
-        forums.add(new Json("id", data.getId()).put("url", data.getString("url")).put("title", data.getString("title")));
-        forums.addAll(data.getListJson("childrens"));
+        List<Json> childrens = data.getListJson("childrens");
+        if (childrens != null) {
+            tabs.setVisibility(View.VISIBLE);
+            forums.add(new Json("id", data.getId()).put("url", data.getString("url")).put("title", data.getString("title")));
+            forums.addAll(childrens);
+        } else {
+            tabs.setVisibility(View.GONE);
+        }
         adapter.notifyDataSetChanged();
     }
 
@@ -135,7 +142,11 @@ public class ForumsFragment extends Fragment {
             if (forums.size() == 1) {
                 makeTabs(data);
             }
-            return data.getJson("threads");
+            Json threads = data.getJson("threads");
+            if (threads == null) {
+                return data;
+            }
+            return threads;
         }
     }
 
