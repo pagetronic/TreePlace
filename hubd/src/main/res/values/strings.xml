@@ -41,4 +41,6 @@
     <string name="hellip">…</string>
     <string name="post_reply">Post a reply</string>
     <string name="menu_forums">Forums</string>
+    <string name="navigation_drawer_open">open</string>
+    <string name="navigation_drawer_close">close</string>
 </resources>
