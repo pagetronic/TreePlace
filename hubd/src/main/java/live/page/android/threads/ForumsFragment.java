@@ -30,32 +30,31 @@ import live.page.android.views.ApiAdapter;
 public class ForumsFragment extends Fragment {
 
 
-    private List<Json> forums = new ArrayList<>();
-    private ForumsAdapter adapter;
+    private final List<Json> forums = new ArrayList<>();
+    private final ForumsAdapter adapter = new ForumsAdapter();
     private TabLayout tabs;
-    private String base;
+    private View view;
 
     public ForumsFragment(String base) {
-        this.base = base;
+        forums.add(new Json("url", base));
     }
 
-
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        forums.clear();
-        forums.add(new Json("url", base));
-        return inflater.inflate(R.layout.forums, container, false);
+        if (view == null) {
+            view = inflater.inflate(R.layout.forums, container, false);
+        }
+        return view;
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
 
-
-        ViewPager pager = view.findViewById(R.id.forum);
-        tabs = view.findViewById(R.id.tabs);
-        adapter = new ForumsAdapter();
-        pager.setAdapter(adapter);
-
-        tabs.setupWithViewPager(pager);
+        if (tabs == null) {
+            ViewPager pager = view.findViewById(R.id.forum);
+            tabs = view.findViewById(R.id.tabs);
+            pager.setAdapter(adapter);
+            tabs.setupWithViewPager(pager);
+        }
     }
 
     private void makeTabs(Json data) {
@@ -85,7 +84,6 @@ public class ForumsFragment extends Fragment {
             return view == object;
         }
 
-        @Nullable
         @Override
         public CharSequence getPageTitle(int position) {
             return forums.get(position).getString("title");
@@ -98,12 +96,11 @@ public class ForumsFragment extends Fragment {
             if (list == null) {
                 list = new ListView(getContext());
                 list.setLayoutParams(new ListView.LayoutParams(-1, -1));
-                ThreadsAdapter threadsAdapter = new ThreadsAdapter();
-                threadsAdapter.get(forums.get(position).getString("url") + "?lng=fr");
-                list.setAdapter(threadsAdapter);
+                list.setAdapter(new ThreadsAdapter().get(forums.get(position).getString("url") + "?lng=fr"));
                 container.addView(list);
                 lists.append(position, list);
             }
+
             return list;
         }
 

@@ -40,7 +40,8 @@ public abstract class ApiAdapter extends BaseAdapter {
         items.add(progress);
     }
 
-    public void post(final String url, final Json data) {
+
+    public ApiAdapter post(final String url, final Json data) {
         scroll = null;
         if (req != null) {
             req.abort();
@@ -73,13 +74,14 @@ public abstract class ApiAdapter extends BaseAdapter {
                 Toast.makeText(context, R.string.network_error, Toast.LENGTH_SHORT).show();
             }
         });
+        return this;
     }
 
     protected Json getData(final Json data) {
         return data;
     }
 
-    public void get(final String url) {
+    public ApiAdapter get(final String url) {
 
         scroll = null;
         if (req != null) {
@@ -114,6 +116,7 @@ public abstract class ApiAdapter extends BaseAdapter {
                 Toast.makeText(context, R.string.network_error, Toast.LENGTH_SHORT).show();
             }
         });
+        return this;
     }
 
     private String addPaging(String url, String paging) {

@@ -1,6 +1,5 @@
 package live.page.android.threads;
 
-import android.content.Intent;
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -71,15 +70,6 @@ public class ThreadsView extends PageActivity {
                     .error(R.drawable.logo)
                     .into((ImageView) convertView.findViewById(R.id.avatar));
 
-
-            convertView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent intent = new Intent(context, ThreadsView.class);
-                    intent.putExtra("id", thread.getId());
-                    context.startActivity(intent);
-                }
-            });
             return convertView;
         }
 
