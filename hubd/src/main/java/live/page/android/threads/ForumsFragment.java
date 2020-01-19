@@ -30,28 +30,31 @@ import live.page.android.views.ApiAdapter;
 public class ForumsFragment extends Fragment {
 
 
-    private final List<Json> forums = new ArrayList<>();
-    private final ForumsAdapter adapter = new ForumsAdapter();
+    private List<Json> forums = new ArrayList<>();
+    private ForumsAdapter adapter;
     private TabLayout tabs;
+    private String base;
 
-    public ForumsFragment(Json base) {
-        forums.add(base);
+    public ForumsFragment(String base) {
+        this.base = base;
     }
 
-    public ForumsFragment() {
-        forums.add(new Json("id", "ROOT").put("url", "/threads").put("title", "Threads"));
-    }
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        forums.clear();
+        forums.add(new Json("url", base));
         return inflater.inflate(R.layout.forums, container, false);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+
+
         ViewPager pager = view.findViewById(R.id.forum);
         tabs = view.findViewById(R.id.tabs);
-
+        adapter = new ForumsAdapter();
         pager.setAdapter(adapter);
+
         tabs.setupWithViewPager(pager);
     }
 

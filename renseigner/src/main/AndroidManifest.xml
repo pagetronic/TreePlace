@@ -12,7 +12,7 @@
         android:theme="@style/AppTheme"
         tools:ignore="AllowBackup,GoogleAppIndexingWarning">
         <activity
-            android:name="live.page.android.MainActivity"
+            android:name=".MainRenseigner"
             android:configChanges="orientation|screenSize"
             android:exported="true"
             android:label="@string/app_name"
@@ -31,6 +31,23 @@
                 <data android:scheme="@string/schemeAuth" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:theme="@style/AppTheme.NoActionBar"
+            android:name="live.page.android.threads.ThreadsView"
+            android:configChanges="orientation|screenSize"
+            android:label="@string/hellip" />
+
+        <service
+            android:name="live.page.android.auth.AuthService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.accounts.AccountAuthenticator" />
+            </intent-filter>
+            <meta-data
+                android:name="android.accounts.AccountAuthenticator"
+                android:resource="@xml/authenticator" />
+        </service>
     </application>
 
 </manifest>

@@ -18,17 +18,15 @@ import com.google.android.material.navigation.NavigationView;
 
 import java.util.List;
 
-import live.page.android.api.ApiAsync;
-import live.page.android.api.ApiResult;
-import live.page.android.api.Json;
 import live.page.android.auth.Accounts;
 import live.page.android.auth.AccountsChooser;
-import live.page.android.threads.ForumsFragment;
 
-public class MainActivity extends AppCompatActivity {
+public abstract class MainActivity extends AppCompatActivity {
 
     private NavigationView navigationView;
     private DrawerLayout drawer;
+
+    protected abstract void init();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,33 +46,24 @@ public class MainActivity extends AppCompatActivity {
 
         navigationView = findViewById(R.id.nav_view);
 
-        Json base = new Json("id", "ROOT").put("url", "/threads?lng=fr").put("title", "Threads");
-        makeMenu(base);
-        loadFragment(base);
-
-        ApiAsync.get(getBaseContext(), "/forums/root?lng=fr", new ApiResult() {
-            @Override
-            public void success(Json data) {
-                List<Json> result = data.getListJson("result");
-                if (result != null) {
-                    makeMenu(result.toArray(new Json[0]));
-                }
-            }
-        });
         AccountsChooser.make(this);
+        init();
 
     }
 
-    private void makeMenu(final Json... forums) {
+    protected void addMenu(List<MenuFragment> fragments) {
+        addMenu(fragments.toArray(new MenuFragment[0]));
+    }
+
+    protected void addMenu(MenuFragment... fragments) {
+
         final Menu menus = navigationView.getMenu();
-        for (final Json forum : forums) {
-            MenuItem menu = menus.add(forum.getId());
-            menu.setTitle(forum.getString("title"));
+        for (final MenuFragment fragment : fragments) {
+            MenuItem menu = menus.add(fragment.getTitle());
             menu.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
                 @Override
                 public boolean onMenuItemClick(MenuItem item) {
-                    loadFragment(forum);
-                    drawer.closeDrawers();
+                    loadFragment(fragment);
                     return true;
                 }
             });
@@ -82,17 +71,17 @@ public class MainActivity extends AppCompatActivity {
         navigationView.invalidate();
     }
 
-    private void loadFragment(Json forum) {
+    protected void loadFragment(MenuFragment fragmentMenu) {
         FragmentManager fm = getSupportFragmentManager();
-        Fragment fragment = fm.findFragmentByTag(forum.getId());
         FragmentTransaction transaction = fm.beginTransaction();
+        Fragment fragment = fm.findFragmentByTag(fragmentMenu.getId());
         if (fragment == null) {
-            fragment = new ForumsFragment(forum);
-            transaction.add(fragment, forum.getId());
+            fragment = fragmentMenu.getFragment();
         }
         transaction.replace(R.id.host_fragment, fragment);
         transaction.commit();
-        setTitle(forum.getString("title"));
+        setTitle(fragmentMenu.getTitle());
+        drawer.closeDrawers();
     }
 
     @Override
@@ -124,5 +113,28 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
+    protected class MenuFragment {
+        private Fragment fragment;
+        private String title;
+        private String id;
 
+        public MenuFragment(String id, String title, Fragment fragment) {
+            this.id = id;
+            this.title = title;
+            this.fragment = fragment;
+
+        }
+
+        public String getId() {
+            return id;
+        }
+
+        public String getTitle() {
+            return title;
+        }
+
+        public Fragment getFragment() {
+            return fragment;
+        }
+    }
 }
