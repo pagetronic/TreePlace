@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
 
 import live.page.android.api.Json;
 
-class PostParser {
+public class PostParser {
 
     public static Spanned parse(String text, List<Json> docs, List<Json> links) {
 
