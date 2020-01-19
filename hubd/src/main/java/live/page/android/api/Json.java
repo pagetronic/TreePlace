@@ -146,7 +146,7 @@ public class Json implements Map<String, Object>, Serializable {
      * Get a string with a length limitation
      *
      * @param key where find the value
-     * @return null or a truncated string
+     * @return null or a string
      */
     public String getString(String key) {
         if (key == null) {
