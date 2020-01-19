@@ -18,7 +18,7 @@ public class MainNextMatches extends MainActivity {
         addMenu(def);
         loadFragment(def);
 
-        ApiAsync.get(getBaseContext(), "/forums/root", new ApiResult() {
+        ApiAsync.get(getBaseContext(), "/forums/root?lng=fr", new ApiResult() {
             @Override
             public void success(Json data) {
                 List<Json> result = data.getListJson("result");
