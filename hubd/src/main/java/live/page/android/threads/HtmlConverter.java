@@ -14,6 +14,8 @@ class PostParser {
 
     public static Spanned parse(String text, List<Json> docs, List<Json> links) {
 
+        //TODO parse manually.
+
         text = text.replaceAll("\n\n", "</p><p>");
         text = text.replaceAll("\n", "<br/>");
         text = "<p>" + text + "</p>";
