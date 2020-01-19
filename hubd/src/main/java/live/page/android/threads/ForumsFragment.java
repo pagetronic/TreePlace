@@ -3,6 +3,7 @@ package live.page.android.threads;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.Html;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -120,8 +121,8 @@ public class ForumsFragment extends Fragment {
         public View getView(View convertView, final Json thread) {
 
 
-            ((TextView) convertView.findViewById(R.id.title)).setText(thread.getString("title"));
-            ((TextView) convertView.findViewById(R.id.text)).setText(thread.getString("text"));
+            ((TextView) convertView.findViewById(R.id.title)).setText(Html.fromHtml(thread.getString("title",""), Html.FROM_HTML_MODE_LEGACY));
+            ((TextView) convertView.findViewById(R.id.text)).setText(Html.fromHtml(thread.getString("text",""), Html.FROM_HTML_MODE_LEGACY));
             Glide.with(context).load(Uri.parse(thread.getJson("user").getString("avatar") + "@64x64"))
                     .error(R.drawable.logo)
                     .into((ImageView) convertView.findViewById(R.id.avatar));
