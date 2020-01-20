@@ -13,7 +13,6 @@ import android.os.Bundle;
 
 import androidx.browser.customtabs.CustomTabsIntent;
 
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;

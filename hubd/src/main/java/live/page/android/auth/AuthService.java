@@ -14,7 +14,6 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.text.TextUtils;
 
-
 import androidx.annotation.RequiresApi;
 
 import live.page.android.R;

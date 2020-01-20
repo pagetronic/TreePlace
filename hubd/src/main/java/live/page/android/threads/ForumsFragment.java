@@ -26,6 +26,8 @@ import java.util.List;
 
 import live.page.android.R;
 import live.page.android.api.Json;
+import live.page.android.sys.Command;
+import live.page.android.sys.Fx;
 import live.page.android.views.ApiAdapter;
 
 public class ForumsFragment extends Fragment {
@@ -111,18 +113,30 @@ public class ForumsFragment extends Fragment {
         }
     }
 
-    private class ThreadsAdapter extends ApiAdapter {
+    private class ThreadsAdapter extends ApiAdapter implements View.OnLongClickListener {
 
         private ThreadsAdapter() {
             super(getContext(), R.layout.threads_view);
         }
 
         @Override
+        public boolean onLongClick(View view) {
+            final String id = view.getTag().toString();
+            Command.make(getContext(), new Command("Test") {
+                @Override
+                public void onClick() {
+                    Fx.log(id);
+                }
+            });
+            return false;
+        }
+
+        @Override
         public View getView(View convertView, final Json thread) {
 
 
-            ((TextView) convertView.findViewById(R.id.title)).setText(Html.fromHtml(thread.getString("title",""), Html.FROM_HTML_MODE_LEGACY));
-            ((TextView) convertView.findViewById(R.id.text)).setText(Html.fromHtml(thread.getString("text",""), Html.FROM_HTML_MODE_LEGACY));
+            ((TextView) convertView.findViewById(R.id.title)).setText(Html.fromHtml(thread.getString("title", ""), Html.FROM_HTML_MODE_LEGACY));
+            ((TextView) convertView.findViewById(R.id.text)).setText(Html.fromHtml(thread.getString("text", ""), Html.FROM_HTML_MODE_LEGACY));
             Glide.with(context).load(Uri.parse(thread.getJson("user").getString("avatar") + "@64x64"))
                     .error(R.drawable.logo)
                     .into((ImageView) convertView.findViewById(R.id.avatar));
@@ -136,6 +150,10 @@ public class ForumsFragment extends Fragment {
                     startActivity(intent);
                 }
             });
+
+            convertView.setTag(thread.getId());
+            convertView.setOnLongClickListener(ThreadsAdapter.this);
+            convertView.setLongClickable(true);
             return convertView;
         }
 
@@ -149,6 +167,7 @@ public class ForumsFragment extends Fragment {
             }
             return threads;
         }
+
     }
 
 }

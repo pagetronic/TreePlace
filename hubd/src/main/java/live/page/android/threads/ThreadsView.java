@@ -13,10 +13,12 @@ import com.bumptech.glide.Glide;
 
 import live.page.android.R;
 import live.page.android.api.Json;
+import live.page.android.sys.Command;
+import live.page.android.sys.Fx;
 import live.page.android.sys.PageActivity;
 import live.page.android.views.ApiAdapter;
 
-public class ThreadsView extends PageActivity {
+public class ThreadsView extends PageActivity implements View.OnLongClickListener {
 
 
     private View firstView = null;
@@ -38,6 +40,18 @@ public class ThreadsView extends PageActivity {
         firstView = inflater.inflate(R.layout.thread_post, new LinearLayout(this));
         lastView = inflater.inflate(R.layout.thread_reply, new LinearLayout(this));
 
+    }
+
+    @Override
+    public boolean onLongClick(View view) {
+        final String id = view.getTag().toString();
+        Command.make(ThreadsView.this, new Command("Test") {
+            @Override
+            public void onClick() {
+                Fx.log(id);
+            }
+        });
+        return false;
     }
 
     private class ThreadAdapter extends ApiAdapter {
@@ -72,7 +86,9 @@ public class ThreadsView extends PageActivity {
             Glide.with(context).load(Uri.parse(thread.getJson("user").getString("avatar") + "@64x64"))
                     .error(R.drawable.logo)
                     .into((ImageView) convertView.findViewById(R.id.avatar));
-
+            convertView.setTag(thread.getId());
+            convertView.setOnLongClickListener(ThreadsView.this);
+            convertView.setLongClickable(true);
             return convertView;
         }
 
