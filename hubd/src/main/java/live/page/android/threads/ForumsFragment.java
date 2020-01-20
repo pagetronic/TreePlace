@@ -28,8 +28,6 @@ import live.page.android.sys.Command;
 import live.page.android.sys.PageFragment;
 import live.page.android.views.ApiAdapter;
 
-import static android.system.Os.remove;
-
 public class ForumsFragment extends PageFragment {
 
 
@@ -181,6 +179,7 @@ public class ForumsFragment extends PageFragment {
 
             convertView.setTag(thread.getId());
             convertView.setTag(R.id.user_id, thread.getJson("user").getId());
+
             convertView.setOnLongClickListener(this);
             convertView.setLongClickable(true);
             return convertView;

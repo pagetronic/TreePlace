@@ -47,4 +47,5 @@
     <string name="delete">Delete</string>
     <string name="rapid_comment">rapid comment</string>
     <string name="move">move</string>
+    <string name="error">error</string>
 </resources>

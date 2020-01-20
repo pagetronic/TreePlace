@@ -115,6 +115,9 @@ public class Selectable extends LinearLayout {
         });
     }
 
+    public static void select(Context ctx, String url, List<Json> options, Select onSelect) {
+    }
+
 
     public void setUrl(String url) {
         this.url = url;
@@ -162,5 +165,9 @@ public class Selectable extends LinearLayout {
             return null;
         }
         return values.get(0);
+    }
+
+    public static abstract class Select {
+        public abstract void apply(String str);
     }
 }
