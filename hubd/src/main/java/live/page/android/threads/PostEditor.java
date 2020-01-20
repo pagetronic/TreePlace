@@ -4,6 +4,7 @@ import android.content.Context;
 
 public abstract class PostEditor {
     public static void delete(Context ctx, String id, PostEditor completed) {
+
     }
 
     public static void move(Context ctx, String id, PostEditor completed) {
