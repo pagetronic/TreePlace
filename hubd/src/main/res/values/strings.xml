@@ -43,4 +43,7 @@
     <string name="menu_forums">Forums</string>
     <string name="navigation_drawer_open">open</string>
     <string name="navigation_drawer_close">close</string>
+    <string name="edit">Edit</string>
+    <string name="delete">Delete</string>
+    <string name="rapid_comment">rapid comment</string>
 </resources>

@@ -10,13 +10,18 @@ import androidx.appcompat.widget.Toolbar;
 
 import live.page.android.BuildConfig;
 import live.page.android.R;
+import live.page.android.api.Json;
+import live.page.android.auth.Accounts;
 import live.page.android.auth.AccountsChooser;
 
 public abstract class PageActivity extends AppCompatActivity {
 
+    protected Json user;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        user = Accounts.getProfile(getBaseContext());
 
         setContentView(R.layout.base_pop);
         Toolbar toolbar = findViewById(R.id.toolbar);

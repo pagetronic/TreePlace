@@ -18,6 +18,7 @@ import com.google.android.material.navigation.NavigationView;
 
 import java.util.List;
 
+import live.page.android.api.Json;
 import live.page.android.auth.Accounts;
 import live.page.android.auth.AccountsChooser;
 
@@ -25,12 +26,15 @@ public abstract class MainActivity extends AppCompatActivity {
 
     private NavigationView navigationView;
     private DrawerLayout drawer;
+    protected Json user;
 
     protected abstract void init();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        user = Accounts.getProfile(getBaseContext());
 
         setContentView(R.layout._main);
         Toolbar toolbar = findViewById(R.id.toolbar);

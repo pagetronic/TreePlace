@@ -17,7 +17,6 @@ import java.util.List;
 import live.page.android.R;
 import live.page.android.api.Json;
 import live.page.android.sys.Command;
-import live.page.android.sys.Fx;
 import live.page.android.sys.PageActivity;
 import live.page.android.views.ApiAdapter;
 
@@ -48,22 +47,34 @@ public class ThreadsView extends PageActivity implements View.OnLongClickListene
     @Override
     public boolean onLongClick(View view) {
         final String id = view.getTag().toString();
-
+        final String user_id = view.getTag(R.id.user_id).toString();
         List<Command> options = new ArrayList<>();
-        options.add(new Command("Test") {
-            @Override
-            public void onClick() {
-                Fx.log(id);
+        if (user != null) {
+            if (user.getId().equals(user_id) || user.getBoolean("editor", false)) {
+                options.add(new Command(getString(R.string.edit)) {
+                    @Override
+                    public void onClick() {
+                    }
+                });
+                options.add(new Command(getString(R.string.delete)) {
+                    @Override
+                    public void onClick() {
+                    }
+                });
             }
-        });
-        options.add(new Command("Test2") {
-            @Override
-            public void onClick() {
-                Fx.log(id);
-            }
-        });
-        Command.make(ThreadsView.this, options);
-        return false;
+
+            options.add(new Command(getString(R.string.rapid_comment)) {
+                @Override
+                public void onClick() {
+                }
+            });
+        }
+        if (options.size() > 0) {
+            Command.make(ThreadsView.this, options);
+            return false;
+        } else {
+            return true;
+        }
     }
 
     private class ThreadAdapter extends ApiAdapter {
@@ -99,6 +110,7 @@ public class ThreadsView extends PageActivity implements View.OnLongClickListene
                     .error(R.drawable.logo)
                     .into((ImageView) convertView.findViewById(R.id.avatar));
             convertView.setTag(thread.getId());
+            convertView.setTag(R.id.user_id, thread.getJson("user").getId());
             convertView.setOnLongClickListener(ThreadsView.this);
             convertView.setLongClickable(true);
             return convertView;

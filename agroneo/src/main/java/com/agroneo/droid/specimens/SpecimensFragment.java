@@ -24,9 +24,10 @@ import com.bumptech.glide.Glide;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import live.page.android.api.Json;
+import live.page.android.sys.PageFragment;
 import live.page.android.views.ApiAdapter;
 
-public class SpecimensFragment extends Fragment {
+public class SpecimensFragment extends PageFragment {
 
 
     private View view;

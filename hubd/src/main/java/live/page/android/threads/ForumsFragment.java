@@ -14,7 +14,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
@@ -27,10 +26,10 @@ import java.util.List;
 import live.page.android.R;
 import live.page.android.api.Json;
 import live.page.android.sys.Command;
-import live.page.android.sys.Fx;
+import live.page.android.sys.PageFragment;
 import live.page.android.views.ApiAdapter;
 
-public class ForumsFragment extends Fragment {
+public class ForumsFragment extends PageFragment {
 
 
     private final List<Json> forums = new ArrayList<>();
@@ -122,21 +121,34 @@ public class ForumsFragment extends Fragment {
         @Override
         public boolean onLongClick(View view) {
             final String id = view.getTag().toString();
+            final String user_id = view.getTag(R.id.user_id).toString();
             List<Command> options = new ArrayList<>();
-            options.add(new Command("Test") {
-                @Override
-                public void onClick() {
-                    Fx.log(id);
+            if (user != null) {
+                if (user.getId().equals(user_id) || user.getBoolean("editor", false)) {
+                    options.add(new Command(getString(R.string.edit)) {
+                        @Override
+                        public void onClick() {
+                        }
+                    });
+                    options.add(new Command(getString(R.string.delete)) {
+                        @Override
+                        public void onClick() {
+                        }
+                    });
                 }
-            });
-            options.add(new Command("Test2") {
-                @Override
-                public void onClick() {
-                    Fx.log(id);
-                }
-            });
-            Command.make(getContext(), options);
-            return false;
+
+                options.add(new Command(getString(R.string.rapid_comment)) {
+                    @Override
+                    public void onClick() {
+                    }
+                });
+            }
+            if (options.size() > 0) {
+                Command.make(getContext(), options);
+                return false;
+            } else {
+                return true;
+            }
         }
 
         @Override
@@ -160,6 +172,7 @@ public class ForumsFragment extends Fragment {
             });
 
             convertView.setTag(thread.getId());
+            convertView.setTag(R.id.user_id, thread.getJson("user").getId());
             convertView.setOnLongClickListener(ThreadsAdapter.this);
             convertView.setLongClickable(true);
             return convertView;

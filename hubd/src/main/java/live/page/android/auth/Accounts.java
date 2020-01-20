@@ -105,6 +105,24 @@ public class Accounts {
         token.get(null);
     }
 
+    public static Json getProfile(Context ctx) {
+        try {
+            AccountManager am = AccountManager.get(ctx);
+            String account_name = getAccountNameActive(ctx);
+            if (account_name == null) {
+                return null;
+            }
+
+            for (Account account : am.getAccountsByType(ctx.getResources().getString(R.string.account_type))) {
+                if (account.name.equals(account_name)) {
+                    return new Json(am.getUserData(account, "profile"));
+                }
+            }
+        } catch (Exception ignore) {
+
+        }
+        return null;
+    }
 
     public static Json getProfile(Context ctx, String account_name) {
         try {
