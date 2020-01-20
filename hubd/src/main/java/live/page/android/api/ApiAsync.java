@@ -1,9 +1,11 @@
 package live.page.android.api;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 
 import live.page.android.auth.Accounts;
+import live.page.android.sys.Fx;
 
 public class ApiAsync extends AsyncTask<Object, Integer, ApiResponse> {
 
@@ -17,13 +19,41 @@ public class ApiAsync extends AsyncTask<Object, Integer, ApiResponse> {
     }
 
     public static ApiRequest post(final Context ctx, final String url, final Json data, final ApiResult func) {
+        return post(ctx, url, data, func, false);
+    }
+
+    public static ApiRequest post(final Context ctx, final String url, final Json data, final ApiResult func, boolean loading) {
         final ApiRequest req = new ApiRequest(ctx, url);
+        final AlertDialog waiter = (loading) ? Fx.loading(ctx, new Fx.Action() {
+            @Override
+            public void doIt() {
+                req.abort();
+            }
+        }) : null;
+
         Accounts.getAccessToken(ctx, new Accounts.Token() {
             @Override
             public void get(final String access_token) {
                 if (!req.isAbort()) {
                     req.setAuthToken(access_token);
-                    post(req, data, func);
+                    post(req, data, new ApiResult() {
+
+                        @Override
+                        public void success(Json data) {
+                            if (waiter != null) {
+                                waiter.cancel();
+                            }
+                            func.success(data);
+                        }
+
+                        @Override
+                        public void error(int code, Json data) {
+                            if (waiter != null) {
+                                waiter.cancel();
+                            }
+                            func.error(code, data);
+                        }
+                    });
                 }
             }
         });
@@ -67,20 +97,50 @@ public class ApiAsync extends AsyncTask<Object, Integer, ApiResponse> {
     }
 
     public static ApiRequest get(final Context ctx, final String url, final ApiResult func) {
+        return get(ctx, url, func, false);
+    }
+
+    public static ApiRequest get(final Context ctx, final String url, final ApiResult func, boolean loading) {
 
         final ApiRequest req = new ApiRequest(ctx, url);
+        final AlertDialog waiter = (loading) ? Fx.loading(ctx, new Fx.Action() {
+            @Override
+            public void doIt() {
+                req.abort();
+            }
+        }) : null;
+
+
         Accounts.getAccessToken(ctx, new Accounts.Token() {
             @Override
             public void get(final String access_token) {
 
                 req.setAuthToken(access_token);
                 if (!req.isAbort()) {
-                    ApiAsync.get(req, ctx, url, func);
+                    ApiAsync.get(req, ctx, url, new ApiResult() {
+
+                        @Override
+                        public void success(Json data) {
+                            if (waiter != null) {
+                                waiter.cancel();
+                            }
+                            func.success(data);
+                        }
+
+                        @Override
+                        public void error(int code, Json data) {
+                            if (waiter != null) {
+                                waiter.cancel();
+                            }
+                            func.error(code, data);
+                        }
+                    });
                 }
             }
         });
         return req;
     }
+
 
     public static ApiRequest get(final String access_token, final Context ctx, final String url, final ApiResult func) {
 
@@ -91,6 +151,7 @@ public class ApiAsync extends AsyncTask<Object, Integer, ApiResponse> {
         }
         return req;
     }
+
 
     private static void get(final ApiRequest req, final Context ctx, final String url, final ApiResult func) {
 
