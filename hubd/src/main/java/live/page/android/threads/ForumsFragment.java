@@ -52,14 +52,27 @@ public class ForumsFragment extends PageFragment implements View.OnLongClickList
         List<Command> options = new ArrayList<>();
         if (user != null) {
             if (user.getId().equals(user_id) || user.getBoolean("editor", false)) {
-                options.add(new Command(getString(R.string.edit)) {
-                    @Override
-                    public void onClick() {
-                    }
-                });
+
                 options.add(new Command(getString(R.string.delete)) {
                     @Override
                     public void onClick() {
+                        PostEditor.delete(getContext(), id, new PostEditor() {
+                            @Override
+                            void success() {
+
+                            }
+                        });
+                    }
+                });
+                options.add(new Command(getString(R.string.move)) {
+                    @Override
+                    public void onClick() {
+                        PostEditor.move(getContext(), id, new PostEditor() {
+                            @Override
+                            void success() {
+
+                            }
+                        });
                     }
                 });
             }

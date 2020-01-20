@@ -54,6 +54,12 @@ public class ThreadsView extends PageActivity implements View.OnLongClickListene
             options.add(new Command(getString(R.string.rapid_comment)) {
                 @Override
                 public void onClick() {
+                    PostEditor.rapid(ThreadsView.this, id, new PostEditor() {
+                        @Override
+                        void success() {
+
+                        }
+                    });
                 }
             });
 
@@ -61,11 +67,23 @@ public class ThreadsView extends PageActivity implements View.OnLongClickListene
                 options.add(new Command(getString(R.string.edit)) {
                     @Override
                     public void onClick() {
+                        PostEditor.edit(ThreadsView.this, id, new PostEditor() {
+                            @Override
+                            void success() {
+
+                            }
+                        });
                     }
                 });
                 options.add(new Command(getString(R.string.delete)) {
                     @Override
                     public void onClick() {
+                        PostEditor.delete(ThreadsView.this, id, new PostEditor() {
+                            @Override
+                            void success() {
+
+                            }
+                        });
                     }
                 });
             }
