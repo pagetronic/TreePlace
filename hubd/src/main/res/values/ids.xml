@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <item name="original" type="id" />
-    <item name="user_id" type="id">user_id</item>
+    <item name="user_id" type="id" />
 </resources>

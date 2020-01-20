@@ -46,10 +46,17 @@ public class ThreadsView extends PageActivity implements View.OnLongClickListene
 
     @Override
     public boolean onLongClick(View view) {
-        final String id = view.getTag().toString();
-        final String user_id = view.getTag(R.id.user_id).toString();
+        final String id = (String) view.getTag();
+        final String user_id = (String) view.getTag(R.id.user_id);
         List<Command> options = new ArrayList<>();
         if (user != null) {
+
+            options.add(new Command(getString(R.string.rapid_comment)) {
+                @Override
+                public void onClick() {
+                }
+            });
+
             if (user.getId().equals(user_id) || user.getBoolean("editor", false)) {
                 options.add(new Command(getString(R.string.edit)) {
                     @Override
@@ -62,12 +69,6 @@ public class ThreadsView extends PageActivity implements View.OnLongClickListene
                     }
                 });
             }
-
-            options.add(new Command(getString(R.string.rapid_comment)) {
-                @Override
-                public void onClick() {
-                }
-            });
         }
         if (options.size() > 0) {
             Command.make(ThreadsView.this, options);

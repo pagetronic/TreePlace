@@ -4,7 +4,6 @@ import android.util.Log;
 
 public class Fx {
     public static void log(Object msg) {
-
-        Log.e("TreePlace", msg.toString());
+        Log.e("TreePlace", msg == null ? "null" : msg.toString());
     }
 }

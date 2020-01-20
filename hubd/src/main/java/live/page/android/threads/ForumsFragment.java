@@ -5,7 +5,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.text.Html;
 import android.util.SparseArray;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -29,23 +28,49 @@ import live.page.android.sys.Command;
 import live.page.android.sys.PageFragment;
 import live.page.android.views.ApiAdapter;
 
-public class ForumsFragment extends PageFragment {
+public class ForumsFragment extends PageFragment implements View.OnLongClickListener {
 
 
     private final List<Json> forums = new ArrayList<>();
     private final ForumsAdapter adapter = new ForumsAdapter();
     private TabLayout tabs;
-    private View view;
 
     public ForumsFragment(String base) {
         forums.add(new Json("url", base));
     }
 
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        if (view == null) {
-            view = inflater.inflate(R.layout.forums, container, false);
+    @Override
+    protected int layout() {
+        return R.layout.forums;
+    }
+
+
+    @Override
+    public boolean onLongClick(View view) {
+        final String id = (String) view.getTag();
+        final String user_id = (String) view.getTag(R.id.user_id);
+        List<Command> options = new ArrayList<>();
+        if (user != null) {
+            if (user.getId().equals(user_id) || user.getBoolean("editor", false)) {
+                options.add(new Command(getString(R.string.edit)) {
+                    @Override
+                    public void onClick() {
+                    }
+                });
+                options.add(new Command(getString(R.string.delete)) {
+                    @Override
+                    public void onClick() {
+                    }
+                });
+            }
+
         }
-        return view;
+        if (options.size() > 0) {
+            Command.make(getContext(), options);
+            return false;
+        } else {
+            return true;
+        }
     }
 
     @Override
@@ -71,6 +96,7 @@ public class ForumsFragment extends PageFragment {
         }
         adapter.notifyDataSetChanged();
     }
+
 
     private class ForumsAdapter extends PagerAdapter {
 
@@ -112,44 +138,12 @@ public class ForumsFragment extends PageFragment {
         }
     }
 
-    private class ThreadsAdapter extends ApiAdapter implements View.OnLongClickListener {
+    private class ThreadsAdapter extends ApiAdapter {
 
         private ThreadsAdapter() {
             super(getContext(), R.layout.threads_view);
         }
 
-        @Override
-        public boolean onLongClick(View view) {
-            final String id = view.getTag().toString();
-            final String user_id = view.getTag(R.id.user_id).toString();
-            List<Command> options = new ArrayList<>();
-            if (user != null) {
-                if (user.getId().equals(user_id) || user.getBoolean("editor", false)) {
-                    options.add(new Command(getString(R.string.edit)) {
-                        @Override
-                        public void onClick() {
-                        }
-                    });
-                    options.add(new Command(getString(R.string.delete)) {
-                        @Override
-                        public void onClick() {
-                        }
-                    });
-                }
-
-                options.add(new Command(getString(R.string.rapid_comment)) {
-                    @Override
-                    public void onClick() {
-                    }
-                });
-            }
-            if (options.size() > 0) {
-                Command.make(getContext(), options);
-                return false;
-            } else {
-                return true;
-            }
-        }
 
         @Override
         public View getView(View convertView, final Json thread) {
@@ -173,7 +167,7 @@ public class ForumsFragment extends PageFragment {
 
             convertView.setTag(thread.getId());
             convertView.setTag(R.id.user_id, thread.getJson("user").getId());
-            convertView.setOnLongClickListener(ThreadsAdapter.this);
+            convertView.setOnLongClickListener(ForumsFragment.this);
             convertView.setLongClickable(true);
             return convertView;
         }
