@@ -87,6 +87,7 @@ public class Selectable extends LinearLayout {
         final EditText search = dialog.findViewById(R.id.search);
         ListView list = dialog.findViewById(R.id.list);
 
+        //TODO selectable in list, static ? static items...
         //   ((ListView) dialog.findViewById(R.id.selected));
 
         final Json data = new Json("action", "search").put("search", "").put("lng", "fr");
