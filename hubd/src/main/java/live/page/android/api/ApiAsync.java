@@ -41,7 +41,7 @@ public class ApiAsync extends AsyncTask<Object, Integer, ApiResponse> {
                         @Override
                         public void success(Json data) {
                             if (waiter != null) {
-                                waiter.cancel();
+                                waiter.hide();
                             }
                             func.success(data);
                         }
@@ -49,7 +49,7 @@ public class ApiAsync extends AsyncTask<Object, Integer, ApiResponse> {
                         @Override
                         public void error(int code, Json data) {
                             if (waiter != null) {
-                                waiter.cancel();
+                                waiter.hide();
                             }
                             func.error(code, data);
                         }
@@ -122,7 +122,7 @@ public class ApiAsync extends AsyncTask<Object, Integer, ApiResponse> {
                         @Override
                         public void success(Json data) {
                             if (waiter != null) {
-                                waiter.cancel();
+                                waiter.hide();
                             }
                             func.success(data);
                         }
@@ -130,7 +130,7 @@ public class ApiAsync extends AsyncTask<Object, Integer, ApiResponse> {
                         @Override
                         public void error(int code, Json data) {
                             if (waiter != null) {
-                                waiter.cancel();
+                                waiter.hide();
                             }
                             func.error(code, data);
                         }
