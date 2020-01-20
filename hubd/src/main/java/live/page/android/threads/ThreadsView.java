@@ -32,7 +32,7 @@ public class ThreadsView extends PageActivity {
     protected void onCreate() {
         final ThreadAdapter adapter = new ThreadAdapter();
         ((ListView) findViewById(R.id.thread)).setAdapter(adapter);
-        adapter.get("/threads/" + getIntent().getStringExtra("id"));
+        adapter.get("/threads/" + getIntent().getStringExtra("id") + "?paging=first");
         final LayoutInflater inflater = getLayoutInflater();
         firstView = inflater.inflate(R.layout.thread_post, new LinearLayout(this));
         lastView = inflater.inflate(R.layout.thread_reply, new LinearLayout(this));
