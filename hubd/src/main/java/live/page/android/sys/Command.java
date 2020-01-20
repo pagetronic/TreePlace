@@ -6,7 +6,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import java.util.List;
 
@@ -23,7 +25,7 @@ public abstract class Command {
         make(context, commands.toArray(new Command[0]));
     }
 
-    public static void make(final Context context, Command... commands) {
+    public static void make(final Context context, final Command... commands) {
         final AlertDialog.Builder builder = new AlertDialog.Builder(context);
         ListView list = new ListView(context);
         builder.setView(list);
@@ -32,13 +34,14 @@ public abstract class Command {
         list.setAdapter(new BaseAdapter() {
             @Override
             public int getCount() {
-                return 1;
+                return commands.length;
             }
 
             @Override
             public Object getItem(int position) {
-                return null;
+                return commands[position];
             }
+
 
             @Override
             public long getItemId(int position) {
@@ -47,16 +50,19 @@ public abstract class Command {
 
             @Override
             public View getView(final int position, View convertView, ViewGroup parent) {
-
-                View view = LayoutInflater.from(context).inflate(R.layout.selectable_option, null);
-
-                view.setOnClickListener(new View.OnClickListener() {
+                if (convertView == null) {
+                    convertView = LayoutInflater.from(context).inflate(R.layout.selectable_option, new LinearLayout(context));
+                }
+                final Command command = (Command) getItem(position);
+                ((TextView) convertView.findViewById(R.id.title)).setText(command.title);
+                convertView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        command.onClick();
                         dialog.cancel();
                     }
                 });
-                return view;
+                return convertView;
             }
         });
     }

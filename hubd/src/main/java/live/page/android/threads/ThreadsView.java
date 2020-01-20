@@ -11,6 +11,9 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import live.page.android.R;
 import live.page.android.api.Json;
 import live.page.android.sys.Command;
@@ -45,12 +48,21 @@ public class ThreadsView extends PageActivity implements View.OnLongClickListene
     @Override
     public boolean onLongClick(View view) {
         final String id = view.getTag().toString();
-        Command.make(ThreadsView.this, new Command("Test") {
+
+        List<Command> options = new ArrayList<>();
+        options.add(new Command("Test") {
             @Override
             public void onClick() {
                 Fx.log(id);
             }
         });
+        options.add(new Command("Test2") {
+            @Override
+            public void onClick() {
+                Fx.log(id);
+            }
+        });
+        Command.make(ThreadsView.this, options);
         return false;
     }
 

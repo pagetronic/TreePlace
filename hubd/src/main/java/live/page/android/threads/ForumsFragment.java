@@ -122,12 +122,20 @@ public class ForumsFragment extends Fragment {
         @Override
         public boolean onLongClick(View view) {
             final String id = view.getTag().toString();
-            Command.make(getContext(), new Command("Test") {
+            List<Command> options = new ArrayList<>();
+            options.add(new Command("Test") {
                 @Override
                 public void onClick() {
                     Fx.log(id);
                 }
             });
+            options.add(new Command("Test2") {
+                @Override
+                public void onClick() {
+                    Fx.log(id);
+                }
+            });
+            Command.make(getContext(), options);
             return false;
         }
 
