@@ -1,22 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical">
+
+    <ListView
+        android:id="@+id/selected"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="10"
+        android:padding="5dp"
+        android:visibility="gone"
+        tools:listitem="@layout/selectable_option" />
 
     <EditText
         android:id="@+id/search"
-        android:inputType="textFilter"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@drawable/border_green"
         android:hint="@string/search"
-        android:background="@drawable/border_green"/>
+        android:inputType="textFilter" />
 
     <ProgressBar
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:visibility="gone"/>
+        android:visibility="gone" />
 
     <ListView
         android:id="@+id/list"
@@ -24,6 +33,6 @@
         android:layout_height="0dp"
         android:layout_weight="10"
         android:padding="5dp"
-        tools:listitem="@layout/selectable_option"/>
+        tools:listitem="@layout/selectable_option" />
 
 </LinearLayout>

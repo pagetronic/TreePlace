@@ -2,6 +2,8 @@ package live.page.android.threads;
 
 import android.content.Context;
 
+import java.util.List;
+
 import live.page.android.api.ApiAsync;
 import live.page.android.api.ApiResult;
 import live.page.android.api.Json;
@@ -26,9 +28,9 @@ public abstract class PostEditor {
         ApiAsync.get(ctx, "/threads/" + id, new ApiResult() {
             @Override
             public void success(Json data) {
-                Selectable.select(ctx, "/forums", data.getListJson("parents"), new Selectable.Select() {
+                Selectable.selectable(ctx, "/forums", data.getListJson("parents"), true, new Selectable.Select() {
                     @Override
-                    public void apply(String str) {
+                    public void onChoice(List<Json> choices) {
 
                     }
                 });
