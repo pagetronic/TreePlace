@@ -8,6 +8,8 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 
+import java.util.List;
+
 import live.page.android.R;
 
 public abstract class Command {
@@ -15,6 +17,10 @@ public abstract class Command {
 
     public Command(String title) {
         this.title = title;
+    }
+
+    public static void make(final Context context, List<Command> commands) {
+        make(context, commands.toArray(new Command[0]));
     }
 
     public static void make(final Context context, Command... commands) {
