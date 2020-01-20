@@ -40,6 +40,15 @@ public abstract class ApiAdapter extends BaseAdapter {
         items.add(progress);
     }
 
+    public void removeItem(String id) {
+        for (Json item : items) {
+            if (id.equals(item.getId())) {
+                items.remove(item);
+                notifyDataSetChanged();
+                break;
+            }
+        }
+    }
 
     public ApiAdapter post(final String url, final Json data) {
         scroll = null;

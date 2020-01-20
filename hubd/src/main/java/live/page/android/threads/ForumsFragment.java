@@ -28,7 +28,9 @@ import live.page.android.sys.Command;
 import live.page.android.sys.PageFragment;
 import live.page.android.views.ApiAdapter;
 
-public class ForumsFragment extends PageFragment implements View.OnLongClickListener {
+import static android.system.Os.remove;
+
+public class ForumsFragment extends PageFragment {
 
 
     private final List<Json> forums = new ArrayList<>();
@@ -44,47 +46,6 @@ public class ForumsFragment extends PageFragment implements View.OnLongClickList
         return R.layout.forums;
     }
 
-
-    @Override
-    public boolean onLongClick(View view) {
-        final String id = (String) view.getTag();
-        final String user_id = (String) view.getTag(R.id.user_id);
-        List<Command> options = new ArrayList<>();
-        if (user != null) {
-            if (user.getId().equals(user_id) || user.getBoolean("editor", false)) {
-
-                options.add(new Command(getString(R.string.delete)) {
-                    @Override
-                    public void onClick() {
-                        PostEditor.delete(getContext(), id, new PostEditor() {
-                            @Override
-                            void success() {
-
-                            }
-                        });
-                    }
-                });
-                options.add(new Command(getString(R.string.move)) {
-                    @Override
-                    public void onClick() {
-                        PostEditor.move(getContext(), id, new PostEditor() {
-                            @Override
-                            void success() {
-
-                            }
-                        });
-                    }
-                });
-            }
-
-        }
-        if (options.size() > 0) {
-            Command.make(getContext(), options);
-            return false;
-        } else {
-            return true;
-        }
-    }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -151,12 +112,52 @@ public class ForumsFragment extends PageFragment implements View.OnLongClickList
         }
     }
 
-    private class ThreadsAdapter extends ApiAdapter {
+    private class ThreadsAdapter extends ApiAdapter implements View.OnLongClickListener {
 
         private ThreadsAdapter() {
             super(getContext(), R.layout.threads_view);
         }
 
+        @Override
+        public boolean onLongClick(View view) {
+            final String id = (String) view.getTag();
+            final String user_id = (String) view.getTag(R.id.user_id);
+            List<Command> options = new ArrayList<>();
+            if (user != null) {
+                if (user.getId().equals(user_id) || user.getBoolean("editor", false)) {
+
+                    options.add(new Command(getString(R.string.delete)) {
+                        @Override
+                        public void onClick() {
+                            PostEditor.delete(getContext(), id, new PostEditor() {
+                                @Override
+                                void success() {
+                                    removeItem(id);
+                                }
+                            });
+                        }
+                    });
+                    options.add(new Command(getString(R.string.move)) {
+                        @Override
+                        public void onClick() {
+                            PostEditor.move(getContext(), id, new PostEditor() {
+                                @Override
+                                void success() {
+
+                                }
+                            });
+                        }
+                    });
+                }
+
+            }
+            if (options.size() > 0) {
+                Command.make(getContext(), options);
+                return false;
+            } else {
+                return true;
+            }
+        }
 
         @Override
         public View getView(View convertView, final Json thread) {
@@ -180,7 +181,7 @@ public class ForumsFragment extends PageFragment implements View.OnLongClickList
 
             convertView.setTag(thread.getId());
             convertView.setTag(R.id.user_id, thread.getJson("user").getId());
-            convertView.setOnLongClickListener(ForumsFragment.this);
+            convertView.setOnLongClickListener(this);
             convertView.setLongClickable(true);
             return convertView;
         }
