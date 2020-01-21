@@ -29,7 +29,7 @@ public class ApiRequest {
         this.ctx = ctx;
         try {
             connection = (HttpURLConnection) new URL(HTTP + ctx.getString(R.string.apiHost) + path).openConnection();
-            connection.setRequestProperty("User-Agent", "Agroneo TreePlace Android V3");
+            connection.setRequestProperty("User-Agent", "TreePlace Android V3");
             connection.setRequestProperty("Accept", "application/json");
 
             if (BuildConfig.DEBUG) {
