@@ -82,7 +82,11 @@ public abstract class ApiAdapter extends BaseAdapter {
 
             @Override
             public void error(int code, Json data) {
-                Toast.makeText(context, R.string.network_error, Toast.LENGTH_SHORT).show();
+                if (data.getString("error") != null) {
+                    Toast.makeText(context, data.getString("error"), Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(context, R.string.network_error, Toast.LENGTH_SHORT).show();
+                }
             }
         });
         return this;
@@ -124,7 +128,11 @@ public abstract class ApiAdapter extends BaseAdapter {
 
             @Override
             public void error(int code, Json data) {
-                Toast.makeText(context, R.string.network_error, Toast.LENGTH_SHORT).show();
+                if (data.getString("error") != null) {
+                    Toast.makeText(context, data.getString("error"), Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(context, R.string.network_error, Toast.LENGTH_SHORT).show();
+                }
             }
         });
         return this;
