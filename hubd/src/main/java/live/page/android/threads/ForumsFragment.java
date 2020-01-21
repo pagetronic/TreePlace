@@ -26,6 +26,7 @@ import live.page.android.R;
 import live.page.android.api.Json;
 import live.page.android.sys.Command;
 import live.page.android.sys.PageFragment;
+import live.page.android.sys.Since;
 import live.page.android.views.ApiAdapter;
 
 public class ForumsFragment extends PageFragment {
@@ -110,27 +111,24 @@ public class ForumsFragment extends PageFragment {
         }
     }
 
-    private class ThreadsAdapter extends ApiAdapter implements View.OnLongClickListener {
+    private class ThreadsAdapter extends ApiAdapter {
 
         private ThreadsAdapter() {
             super(getContext(), R.layout.threads_view);
         }
 
-        @Override
-        public boolean onLongClick(View view) {
-            final String id = (String) view.getTag();
-            final String user_id = (String) view.getTag(R.id.user_id);
+        public boolean command(View view, final Json thread) {
             List<Command> options = new ArrayList<>();
             if (user != null) {
-                if (user.getId().equals(user_id) || user.getBoolean("editor", false)) {
+                if (user.getId().equals(thread.getJson("user").getId()) || user.getBoolean("editor", false)) {
 
                     options.add(new Command(getString(R.string.delete)) {
                         @Override
                         public void onClick() {
-                            PostEditor.delete(getContext(), id, new PostEditor() {
+                            PostEditor.delete(getContext(), thread.getId(), new PostEditor() {
                                 @Override
                                 void success() {
-                                    removeItem(id);
+                                    removeItem(thread.getId());
                                 }
                             });
                         }
@@ -138,7 +136,7 @@ public class ForumsFragment extends PageFragment {
                     options.add(new Command(getString(R.string.move)) {
                         @Override
                         public void onClick() {
-                            PostEditor.move(getContext(), id, new PostEditor() {
+                            PostEditor.move(getContext(), thread.getId(), new PostEditor() {
                                 @Override
                                 void success() {
 
@@ -158,15 +156,30 @@ public class ForumsFragment extends PageFragment {
         }
 
         @Override
-        public View getView(View convertView, final Json thread) {
+        public View getView(final View convertView, final Json thread) {
 
 
             ((TextView) convertView.findViewById(R.id.title)).setText(Html.fromHtml(thread.getString("title", ""), Html.FROM_HTML_MODE_LEGACY));
             ((TextView) convertView.findViewById(R.id.text)).setText(Html.fromHtml(thread.getString("text", ""), Html.FROM_HTML_MODE_LEGACY));
+            ((TextView) convertView.findViewById(R.id.date)).setText(Since.format(context, thread.parseDate("date"), 2));
+
             Glide.with(context).load(Uri.parse(thread.getJson("user").getString("avatar") + "@64x64"))
                     .error(R.drawable.logo)
                     .into((ImageView) convertView.findViewById(R.id.avatar));
 
+
+            convertView.findViewById(R.id.command).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    command(convertView, thread);
+                }
+            });
+            convertView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    return command(convertView, thread);
+                }
+            });
 
             convertView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -177,11 +190,6 @@ public class ForumsFragment extends PageFragment {
                 }
             });
 
-            convertView.setTag(thread.getId());
-            convertView.setTag(R.id.user_id, thread.getJson("user").getId());
-
-            convertView.setOnLongClickListener(this);
-            convertView.setLongClickable(true);
             return convertView;
         }
 
