@@ -27,6 +27,7 @@ import live.page.android.R;
 import live.page.android.api.Json;
 import live.page.android.sys.Command;
 import live.page.android.sys.PageFragment;
+import live.page.android.sys.Settings;
 import live.page.android.sys.Since;
 import live.page.android.views.Animations;
 import live.page.android.views.ApiAdapter;
@@ -110,14 +111,14 @@ public class ForumsFragment extends PageFragment {
             swiper.setOnRefreshListener(() -> {
                         swiper.setRefreshing(false);
                         threadAdapter.clear();
-                        threadAdapter.get(forums.get(position).getString("url") + "?lng=fr");
+                        threadAdapter.get(forums.get(position).getString("url") + "?lng=" + Settings.getLng(getContext()));
                     }
             );
             swiper.addView(list);
 
             container.addView(swiper);
 
-            threadAdapter.get(forums.get(position).getString("url") + "?lng=fr");
+            threadAdapter.get(forums.get(position).getString("url") + "?lng=" + Settings.getLng(getContext()));
 
             swipers.append(position, swiper);
 

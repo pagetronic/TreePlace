@@ -7,6 +7,7 @@ import live.page.android.MainActivity;
 import live.page.android.api.ApiAsync;
 import live.page.android.api.ApiResult;
 import live.page.android.api.Json;
+import live.page.android.sys.Settings;
 import live.page.android.threads.ForumsFragment;
 
 public class MainNextMatches extends MainActivity {
@@ -18,7 +19,7 @@ public class MainNextMatches extends MainActivity {
         addMenu(def);
         loadFragment(def);
 
-        ApiAsync.get(getBaseContext(), "/forums/root?lng=fr", new ApiResult() {
+        ApiAsync.get(getBaseContext(), "/forums/root?lng=" + Settings.getLng(this), new ApiResult() {
             @Override
             public void success(Json data) {
                 List<Json> result = data.getListJson("result");

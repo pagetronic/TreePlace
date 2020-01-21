@@ -22,6 +22,7 @@ import java.util.List;
 
 import live.page.android.R;
 import live.page.android.api.Json;
+import live.page.android.sys.Settings;
 
 public class Selectable extends LinearLayout {
 
@@ -85,7 +86,7 @@ public class Selectable extends LinearLayout {
         //TODO selectable in list, static ? static items...
         //   ((ListView) dialog.findViewById(R.id.selected));
 
-        final Json data = new Json("action", "search").put("search", "").put("lng", "fr");
+        final Json data = new Json("action", "search").put("search", "").put("lng", Settings.getLng(ctx));
         final ApiAdapter adapter = new ApiAdapter(ctx) {
             @Override
             public View getView(final View view, final Json item) {
