@@ -113,10 +113,12 @@ public class ForumsFragment extends PageFragment {
                         threadAdapter.get(forums.get(position).getString("url") + "?lng=fr");
                     }
             );
+            swiper.addView(list);
+
             container.addView(swiper);
 
-            swiper.addView(list);
             threadAdapter.get(forums.get(position).getString("url") + "?lng=fr");
+
             swipers.append(position, swiper);
 
 
