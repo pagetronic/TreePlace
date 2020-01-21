@@ -20,7 +20,8 @@
         android:layout_height="wrap_content"
         android:background="@drawable/border_green"
         android:hint="@string/search"
-        android:inputType="textFilter" />
+        android:inputType="textFilter"
+        android:importantForAutofill="no" />
 
     <ProgressBar
         android:layout_width="match_parent"
