@@ -16,6 +16,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.agroneo.droid.R;
 import com.bumptech.glide.Glide;
@@ -38,6 +39,19 @@ public class SpecimensFragment extends PageFragment {
             specimensAdapter.get("/gaia/specimens");
         }
         ((ListView) view.findViewById(R.id.specimens)).setAdapter(specimensAdapter);
+
+
+        final SwipeRefreshLayout swiper = view.findViewById(live.page.android.R.id.swiper);
+        swiper.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                swiper.setRefreshing(false);
+                specimensAdapter.clear();
+                specimensAdapter.get("/gaia/specimens");
+            }
+        });
+
+
         FloatingActionButton fab = view.findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -213,6 +213,7 @@ public abstract class ApiAdapter extends BaseAdapter {
             req.abort();
         }
         items.clear();
+        items.add(progress);
         notifyDataSetChanged();
     }
 

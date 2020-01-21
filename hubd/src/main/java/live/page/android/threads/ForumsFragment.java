@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
@@ -74,7 +75,7 @@ public class ForumsFragment extends PageFragment {
 
     private class ForumsAdapter extends PagerAdapter {
 
-        private final SparseArray<ListView> lists = new SparseArray<>();
+        private final SparseArray<SwipeRefreshLayout> swipers = new SparseArray<>();
 
         @Override
         public int getCount() {
@@ -93,17 +94,36 @@ public class ForumsFragment extends PageFragment {
 
         @NonNull
         @Override
-        public Object instantiateItem(@NonNull ViewGroup container, int position) {
-            ListView list = lists.get(position);
-            if (list == null) {
-                list = new ListView(getContext());
-                list.setLayoutParams(new ListView.LayoutParams(-1, -1));
-                list.setAdapter(new ThreadsAdapter().get(forums.get(position).getString("url") + "?lng=fr"));
-                container.addView(list);
-                lists.append(position, list);
+        public Object instantiateItem(@NonNull ViewGroup container, final int position) {
+            if (swipers.get(position) != null) {
+                return swipers.get(position);
             }
 
-            return list;
+            ListView list = new ListView(getContext());
+
+            list.setLayoutParams(new ListView.LayoutParams(-1, -1));
+            final ThreadsAdapter threadAdapter = new ThreadsAdapter();
+            list.setAdapter(threadAdapter);
+
+            final SwipeRefreshLayout swiper = new SwipeRefreshLayout(getContext());
+            swiper.setLayoutParams(new SwipeRefreshLayout.LayoutParams(-1, -1));
+            swiper.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+                                            @Override
+                                            public void onRefresh() {
+                                                swiper.setRefreshing(false);
+                                                threadAdapter.clear();
+                                                threadAdapter.get(forums.get(position).getString("url") + "?lng=fr");
+                                            }
+                                        }
+            );
+            container.addView(swiper);
+
+            swiper.addView(list);
+            threadAdapter.get(forums.get(position).getString("url") + "?lng=fr");
+            swipers.append(position, swiper);
+
+
+            return swiper;
         }
 
         @Override

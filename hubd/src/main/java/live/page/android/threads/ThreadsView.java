@@ -9,6 +9,8 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
@@ -37,8 +39,20 @@ public class ThreadsView extends PageActivity {
     protected void onCreate() {
         final ThreadAdapter adapter = new ThreadAdapter();
         ((ListView) findViewById(R.id.thread)).setAdapter(adapter);
+
         //TODO : manage "paging prev"
         adapter.get("/threads/" + getIntent().getStringExtra("id") + "?paging=first");
+
+        final SwipeRefreshLayout swiper = findViewById(R.id.swiper);
+        swiper.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                swiper.setRefreshing(false);
+                adapter.clear();
+                adapter.get("/threads/" + getIntent().getStringExtra("id") + "?paging=first");
+            }
+        });
+
         final LayoutInflater inflater = getLayoutInflater();
         firstView = inflater.inflate(R.layout.thread_post, new LinearLayout(this));
         lastView = inflater.inflate(R.layout.thread_reply, new LinearLayout(this));
