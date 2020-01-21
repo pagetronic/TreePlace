@@ -120,9 +120,16 @@ public class ThreadsView extends PageActivity {
         @Override
         public View getView(final View convertView, final Json thread) {
 
-            ((TextView) convertView.findViewById(R.id.title)).setText(Html.fromHtml(thread.getString("title", ""), Html.FROM_HTML_MODE_LEGACY));
-            ((TextView) convertView.findViewById(R.id.text)).setText(PostParser.parse(thread.getString("text", ""), thread.getListJson("docs"), thread.getListJson("links")));
+
+            TextView title = convertView.findViewById(R.id.title);
+            if (thread.getString("title", "").equals("")) {
+                title.setVisibility(View.GONE);
+            } else {
+                title.setText(Html.fromHtml(thread.getString("title", ""), Html.FROM_HTML_MODE_LEGACY));
+                title.setVisibility(View.VISIBLE);
+            }
             ((TextView) convertView.findViewById(R.id.date)).setText(Since.format(context, thread.parseDate("date"), 2));
+            ((TextView) convertView.findViewById(R.id.text)).setText(PostParser.parse(thread.getString("text", ""), thread.getListJson("docs"), thread.getListJson("links")));
 
             Glide.with(context).load(Uri.parse(thread.getJson("user").getString("avatar") + "@64x64"))
                     .error(R.drawable.logo)
