@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="10"
-        android:padding="5dp"
+        android:padding="0dp"
         android:visibility="gone"
         tools:listitem="@layout/selectable_option" />
 
@@ -32,7 +32,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="10"
-        android:padding="5dp"
+        android:padding="0dp"
         tools:listitem="@layout/selectable_option" />
 
 </LinearLayout>
