@@ -44,13 +44,10 @@ public class ThreadsView extends PageActivity {
         adapter.get("/threads/" + getIntent().getStringExtra("id") + "?paging=first");
 
         final SwipeRefreshLayout swiper = findViewById(R.id.swiper);
-        swiper.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                swiper.setRefreshing(false);
-                adapter.clear();
-                adapter.get("/threads/" + getIntent().getStringExtra("id") + "?paging=first");
-            }
+        swiper.setOnRefreshListener(() -> {
+            swiper.setRefreshing(false);
+            adapter.clear();
+            adapter.get("/threads/" + getIntent().getStringExtra("id") + "?paging=first");
         });
 
         final LayoutInflater inflater = getLayoutInflater();
@@ -150,18 +147,8 @@ public class ThreadsView extends PageActivity {
                     .into((ImageView) convertView.findViewById(R.id.avatar));
 
 
-            convertView.findViewById(R.id.command).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    command(convertView, thread);
-                }
-            });
-            convertView.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View v) {
-                    return command(convertView, thread);
-                }
-            });
+            convertView.findViewById(R.id.command).setOnClickListener(v -> command(convertView, thread));
+            convertView.setOnLongClickListener(v -> command(convertView, thread));
 
             return convertView;
         }

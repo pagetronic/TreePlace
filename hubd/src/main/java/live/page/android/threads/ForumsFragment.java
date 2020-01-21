@@ -107,14 +107,11 @@ public class ForumsFragment extends PageFragment {
 
             final SwipeRefreshLayout swiper = new SwipeRefreshLayout(getContext());
             swiper.setLayoutParams(new SwipeRefreshLayout.LayoutParams(-1, -1));
-            swiper.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-                                            @Override
-                                            public void onRefresh() {
-                                                swiper.setRefreshing(false);
-                                                threadAdapter.clear();
-                                                threadAdapter.get(forums.get(position).getString("url") + "?lng=fr");
-                                            }
-                                        }
+            swiper.setOnRefreshListener(() -> {
+                        swiper.setRefreshing(false);
+                        threadAdapter.clear();
+                        threadAdapter.get(forums.get(position).getString("url") + "?lng=fr");
+                    }
             );
             container.addView(swiper);
 
@@ -194,26 +191,13 @@ public class ForumsFragment extends PageFragment {
                     .into((ImageView) convertView.findViewById(R.id.avatar));
 
 
-            convertView.findViewById(R.id.command).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    command(convertView, thread);
-                }
-            });
-            convertView.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View v) {
-                    return command(convertView, thread);
-                }
-            });
+            convertView.findViewById(R.id.command).setOnClickListener(v -> command(convertView, thread));
+            convertView.setOnLongClickListener(v -> command(convertView, thread));
 
-            convertView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent intent = new Intent(context, ThreadsView.class);
-                    intent.putExtra("id", thread.getId());
-                    startActivity(intent);
-                }
+            convertView.setOnClickListener(view -> {
+                Intent intent = new Intent(context, ThreadsView.class);
+                intent.putExtra("id", thread.getId());
+                startActivity(intent);
             });
 
             return convertView;

@@ -8,7 +8,6 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.view.View;
 import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -33,31 +32,28 @@ public class SpecimenCreator extends PageActivity implements LocationListener {
 
         //Selectable species = findViewById(R.id.species);
 
-        findViewById(R.id.localize).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        findViewById(R.id.localize).setOnClickListener(v -> {
 
-                if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
-                        checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                    requestPermissions(new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION, android.Manifest.permission.ACCESS_FINE_LOCATION}, ACCESS_LOCATION);
-                    Toast.makeText(SpecimenCreator.this, R.string.location_disable, Toast.LENGTH_LONG).show();
-                    return;
-                }
-
-                if (lm != null) {
-                    getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-                    lm.removeUpdates(SpecimenCreator.this);
-                    lm = null;
-                    return;
-                }
-
-                getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-
-
-                lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-
-                lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0L, 0L, SpecimenCreator.this);
+            if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
+                    checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION}, ACCESS_LOCATION);
+                Toast.makeText(SpecimenCreator.this, R.string.location_disable, Toast.LENGTH_LONG).show();
+                return;
             }
+
+            if (lm != null) {
+                getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+                lm.removeUpdates(SpecimenCreator.this);
+                lm = null;
+                return;
+            }
+
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
+
+            lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
+            lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0L, 0L, SpecimenCreator.this);
         });
     }
 

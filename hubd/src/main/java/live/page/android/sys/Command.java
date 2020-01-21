@@ -71,12 +71,9 @@ public abstract class Command {
                 } else {
                     icon.setVisibility(View.GONE);
                 }
-                convertView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        command.onClick();
-                        dialog.cancel();
-                    }
+                convertView.setOnClickListener(v -> {
+                    command.onClick();
+                    dialog.cancel();
                 });
                 return convertView;
             }

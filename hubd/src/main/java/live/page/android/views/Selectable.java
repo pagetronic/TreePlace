@@ -56,18 +56,13 @@ public class Selectable extends LinearLayout {
         addView(arrow);
 
 
-        setOnClickListener(new View.OnClickListener() {
+        setOnClickListener(v -> selectable(getContext(), url, multiple, new Select() {
             @Override
-            public void onClick(View v) {
-                selectable(getContext(), url, multiple, new Select() {
-                    @Override
-                    public void onChoice(List<Json> choices) {
+            public void onChoice(List<Json> choices) {
 
-                        setChoice(choices);
-                    }
-                });
+                setChoice(choices);
             }
-        });
+        }));
     }
 
     public static void selectable(Context ctx, String url, List<Json> options, boolean multiple, Select onChoice) {
@@ -95,18 +90,15 @@ public class Selectable extends LinearLayout {
             @Override
             public View getView(final View view, final Json item) {
                 ((TextView) view.findViewById(R.id.title)).setText(item.getString("title", item.getString("name")));
-                view.setOnClickListener(new OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if (multiple) {
-                            if (!values.contains(item)) {
-                                values.add(item);
-                                // selected.add(item);
-                            }
-                        } else {
-                            values.add(0, item);
-                            dialog.cancel();
+                view.setOnClickListener(v -> {
+                    if (multiple) {
+                        if (!values.contains(item)) {
+                            values.add(item);
+                            // selected.add(item);
                         }
+                    } else {
+                        values.add(0, item);
+                        dialog.cancel();
                     }
                 });
                 return view;

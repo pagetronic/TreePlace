@@ -42,24 +42,15 @@ public class SpecimensFragment extends PageFragment {
 
 
         final SwipeRefreshLayout swiper = view.findViewById(live.page.android.R.id.swiper);
-        swiper.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                swiper.setRefreshing(false);
-                specimensAdapter.clear();
-                specimensAdapter.get("/gaia/specimens");
-            }
+        swiper.setOnRefreshListener(() -> {
+            swiper.setRefreshing(false);
+            specimensAdapter.clear();
+            specimensAdapter.get("/gaia/specimens");
         });
 
 
         FloatingActionButton fab = view.findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), SpecimenCreator.class);
-                startActivity(intent);
-            }
-        });
+        fab.setOnClickListener(view1 -> startActivity(new Intent(getActivity(), SpecimenCreator.class)));
     }
 
     @Override
@@ -103,13 +94,10 @@ public class SpecimensFragment extends PageFragment {
                         .into(imageView);
             }
 
-            convertView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent intent = new Intent(context, SpecimenView.class);
-                    intent.putExtra("id", specimen.getId());
-                    context.startActivity(intent);
-                }
+            convertView.setOnClickListener(view -> {
+                Intent intent = new Intent(context, SpecimenView.class);
+                intent.putExtra("id", specimen.getId());
+                context.startActivity(intent);
             });
             return convertView;
         }

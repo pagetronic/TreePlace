@@ -64,12 +64,9 @@ public abstract class MainActivity extends AppCompatActivity {
         final Menu menus = navigationView.getMenu();
         for (final MenuFragment fragment : fragments) {
             MenuItem menu = menus.add(fragment.getTitle());
-            menu.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-                @Override
-                public boolean onMenuItemClick(MenuItem item) {
-                    loadFragment(fragment);
-                    return true;
-                }
+            menu.setOnMenuItemClickListener(item -> {
+                loadFragment(fragment);
+                return true;
             });
         }
         navigationView.invalidate();

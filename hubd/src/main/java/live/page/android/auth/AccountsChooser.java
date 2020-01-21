@@ -40,77 +40,74 @@ public class AccountsChooser {
         }
 
 
-        avatar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        avatar.setOnClickListener(v -> {
 
-                final Account[] accounts = AccountManager.get(activity).getAccountsByType(activity.getResources().getString(R.string.account_type));
-                if (accounts.length > 0) {
+            final Account[] accounts = AccountManager.get(activity).getAccountsByType(activity.getResources().getString(R.string.account_type));
+            if (accounts.length > 0) {
 
-                    final AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+                final AlertDialog.Builder builder = new AlertDialog.Builder(activity);
 
 
-                    builder.setTitle(R.string.select_account);
-                    final LayoutInflater inflater = activity.getLayoutInflater();
+                builder.setTitle(R.string.select_account);
+                final LayoutInflater inflater = activity.getLayoutInflater();
 
-                    ListView list = new ListView(activity);
+                ListView list = new ListView(activity);
 
-                    builder.setView(list);
-                    builder.setCancelable(true);
-                    final AlertDialog dialog = builder.show();
-                    list.setAdapter(new BaseAdapter() {
-                        @Override
-                        public int getCount() {
-                            return accounts.length + 1;
-                        }
+                builder.setView(list);
+                builder.setCancelable(true);
+                final AlertDialog dialog = builder.show();
+                list.setAdapter(new BaseAdapter() {
+                    @Override
+                    public int getCount() {
+                        return accounts.length + 1;
+                    }
 
-                        @Override
-                        public Object getItem(int position) {
-                            return accounts.length < position ? accounts[position] : null;
-                        }
+                    @Override
+                    public Object getItem(int position) {
+                        return accounts.length < position ? accounts[position] : null;
+                    }
 
-                        @Override
-                        public long getItemId(int position) {
-                            return -1;
-                        }
+                    @Override
+                    public long getItemId(int position) {
+                        return -1;
+                    }
 
-                        @Override
-                        public View getView(final int position, View convertView, ViewGroup parent) {
+                    @Override
+                    public View getView(final int position, View convertView, ViewGroup parent) {
 
-                            View view = inflater.inflate(R.layout.accounts_view, null);
+                        View view = inflater.inflate(R.layout.accounts_view, null);
 
-                            view.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    Accounts.authBrowser(activity);
-                                    dialog.cancel();
-                                }
-                            });
-
-                            ImageView avatar = view.findViewById(R.id.avatar);
-                            TextView text = view.findViewById(R.id.title);
-                            TextView email = view.findViewById(R.id.email);
-
-                            if (position >= accounts.length) {
-                                email.setVisibility(View.GONE);
-                                text.setText(R.string.new_account);
-                                return view;
+                        view.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Accounts.authBrowser(activity);
+                                dialog.cancel();
                             }
-                            Json profile = Accounts.getProfile(activity, account_name);
-                            text.setText(profile.getString("name"));
-                            email.setText(profile.getString("email"));
+                        });
 
-                            Glide.with(activity).load(Uri.parse(profile.getString("logo") + "@128"))
-                                    .error(R.drawable.logo)
-                                    .circleCrop()
-                                    .into(avatar);
+                        ImageView avatar1 = view.findViewById(R.id.avatar);
+                        TextView text = view.findViewById(R.id.title);
+                        TextView email = view.findViewById(R.id.email);
 
+                        if (position >= accounts.length) {
+                            email.setVisibility(View.GONE);
+                            text.setText(R.string.new_account);
                             return view;
                         }
-                    });
-                } else {
-                    Accounts.authBrowser(activity);
-                }
+                        Json profile = Accounts.getProfile(activity, account_name);
+                        text.setText(profile.getString("name"));
+                        email.setText(profile.getString("email"));
+
+                        Glide.with(activity).load(Uri.parse(profile.getString("logo") + "@128"))
+                                .error(R.drawable.logo)
+                                .circleCrop()
+                                .into(avatar1);
+
+                        return view;
+                    }
+                });
+            } else {
+                Accounts.authBrowser(activity);
             }
         });
 
