@@ -33,10 +33,10 @@
         </activity>
 
         <activity
-            android:theme="@style/AppTheme.NoActionBar"
             android:name="live.page.android.threads.ThreadsView"
             android:configChanges="orientation|screenSize"
-            android:label="@string/hellip" />
+            android:label="@string/hellip"
+            android:theme="@style/AppTheme.NoActionBar" />
 
         <service
             android:name="live.page.android.auth.AuthService"
