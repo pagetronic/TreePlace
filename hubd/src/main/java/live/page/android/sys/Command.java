@@ -6,9 +6,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import androidx.annotation.IdRes;
 
 import java.util.List;
 
@@ -16,9 +19,15 @@ import live.page.android.R;
 
 public abstract class Command {
     public String title;
+    public int icon = -1;
 
     public Command(String title) {
         this.title = title;
+    }
+
+    public Command(String title, @IdRes int icon) {
+        this.title = title;
+        this.icon = icon;
     }
 
     public static void make(final Context context, List<Command> commands) {
@@ -55,6 +64,13 @@ public abstract class Command {
                 }
                 final Command command = (Command) getItem(position);
                 ((TextView) convertView.findViewById(R.id.title)).setText(command.title);
+                ImageView icon = convertView.findViewById(R.id.icon);
+                if (command.icon != -1) {
+                    icon.setVisibility(View.VISIBLE);
+                    icon.setImageResource(command.icon);
+                } else {
+                    icon.setVisibility(View.GONE);
+                }
                 convertView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {

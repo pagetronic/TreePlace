@@ -123,7 +123,7 @@ public class ForumsFragment extends PageFragment {
             if (user != null) {
                 if (user.getId().equals(thread.getJson("user").getId()) || user.getBoolean("editor", false)) {
 
-                    options.add(new Command(getString(R.string.delete)) {
+                    options.add(new Command(getString(R.string.delete), R.drawable.delete) {
                         @Override
                         public void onClick() {
                             PostEditor.delete(getContext(), thread.getId(), new PostEditor() {
@@ -139,7 +139,7 @@ public class ForumsFragment extends PageFragment {
                             });
                         }
                     });
-                    options.add(new Command(getString(R.string.move)) {
+                    options.add(new Command(getString(R.string.move), R.drawable.move) {
                         @Override
                         public void onClick() {
                             PostEditor.move(getContext(), thread.getId(), new PostEditor() {

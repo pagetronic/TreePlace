@@ -62,7 +62,7 @@ public class ThreadsView extends PageActivity {
             });
 
             if (user.getId().equals(post.getJson("user").getId()) || user.getBoolean("editor", false)) {
-                options.add(new Command(getString(R.string.edit)) {
+                options.add(new Command(getString(R.string.edit), R.drawable.edit) {
                     @Override
                     public void onClick() {
                         PostEditor.edit(getBaseContext(), post.getId(), new PostEditor() {
@@ -73,7 +73,7 @@ public class ThreadsView extends PageActivity {
                         });
                     }
                 });
-                options.add(new Command(getString(R.string.delete)) {
+                options.add(new Command(getString(R.string.delete), R.drawable.delete) {
                     @Override
                     public void onClick() {
                         PostEditor.delete(getBaseContext(), post.getId(), new PostEditor() {
