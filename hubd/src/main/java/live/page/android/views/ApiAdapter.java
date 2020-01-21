@@ -24,6 +24,7 @@ public abstract class ApiAdapter extends BaseAdapter {
     private final boolean first = controllable("getFirst");
     private final boolean last = controllable("getLast");
     protected Context context;
+    private LayoutInflater inflater;
     private List<Json> items = new ArrayList<>();
     private Json progress = new Json("progress", true);
     private ScrollEvent scroll = null;
@@ -35,6 +36,7 @@ public abstract class ApiAdapter extends BaseAdapter {
     }
 
     public ApiAdapter(Context context, int resource) {
+        inflater = LayoutInflater.from(context);
         this.context = context;
         this.resource = resource;
         items.add(progress);
@@ -186,7 +188,7 @@ public abstract class ApiAdapter extends BaseAdapter {
         }
 
         if (convertView == null || convertView.getId() != R.id.original) {
-            convertView = LayoutInflater.from(context).inflate(resource, null);
+            convertView = inflater.inflate(resource, null);
             convertView.setId(R.id.original);
         }
 
