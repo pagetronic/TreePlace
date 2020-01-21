@@ -27,6 +27,7 @@ import live.page.android.api.Json;
 import live.page.android.sys.Command;
 import live.page.android.sys.PageFragment;
 import live.page.android.sys.Since;
+import live.page.android.views.Animations;
 import live.page.android.views.ApiAdapter;
 
 public class ForumsFragment extends PageFragment {
@@ -117,7 +118,7 @@ public class ForumsFragment extends PageFragment {
             super(getContext(), R.layout.threads_view);
         }
 
-        public boolean command(View view, final Json thread) {
+        public boolean command(final View view, final Json thread) {
             List<Command> options = new ArrayList<>();
             if (user != null) {
                 if (user.getId().equals(thread.getJson("user").getId()) || user.getBoolean("editor", false)) {
@@ -128,7 +129,12 @@ public class ForumsFragment extends PageFragment {
                             PostEditor.delete(getContext(), thread.getId(), new PostEditor() {
                                 @Override
                                 void success() {
-                                    removeItem(thread.getId());
+                                    Animations.moveOut(view, new Animations.Events() {
+                                        @Override
+                                        public void finished() {
+                                            removeItem(thread.getId());
+                                        }
+                                    });
                                 }
                             });
                         }
