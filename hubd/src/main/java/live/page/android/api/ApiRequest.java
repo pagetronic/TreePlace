@@ -22,7 +22,7 @@ public class ApiRequest {
     private static final String HTTP = BuildConfig.DEBUG ? "http://" : "https://";
     private Context ctx;
     private HttpURLConnection connection;
-    private boolean abort = false;
+    private boolean aborted = false;
     private String access_token = null;
 
     public ApiRequest(Context ctx, String path) {
@@ -127,7 +127,7 @@ public class ApiRequest {
 
 
     public void abort() {
-        abort = true;
+        aborted = true;
         try {
             connection.disconnect();
         } catch (Exception ignore) {
@@ -183,7 +183,7 @@ public class ApiRequest {
     }
 
     public boolean isAbort() {
-        return abort;
+        return aborted;
     }
 
     public void invalidateAuthToken() {
