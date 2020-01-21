@@ -141,7 +141,6 @@ public class ApiAsync extends AsyncTask<Object, Integer, ApiResponse> {
         return req;
     }
 
-
     public static ApiRequest get(final String access_token, final Context ctx, final String url, final ApiResult func) {
 
         final ApiRequest req = new ApiRequest(ctx, url);
@@ -151,7 +150,6 @@ public class ApiAsync extends AsyncTask<Object, Integer, ApiResponse> {
         }
         return req;
     }
-
 
     private static void get(final ApiRequest req, final Context ctx, final String url, final ApiResult func) {
 

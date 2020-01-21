@@ -15,6 +15,7 @@ import java.nio.charset.StandardCharsets;
 
 import live.page.android.BuildConfig;
 import live.page.android.R;
+import live.page.android.sys.Fx;
 
 public class ApiRequest {
 
@@ -72,7 +73,11 @@ public class ApiRequest {
             body.close();
 
             if (!isAbort()) {
-                return new ApiResponse(connection.getResponseCode(), response);
+                int code = connection.getResponseCode();
+                if (code != 200) {
+                    Fx.log(code);
+                }
+                return new ApiResponse(code, response);
             }
 
         } catch (IOException ignore) {
@@ -94,10 +99,17 @@ public class ApiRequest {
             connection.setRequestMethod("GET");
             connection.setDoOutput(false);
 
-            String response = read();
+            String response = null;
+            if (!isAbort()) {
+                response = read();
+            }
 
             if (!isAbort()) {
-                return new ApiResponse(connection.getResponseCode(), response);
+                int code = connection.getResponseCode();
+                if (code != 200) {
+                    Fx.log(code);
+                }
+                return new ApiResponse(code, response);
             }
 
         } catch (IOException ignore) {
