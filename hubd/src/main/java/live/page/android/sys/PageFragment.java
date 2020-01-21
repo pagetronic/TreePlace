@@ -15,7 +15,7 @@ public abstract class PageFragment extends Fragment {
     protected Json user;
     private View view;
 
-    protected PageFragment() {
+    public PageFragment() {
     }
 
     protected abstract int layout();

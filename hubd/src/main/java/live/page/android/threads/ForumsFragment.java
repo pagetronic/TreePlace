@@ -39,6 +39,11 @@ public class ForumsFragment extends PageFragment {
     private final ForumsAdapter adapter = new ForumsAdapter();
     private TabLayout tabs;
 
+
+    public ForumsFragment() {
+
+    }
+
     public ForumsFragment(String base) {
         forums.add(new Json("url", base));
     }
