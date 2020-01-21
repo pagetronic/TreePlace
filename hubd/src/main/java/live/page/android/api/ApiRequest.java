@@ -56,6 +56,7 @@ public class ApiRequest {
 
             connection.setRequestMethod("POST");
             connection.setRequestProperty("Content-Type", "application/json");
+            connection.setDoOutput(true);
             OutputStream body = connection.getOutputStream();
 
             BufferedWriter payload = new BufferedWriter(new OutputStreamWriter(body, StandardCharsets.UTF_8));
@@ -75,9 +76,50 @@ public class ApiRequest {
             }
 
         } catch (IOException ignore) {
+        } finally {
+            try {
+                connection.disconnect();
+                connection = null;
+            } catch (Exception ignore) {
+            }
         }
         return null;
     }
+
+
+    public ApiResponse get() {
+
+        try {
+
+            connection.setRequestMethod("GET");
+            connection.setDoOutput(false);
+
+            String response = read();
+
+            if (!isAbort()) {
+                return new ApiResponse(connection.getResponseCode(), response);
+            }
+
+        } catch (IOException ignore) {
+        } finally {
+            try {
+                connection.disconnect();
+                connection = null;
+            } catch (Exception ignore) {
+            }
+        }
+        return null;
+    }
+
+
+    public void abort() {
+        abort = true;
+        try {
+            connection.disconnect();
+        } catch (Exception ignore) {
+        }
+    }
+
 
     private String read() {
 
@@ -125,34 +167,6 @@ public class ApiRequest {
         }
         return null;
     }
-
-
-    public ApiResponse get() {
-
-        try {
-
-            connection.setRequestMethod("GET");
-
-            String response = read();
-
-            if (!isAbort()) {
-                return new ApiResponse(connection.getResponseCode(), response);
-            }
-
-        } catch (IOException ignore) {
-        }
-        return null;
-    }
-
-
-    public void abort() {
-        abort = true;
-        try {
-            connection.disconnect();
-        } catch (Exception ignore) {
-        }
-    }
-
 
     public boolean isAbort() {
         return abort;
