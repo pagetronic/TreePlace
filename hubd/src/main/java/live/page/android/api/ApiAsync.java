@@ -92,7 +92,7 @@ public class ApiAsync extends AsyncTask<Object, Integer, ApiResponse> {
                 }
                 func.error(code, data);
             }
-        }).execute("POST", data);
+        }).execute(req, "POST", data);
 
     }
 
@@ -188,15 +188,15 @@ public class ApiAsync extends AsyncTask<Object, Integer, ApiResponse> {
                         break;
                 }
             }
-        }).execute("GET", url);
+        }).execute(req, "GET", url);
     }
 
     @Override
     protected ApiResponse doInBackground(Object... params) {
-        if (params[0].equals("POST")) {
-            return req.post((Json) params[1]);
+        if (params[1].equals("POST")) {
+            return ((ApiRequest) params[0]).post((Json) params[2]);
         } else {
-            return req.get();
+            return ((ApiRequest) params[0]).get();
         }
     }
 
