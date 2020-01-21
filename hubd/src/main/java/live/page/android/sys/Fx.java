@@ -40,6 +40,18 @@ public class Fx {
         return dialog;
     }
 
+    public static boolean availableLng(Context ctx, String lng) {
+        if (lng != null) {
+            String[] domains = ctx.getResources().getStringArray(R.array.domains);
+            for (String domain : domains) {
+                if (domain.startsWith(lng + "@")) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     public static abstract class Action {
         public abstract void doIt();
     }

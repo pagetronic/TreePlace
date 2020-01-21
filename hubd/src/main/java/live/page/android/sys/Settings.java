@@ -12,22 +12,18 @@ public class Settings {
 
         SharedPreferences settings = ctx.getSharedPreferences("settings", Context.MODE_PRIVATE);
         String lng = settings.getString("lng", null);
-        if (lng != null) {
+        if (Fx.availableLng(ctx, lng)) {
+            return lng;
+        }
+        lng = Locale.getDefault().getLanguage();
+        if (Fx.availableLng(ctx, lng)) {
+            return lng;
+        }
+        lng = lng.split("_")[0];
+        if (Fx.availableLng(ctx, lng)) {
             return lng;
         }
         String[] domains = ctx.getResources().getStringArray(R.array.domains);
-        lng = Locale.getDefault().getLanguage();
-        for (String domain : domains) {
-            if (domain.startsWith(lng + "@")) {
-                return lng;
-            }
-        }
-        lng = lng.split("_")[0];
-        for (String domain : domains) {
-            if (domain.startsWith(lng + "@")) {
-                return lng;
-            }
-        }
         return domains[0].split("@")[0];
     }
 }
