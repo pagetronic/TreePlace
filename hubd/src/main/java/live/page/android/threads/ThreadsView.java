@@ -87,7 +87,7 @@ public class ThreadsView extends PageActivity {
             }
         }
         if (options.size() > 0) {
-            Command.make(ThreadsView.this, options);
+            Command.make(getContext(), options);
             return false;
         } else {
             return true;

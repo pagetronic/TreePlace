@@ -1,5 +1,6 @@
 package live.page.android.sys;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
@@ -49,4 +50,7 @@ public abstract class PageActivity extends AppCompatActivity {
         return true;
     }
 
+    public Context getContext() {
+        return this;
+    }
 }
