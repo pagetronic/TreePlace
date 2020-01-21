@@ -80,7 +80,8 @@ public class ApiRequest {
                 return new ApiResponse(code, response);
             }
 
-        } catch (IOException ignore) {
+        } catch (IOException e) {
+            e.printStackTrace();
         } finally {
             try {
                 connection.disconnect();
@@ -112,7 +113,8 @@ public class ApiRequest {
                 return new ApiResponse(code, response);
             }
 
-        } catch (IOException ignore) {
+        } catch (IOException e) {
+            e.printStackTrace();
         } finally {
             try {
                 connection.disconnect();
