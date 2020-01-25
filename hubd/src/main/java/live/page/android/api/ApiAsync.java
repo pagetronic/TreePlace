@@ -65,40 +65,7 @@ public class ApiAsync extends AsyncTask<Object, Integer, ApiResponse> {
     }
 
     private static void post(final ApiRequest req, final Context ctx, final String url, final Json data, final ApiResult func) {
-
-        new ApiAsync(req, new ApiResult() {
-
-            @Override
-            public void success(Json data) {
-                if (req.isAbort()) {
-                    return;
-                }
-                func.success(data);
-
-            }
-
-            @Override
-            public void error(int code, Json data) {
-                if (req.isAbort()) {
-                    return;
-                }
-                switch (data.getString("error", "")) {
-                    case "EXPIRED_ACCESS_TOKEN":
-                        req.invalidateAuthToken();
-                        post(ctx, url, data, func);
-                        break;
-                    case "AUTHORIZATION_SCOPE_ERROR":
-                    case "INVALID_ACCESS_TOKEN":
-                        Accounts.invalidateAccount(ctx);
-                        break;
-                    default:
-                        func.error(code, data);
-                        break;
-                }
-                func.error(code, data);
-            }
-        }).execute(req, "POST", data);
-
+        send("POST", req, ctx, url, data, func);
     }
 
     public static ApiRequest get(final Context ctx, final String url, final ApiResult func) {
@@ -154,6 +121,10 @@ public class ApiAsync extends AsyncTask<Object, Integer, ApiResponse> {
     }
 
     private static void get(final ApiRequest req, final Context ctx, final String url, final ApiResult func) {
+        send("GET", req, ctx, url, null, func);
+    }
+
+    private static void send(final String method, final ApiRequest req, final Context ctx, final String url, final Json data, final ApiResult func) {
 
         new ApiAsync(req, new ApiResult() {
 
@@ -163,6 +134,7 @@ public class ApiAsync extends AsyncTask<Object, Integer, ApiResponse> {
                     return;
                 }
                 func.success(data);
+
             }
 
             @Override
@@ -170,14 +142,10 @@ public class ApiAsync extends AsyncTask<Object, Integer, ApiResponse> {
                 if (req.isAbort()) {
                     return;
                 }
-                if (data == null) {
-                    func.error(code, data);
-                    return;
-                }
                 switch (data.getString("error", "")) {
                     case "EXPIRED_ACCESS_TOKEN":
                         req.invalidateAuthToken();
-                        get(ctx, url, func);
+                        send(method, req, ctx, url, data, func);
                         break;
                     case "AUTHORIZATION_SCOPE_ERROR":
                     case "INVALID_ACCESS_TOKEN":
@@ -187,8 +155,10 @@ public class ApiAsync extends AsyncTask<Object, Integer, ApiResponse> {
                         func.error(code, data);
                         break;
                 }
+                func.error(code, data);
             }
-        }).execute(req, "GET", url);
+        }).execute(req, method, data);
+
     }
 
     @Override
