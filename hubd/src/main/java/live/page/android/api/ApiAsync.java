@@ -149,13 +149,13 @@ public class ApiAsync extends AsyncTask<Object, Integer, ApiResponse> {
                         break;
                     case "AUTHORIZATION_SCOPE_ERROR":
                     case "INVALID_ACCESS_TOKEN":
-                        Accounts.invalidateAccount(ctx);
+                        func.error(code, data);
+                        Accounts.authBrowser(ctx);
                         break;
                     default:
                         func.error(code, data);
                         break;
                 }
-                func.error(code, data);
             }
         }).execute(req, method, data);
 
