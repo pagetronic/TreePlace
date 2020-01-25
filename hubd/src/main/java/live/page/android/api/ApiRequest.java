@@ -23,9 +23,15 @@ public class ApiRequest {
     private HttpURLConnection connection;
     private boolean aborted = false;
     private String access_token = null;
+    private String path = null;
 
     public ApiRequest(Context ctx, String path) {
         this.ctx = ctx;
+        this.path = path;
+        newConnection();
+    }
+
+    private void newConnection() {
         try {
             connection = (HttpURLConnection) new URL(HTTP + ctx.getString(R.string.apiHost) + path).openConnection();
             connection.setRequestProperty("User-Agent", "TreePlace Android V3");
@@ -53,7 +59,9 @@ public class ApiRequest {
     public ApiResponse post(Json data) {
 
         try {
-
+            if (connection == null) {
+                newConnection();
+            }
             connection.setRequestMethod("POST");
             connection.setRequestProperty("Content-Type", "application/json");
             connection.setDoOutput(true);
@@ -92,6 +100,9 @@ public class ApiRequest {
 
         try {
 
+            if (connection == null) {
+                newConnection();
+            }
             connection.setRequestMethod("GET");
             connection.setDoOutput(false);
 
@@ -121,6 +132,7 @@ public class ApiRequest {
         aborted = true;
         try {
             connection.disconnect();
+            connection = null;
         } catch (Exception ignore) {
         }
     }
