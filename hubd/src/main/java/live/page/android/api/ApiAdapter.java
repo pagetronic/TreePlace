@@ -151,6 +151,10 @@ public abstract class ApiAdapter extends BaseAdapter {
         return null;
     }
 
+    public Json getJson(int position) {
+        return (Json) getItem(position);
+    }
+
     @Override
     public long getItemId(int position) {
         Object item = getItem(position);
