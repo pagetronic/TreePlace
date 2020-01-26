@@ -24,7 +24,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import live.page.android.api.Json;
 import live.page.android.sys.PageFragment;
-import live.page.android.views.ApiAdapter;
+import live.page.android.api.ApiAdapter;
 
 public class SpecimensFragment extends PageFragment {
 

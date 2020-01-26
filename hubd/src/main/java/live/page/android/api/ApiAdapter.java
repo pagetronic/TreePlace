@@ -1,4 +1,4 @@
-package live.page.android.views;
+package live.page.android.api;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -14,10 +14,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import live.page.android.R;
-import live.page.android.api.ApiAsync;
-import live.page.android.api.ApiRequest;
-import live.page.android.api.ApiResult;
-import live.page.android.api.Json;
 
 public abstract class ApiAdapter extends BaseAdapter {
 
@@ -66,14 +62,11 @@ public abstract class ApiAdapter extends BaseAdapter {
                 final String next = rez.getJson("paging").getString("next");
                 if (next != null) {
                     items.add(progress);
-                    scroll = new ScrollEvent() {
-                        @Override
-                        public void doNext() {
-                            try {
-                                post(url, data.put("paging", next));
-                            } catch (Exception ignore) {
+                    scroll = () -> {
+                        try {
+                            post(url, data.put("paging", next));
+                        } catch (Exception ignore) {
 
-                            }
                         }
                     };
                 }
@@ -112,14 +105,11 @@ public abstract class ApiAdapter extends BaseAdapter {
                 final String next = data.getJson("paging") != null ? data.getJson("paging").getString("next") : null;
                 if (next != null) {
                     items.add(progress);
-                    scroll = new ScrollEvent() {
-                        @Override
-                        public void doNext() {
-                            try {
-                                get(addPaging(url, next));
-                            } catch (Exception ignore) {
+                    scroll = () -> {
+                        try {
+                            get(addPaging(url, next));
+                        } catch (Exception ignore) {
 
-                            }
                         }
                     };
                 }

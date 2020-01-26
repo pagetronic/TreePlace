@@ -1,8 +1,7 @@
-package live.page.android.views;
+package live.page.android.views.select;
 
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.res.TypedArray;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -17,20 +16,21 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import live.page.android.R;
+import live.page.android.api.ApiAdapter;
 import live.page.android.api.Json;
 import live.page.android.sys.Settings;
 
 public class Selectable extends LinearLayout {
 
+    private final SelectionAdapter selection = new SelectionAdapter(this);
     private String url;
     private String hint;
-    private LinearLayout choices;
+    private LinearLayout view;
     private ImageView arrow;
-    private List<String> values = new ArrayList<>();
     private boolean multiple = false;
 
     public Selectable(Context context, @Nullable AttributeSet attrs) {
@@ -45,11 +45,11 @@ public class Selectable extends LinearLayout {
             attributes.recycle();
         }
 
-        choices = new LinearLayout(context);
-        choices.setOrientation(LinearLayout.HORIZONTAL);
-        choices.setLayoutParams(new LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 10F));
+        view = new LinearLayout(context);
+        view.setOrientation(LinearLayout.HORIZONTAL);
+        view.setLayoutParams(new LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 10F));
         setHint();
-        addView(choices);
+        addView(view);
 
         arrow = new ImageView(context);
         arrow.setLayoutParams(new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT));
@@ -57,20 +57,45 @@ public class Selectable extends LinearLayout {
         addView(arrow);
 
 
-        setOnClickListener(v -> selectable(getContext(), url, multiple, new Select() {
+        setOnClickListener(v -> selectable(getContext(), url, multiple, new SelectAction() {
             @Override
-            public void onChoice(List<Json> choices) {
+            public void onChoices(List<Json> choices) {
 
-                setChoice(choices);
+                setChoices(choices);
             }
         }));
     }
 
-    public static void selectable(Context ctx, String url, List<Json> options, boolean multiple, Select onChoice) {
+    public Selectable(Context ctx, String url, List<Json> options, boolean multiple, SelectAction onChoice) {
+        super(ctx, null);
         selectable(ctx, url, multiple, onChoice);
     }
 
-    public static void selectable(final Context ctx, final String url, final boolean multiple, final Select onChoice) {
+
+    public void remove(Json item) {
+        if (item == null) {
+            return;
+        }
+        selection.remove(item);
+    }
+
+    public void add(Json item) {
+        if (item == null || selection.contains(item)) {
+            return;
+        }
+        selection.add(item);
+    }
+
+    public void set(Json item) {
+        selection.clear();
+        if (item == null) {
+            return;
+        }
+        selection.add(item);
+    }
+
+
+    private void selectable(final Context ctx, final String url, final boolean multiple, final SelectAction onChoice) {
 
         final AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
         builder.setCancelable(true);
@@ -78,13 +103,11 @@ public class Selectable extends LinearLayout {
         final AlertDialog dialog = builder.show();
         dialog.show();
 
-        final List<Json> values = new ArrayList<>();
 
         final EditText search = dialog.findViewById(R.id.search);
         ListView list = dialog.findViewById(R.id.list);
+        ((ListView) dialog.findViewById(R.id.selected)).setAdapter(selection);
 
-        //TODO selectable in list, static ? static items...
-        //   ((ListView) dialog.findViewById(R.id.selected));
 
         final Json data = new Json("action", "search").put("search", "").put("lng", Settings.getLng(ctx));
         final ApiAdapter adapter = new ApiAdapter(ctx) {
@@ -93,12 +116,12 @@ public class Selectable extends LinearLayout {
                 ((TextView) view.findViewById(R.id.title)).setText(item.getString("title", item.getString("name")));
                 view.setOnClickListener(v -> {
                     if (multiple) {
-                        if (!values.contains(item)) {
-                            values.add(item);
-                            // selected.add(item);
-                        }
+                        add(item);
+                        TextView option = new TextView(context);
+                        option.setText(item.getString("title", item.getString("name")));
+
                     } else {
-                        values.add(0, item);
+                        set(item);
                         dialog.cancel();
                     }
                 });
@@ -125,57 +148,42 @@ public class Selectable extends LinearLayout {
             public void afterTextChanged(Editable s) {
             }
         });
-        dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
-            @Override
-            public void onCancel(DialogInterface dialog) {
-                onChoice.onChoice(values);
-            }
-        });
     }
 
     public void setUrl(String url) {
         this.url = url;
     }
 
-    private void setChoice(List<Json> chooses) {
-
-        values.clear();
-        for (Json choose : chooses) {
-            choices.removeAllViews();
-            TextView text = new TextView(getContext());
-            text.setLayoutParams(new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-            if (choose == null) {
-                text.setHint(hint);
-            } else {
-                text.setText(choose.getString("name"));
-            }
-            values.add(choose.getId());
-            choices.addView(text);
-        }
-    }
-
-
     private void setHint() {
-        choices.removeAllViews();
+        view.removeAllViews();
         TextView text = new TextView(getContext());
         text.setLayoutParams(new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         text.setHint(hint);
-        choices.addView(text);
+        view.addView(text);
 
     }
 
     public List<String> getValues() {
-        return values;
+        return selection.getValues();
     }
 
     public String getValue() {
-        if (values.size() == 0) {
+        if (selection.size() == 0) {
             return null;
         }
-        return values.get(0);
+        return getValues().get(0);
     }
 
-    public static abstract class Select {
-        public abstract void onChoice(List<Json> choice);
+    private List<Json> getChoices() {
+        return selection.getChoices();
+    }
+
+    private void setChoices(List<Json> choices) {
+        selection.addAll(choices);
+    }
+
+    private void setChoice(Json choice) {
+        setChoices(Collections.singletonList(choice));
+
     }
 }

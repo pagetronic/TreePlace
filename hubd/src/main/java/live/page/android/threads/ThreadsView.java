@@ -21,7 +21,7 @@ import live.page.android.api.Json;
 import live.page.android.sys.Command;
 import live.page.android.sys.PageActivity;
 import live.page.android.sys.Since;
-import live.page.android.views.ApiAdapter;
+import live.page.android.api.ApiAdapter;
 
 public class ThreadsView extends PageActivity {
 

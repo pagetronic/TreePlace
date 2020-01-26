@@ -5,34 +5,31 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <ListView
-        android:id="@+id/selected"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="10"
-        android:padding="0dp"
-        android:visibility="gone"
-        tools:listitem="@layout/selectable_option" />
 
     <EditText
         android:id="@+id/search"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/border_green"
+        android:background="@drawable/border_primary"
         android:hint="@string/search"
-        android:inputType="textFilter"
-        android:importantForAutofill="no" />
+        android:importantForAutofill="no"
+        android:inputType="textFilter" />
 
-    <ProgressBar
+
+    <ListView
+        android:id="@+id/selected"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="gone" />
+        android:layout_height="match_parent"
+        android:layout_weight="3"
+        android:padding="0dp"
+        tools:listitem="@layout/selectable_option"
+        android:background="@drawable/border_second"/>
 
     <ListView
         android:id="@+id/list"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="10"
+        android:layout_height="match_parent"
+        android:layout_weight="3"
         android:padding="0dp"
         tools:listitem="@layout/selectable_option" />
 

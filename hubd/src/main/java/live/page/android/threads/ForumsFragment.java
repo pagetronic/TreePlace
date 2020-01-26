@@ -30,7 +30,7 @@ import live.page.android.sys.PageFragment;
 import live.page.android.sys.Settings;
 import live.page.android.sys.Since;
 import live.page.android.views.Animations;
-import live.page.android.views.ApiAdapter;
+import live.page.android.api.ApiAdapter;
 
 public class ForumsFragment extends PageFragment {
 
