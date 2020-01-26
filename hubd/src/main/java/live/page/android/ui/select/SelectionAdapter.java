@@ -1,4 +1,4 @@
-package live.page.android.views.select;
+package live.page.android.ui.select;
 
 import android.view.LayoutInflater;
 import android.view.View;

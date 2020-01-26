@@ -8,8 +8,8 @@ import live.page.android.api.ApiAsync;
 import live.page.android.api.ApiResult;
 import live.page.android.api.Json;
 import live.page.android.sys.Fx;
-import live.page.android.views.select.SelectAction;
-import live.page.android.views.select.Selectable;
+import live.page.android.ui.select.SelectAction;
+import live.page.android.ui.select.Selectable;
 
 public abstract class PostEditor {
     public static void delete(final Context ctx, String id, final PostEditor completed) {

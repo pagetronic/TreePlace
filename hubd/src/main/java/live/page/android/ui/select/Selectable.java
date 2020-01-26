@@ -1,4 +1,4 @@
-package live.page.android.views.select;
+package live.page.android.ui.select;
 
 import android.app.AlertDialog;
 import android.content.Context;
