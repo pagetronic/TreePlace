@@ -231,6 +231,18 @@ public abstract class ApiAdapter extends BaseAdapter {
     }
 
 
+    public boolean containsId(String id) {
+        if (id == null) {
+            return false;
+        }
+        for (Json item : items) {
+            if (item.getId() != null && item.getId().equals(id)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private interface ScrollEvent {
         void doNext();
     }

@@ -9,7 +9,7 @@ import live.page.android.api.ApiResult;
 import live.page.android.api.Json;
 import live.page.android.sys.Fx;
 import live.page.android.ui.select.SelectAction;
-import live.page.android.ui.select.Selectable;
+import live.page.android.ui.select.SelectDialog;
 
 public abstract class PostEditor {
     public static void delete(final Context ctx, String id, final PostEditor completed) {
@@ -29,7 +29,7 @@ public abstract class PostEditor {
         ApiAsync.get(ctx, "/threads/" + id, new ApiResult() {
             @Override
             public void success(Json data) {
-                new Selectable(ctx, "/forums", data.getListJson("parents"), true, new SelectAction() {
+                new SelectDialog(ctx, "/forums", data.getListJson("parents"), true, new SelectAction() {
                     @Override
                     public void onValues(List<String> values) {
                         Fx.log(values);
