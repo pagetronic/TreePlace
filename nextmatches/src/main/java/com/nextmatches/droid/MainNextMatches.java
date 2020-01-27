@@ -7,7 +7,7 @@ import live.page.android.MainActivity;
 import live.page.android.api.ApiAsync;
 import live.page.android.api.ApiResult;
 import live.page.android.api.Json;
-import live.page.android.sys.Settings;
+import live.page.android.utils.Settings;
 import live.page.android.threads.ForumsView;
 
 public class MainNextMatches extends MainActivity {

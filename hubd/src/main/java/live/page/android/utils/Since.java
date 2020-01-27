@@ -1,7 +1,7 @@
 /*
  * Copyright 2019 Laurent PAGE, Apache Licence 2.0
  */
-package live.page.android.sys;
+package live.page.android.utils;
 
 import android.content.Context;
 

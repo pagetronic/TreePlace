@@ -20,9 +20,9 @@ import java.util.List;
 import live.page.android.R;
 import live.page.android.api.ApiAdapter;
 import live.page.android.api.Json;
-import live.page.android.sys.Command;
-import live.page.android.sys.PageActivity;
-import live.page.android.sys.Since;
+import live.page.android.utils.Command;
+import live.page.android.auto.PageActivity;
+import live.page.android.utils.Since;
 
 public class ThreadsView extends PageActivity {
 

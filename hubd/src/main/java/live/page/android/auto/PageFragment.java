@@ -1,4 +1,4 @@
-package live.page.android.sys;
+package live.page.android.auto;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;

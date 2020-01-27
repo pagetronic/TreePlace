@@ -1,4 +1,4 @@
-package live.page.android.sys;
+package live.page.android.auto;
 
 import android.content.Context;
 import android.os.Bundle;

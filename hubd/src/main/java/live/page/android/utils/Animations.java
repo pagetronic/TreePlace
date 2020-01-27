@@ -1,4 +1,4 @@
-package live.page.android.ui;
+package live.page.android.utils;
 
 import android.animation.Animator;
 import android.view.View;

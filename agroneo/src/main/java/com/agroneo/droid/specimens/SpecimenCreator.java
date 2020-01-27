@@ -14,8 +14,8 @@ import android.widget.Toast;
 
 import com.agroneo.droid.R;
 
-import live.page.android.sys.LocationUtils;
-import live.page.android.sys.PageActivity;
+import com.agroneo.droid.utils.LocationUtils;
+import live.page.android.auto.PageActivity;
 
 public class SpecimenCreator extends PageActivity implements LocationListener {
 

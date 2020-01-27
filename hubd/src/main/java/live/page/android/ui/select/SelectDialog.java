@@ -12,7 +12,7 @@ import java.util.List;
 
 import live.page.android.R;
 import live.page.android.api.Json;
-import live.page.android.sys.Settings;
+import live.page.android.utils.Settings;
 
 public class SelectDialog {
 

@@ -1,4 +1,4 @@
-package live.page.android.sys;
+package live.page.android.utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;

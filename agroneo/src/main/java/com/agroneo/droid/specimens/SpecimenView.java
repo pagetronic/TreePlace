@@ -2,7 +2,7 @@ package com.agroneo.droid.specimens;
 
 import com.agroneo.droid.R;
 
-import live.page.android.sys.PageActivity;
+import live.page.android.auto.PageActivity;
 
 public class SpecimenView extends PageActivity {
 

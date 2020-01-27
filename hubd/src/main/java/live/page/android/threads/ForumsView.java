@@ -26,11 +26,11 @@ import java.util.List;
 import live.page.android.R;
 import live.page.android.api.ApiAdapter;
 import live.page.android.api.Json;
-import live.page.android.sys.Command;
-import live.page.android.sys.PageFragment;
-import live.page.android.sys.Settings;
-import live.page.android.sys.Since;
-import live.page.android.ui.Animations;
+import live.page.android.utils.Command;
+import live.page.android.auto.PageFragment;
+import live.page.android.utils.Settings;
+import live.page.android.utils.Since;
+import live.page.android.utils.Animations;
 
 public class ForumsView extends PageFragment {
 
