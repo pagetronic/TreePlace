@@ -4,16 +4,13 @@ android {
     compileSdkVersion 29
     buildToolsVersion "29.0.2"
 
-
     defaultConfig {
         applicationId "com.renseigner.droid"
         minSdkVersion 24
         targetSdkVersion 29
         versionCode 1
         versionName "1.0"
-
     }
-
     buildTypes {
         release {
             minifyEnabled false
@@ -27,7 +24,6 @@ android {
     repositories {
         google()
     }
-
 }
 
 dependencies {
