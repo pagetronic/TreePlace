@@ -4,7 +4,7 @@
 
     <string name="apiHost">api.agroneo.com</string>
     <string name="schemeAuth">agroneo-oauth</string>
-    <string name="scopes">email,gaia,threads</string>
+    <string name="scopes">email,gaia,threads,accounts</string>
 
     <string-array name="domains">
         <item>en@https://en.agroneo.com</item>
