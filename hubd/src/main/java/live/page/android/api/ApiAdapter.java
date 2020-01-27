@@ -8,8 +8,8 @@ import android.widget.BaseAdapter;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,14 +17,14 @@ import live.page.android.R;
 
 public abstract class ApiAdapter extends BaseAdapter {
 
-    private final boolean first = controllable("getFirst");
-    private final boolean last = controllable("getLast");
+    //TODO : manage "paging prev"
+
     protected Context context;
     private LayoutInflater inflater;
-    private List<Json> items = new ArrayList<>();
-    private Json progress = new Json("progress", true);
     private ScrollEvent scroll = null;
     private int resource;
+    protected List<Json> items = new ArrayList<>();
+    private Json progress = new Json("progress", true);
     private ApiRequest req = null;
 
     public ApiAdapter(Context context) {
@@ -90,6 +90,11 @@ public abstract class ApiAdapter extends BaseAdapter {
     }
 
     public ApiAdapter get(final String url) {
+        return get(null, url);
+    }
+
+    public ApiAdapter get(SwipeRefreshLayout swiper, final String url) {
+
 
         scroll = null;
         if (req != null) {
@@ -99,6 +104,10 @@ public abstract class ApiAdapter extends BaseAdapter {
 
             @Override
             public void success(final Json data_) {
+                if (swiper != null) {
+                    swiper.setRefreshing(false);
+                    items.clear();
+                }
                 Json data = getData(data_);
                 items.remove(progress);
                 items.addAll(data.getListJson("result"));
@@ -118,6 +127,10 @@ public abstract class ApiAdapter extends BaseAdapter {
 
             @Override
             public void error(int code, Json data) {
+
+                if (swiper != null) {
+                    swiper.setRefreshing(false);
+                }
                 if (data.getString("error") != null) {
                     Toast.makeText(context, data.getString("error"), Toast.LENGTH_SHORT).show();
                 } else {
@@ -140,7 +153,7 @@ public abstract class ApiAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        return items.size() + ((first ? 1 : 0) + (last ? 1 : 0));
+        return items.size();
     }
 
     @Override
@@ -151,7 +164,7 @@ public abstract class ApiAdapter extends BaseAdapter {
         return null;
     }
 
-    public Json getJson(int position) {
+    protected Json getJson(int position) {
         return (Json) getItem(position);
     }
 
@@ -169,21 +182,12 @@ public abstract class ApiAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        Json item = (Json) getItem(position - (first ? 1 : 0));
+        Json item = (Json) getItem(position);
 
         if (item != null && item.getBoolean("progress", false)) {
-            ProgressBar progress = new ProgressBar(context);
-            progress.setPadding(5, 25, 5, 25);
-            return progress;
+            return progressView();
         }
 
-        if (first && position == 0) {
-            return getFirst();
-        }
-
-        if (last && position == getCount() - 1) {
-            return getLast();
-        }
 
         if (item == null) {
             return new View(context);
@@ -211,43 +215,16 @@ public abstract class ApiAdapter extends BaseAdapter {
         notifyDataSetChanged();
     }
 
-    @Controlable
-    public View getFirst() {
-        return null;
-    }
+    protected View progressView() {
 
-    @Controlable
-    public View getLast() {
-        return null;
-    }
-
-    private boolean controllable(String method) {
-        try {
-            return !getClass().getMethod(method).isAnnotationPresent(Controlable.class);
-        } catch (NoSuchMethodException | SecurityException e) {
-            e.printStackTrace();
-        }
-        return false;
+        ProgressBar progress = new ProgressBar(context);
+        progress.setPadding(5, 25, 5, 25);
+        return progress;
     }
 
 
-    public boolean containsId(String id) {
-        if (id == null) {
-            return false;
-        }
-        for (Json item : items) {
-            if (item.getId() != null && item.getId().equals(id)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private interface ScrollEvent {
+    public interface ScrollEvent {
         void doNext();
     }
 
-    @Retention(RetentionPolicy.RUNTIME)
-    private @interface Controlable {
-    }
 }

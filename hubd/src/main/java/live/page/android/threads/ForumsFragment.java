@@ -24,13 +24,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import live.page.android.R;
+import live.page.android.api.ApiAdapter;
 import live.page.android.api.Json;
 import live.page.android.sys.Command;
 import live.page.android.sys.PageFragment;
 import live.page.android.sys.Settings;
 import live.page.android.sys.Since;
 import live.page.android.ui.Animations;
-import live.page.android.api.ApiAdapter;
 
 public class ForumsFragment extends PageFragment {
 
@@ -113,11 +113,7 @@ public class ForumsFragment extends PageFragment {
 
             final SwipeRefreshLayout swiper = new SwipeRefreshLayout(getContext());
             swiper.setLayoutParams(new SwipeRefreshLayout.LayoutParams(-1, -1));
-            swiper.setOnRefreshListener(() -> {
-                        swiper.setRefreshing(false);
-                        threadAdapter.clear();
-                        threadAdapter.get(forums.get(position).getString("url") + "?lng=" + Settings.getLng(getContext()));
-                    }
+            swiper.setOnRefreshListener(() -> threadAdapter.get(swiper, forums.get(position).getString("url") + "?lng=" + Settings.getLng(getContext()))
             );
             swiper.addView(list);
 
@@ -143,7 +139,7 @@ public class ForumsFragment extends PageFragment {
             super(getContext(), R.layout.threads_view);
         }
 
-        public boolean command(final View view, final Json thread) {
+        private boolean command(final View view, final Json thread) {
             List<Command> options = new ArrayList<>();
             if (user != null) {
                 if (user.getId().equals(thread.getJson("user").getId()) || user.getBoolean("editor", false)) {

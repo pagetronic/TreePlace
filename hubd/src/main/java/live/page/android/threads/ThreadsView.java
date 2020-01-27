@@ -4,9 +4,11 @@ import android.net.Uri;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -17,11 +19,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import live.page.android.R;
+import live.page.android.api.ApiAdapter;
 import live.page.android.api.Json;
 import live.page.android.sys.Command;
 import live.page.android.sys.PageActivity;
 import live.page.android.sys.Since;
-import live.page.android.api.ApiAdapter;
 
 public class ThreadsView extends PageActivity {
 
@@ -40,15 +42,10 @@ public class ThreadsView extends PageActivity {
         final ThreadAdapter adapter = new ThreadAdapter();
         ((ListView) findViewById(R.id.thread)).setAdapter(adapter);
 
-        //TODO : manage "paging prev"
-        adapter.get("/threads/" + getIntent().getStringExtra("id") + "?paging=first");
-
         final SwipeRefreshLayout swiper = findViewById(R.id.swiper);
-        swiper.setOnRefreshListener(() -> {
-            swiper.setRefreshing(false);
-            adapter.clear();
-            adapter.get("/threads/" + getIntent().getStringExtra("id") + "?paging=first");
-        });
+
+        adapter.get("/threads/" + getIntent().getStringExtra("id") + "?paging=first");
+        swiper.setOnRefreshListener(() -> adapter.get(swiper, "/threads/" + getIntent().getStringExtra("id") + "?paging=first"));
 
         final LayoutInflater inflater = getLayoutInflater();
         firstView = inflater.inflate(R.layout.thread_post, new LinearLayout(this));
@@ -112,16 +109,14 @@ public class ThreadsView extends PageActivity {
             super(getBaseContext(), R.layout.thread_post);
         }
 
-        @Override
-        public View getFirst() {
+        private View getHeadPost() {
             if (data == null) {
                 return new View(context);
             }
             return getView(firstView, data);
         }
 
-        @Override
-        public View getLast() {
+        private View getFormReply() {
             if (data == null) {
                 return new View(context);
             }
@@ -154,6 +149,31 @@ public class ThreadsView extends PageActivity {
         }
 
         @Override
+        public int getCount() {
+            return super.getCount() + 2;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            Json item = (Json) getItem(position - 1);
+
+            if (item != null && item.getBoolean("progress", false)) {
+                return progressView();
+            }
+
+            if (position == 0) {
+                return getHeadPost();
+            }
+
+            if (position == getCount() - 1) {
+                return getFormReply();
+            }
+
+
+            return super.getView(position-1, convertView, parent);
+        }
+
+        @Override
         protected Json getData(final Json data) {
 
             getSupportActionBar().setTitle(data.getString("title"));
@@ -161,4 +181,5 @@ public class ThreadsView extends PageActivity {
             return data.getJson("posts");
         }
     }
+
 }

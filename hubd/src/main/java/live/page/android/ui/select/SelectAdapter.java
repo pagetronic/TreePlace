@@ -27,15 +27,6 @@ class SelectAdapter extends ApiAdapter {
         this.dialog = dialog;
     }
 
-    private List<Json> getVisibleSelection() {
-        List<Json> visible_selection = new ArrayList<>();
-        for (Json option : selection) {
-            if (!containsId(option.getId())) {
-                visible_selection.add(option);
-            }
-        }
-        return visible_selection;
-    }
 
     @Override
     public int getCount() {
@@ -82,6 +73,29 @@ class SelectAdapter extends ApiAdapter {
         return view;
     }
 
+
+    private List<Json> getVisibleSelection() {
+        List<Json> visible_selection = new ArrayList<>();
+        for (Json option : selection) {
+            if (!containsId(option.getId())) {
+                visible_selection.add(option);
+            }
+        }
+        return visible_selection;
+    }
+
+
+    private boolean containsId(String id) {
+        if (id == null) {
+            return false;
+        }
+        for (Json item : items) {
+            if (item.getId() != null && item.getId().equals(id)) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     public List<Json> getChoices() {
         List<Json> choices = new ArrayList<>();
