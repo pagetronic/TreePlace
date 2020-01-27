@@ -101,6 +101,7 @@ public class ForumsFragment extends PageFragment {
         @NonNull
         @Override
         public Object instantiateItem(@NonNull ViewGroup container, final int position) {
+
             if (swipers.get(position) != null) {
                 return swipers.get(position);
             }
@@ -113,13 +114,13 @@ public class ForumsFragment extends PageFragment {
 
             final SwipeRefreshLayout swiper = new SwipeRefreshLayout(getContext());
             swiper.setLayoutParams(new SwipeRefreshLayout.LayoutParams(-1, -1));
-            swiper.setOnRefreshListener(() -> threadAdapter.get(swiper, forums.get(position).getString("url") + "?lng=" + Settings.getLng(getContext()))
-            );
+            final String url = forums.get(position).getString("url") + "?lng=" + Settings.getLng(getContext());
+            swiper.setOnRefreshListener(() -> threadAdapter.get(swiper, url));
             swiper.addView(list);
 
             container.addView(swiper);
 
-            threadAdapter.get(forums.get(position).getString("url") + "?lng=" + Settings.getLng(getContext()));
+            threadAdapter.get(url);
 
             swipers.append(position, swiper);
 

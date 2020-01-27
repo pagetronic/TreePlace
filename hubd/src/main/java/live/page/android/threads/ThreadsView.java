@@ -8,7 +8,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -43,9 +42,9 @@ public class ThreadsView extends PageActivity {
         ((ListView) findViewById(R.id.thread)).setAdapter(adapter);
 
         final SwipeRefreshLayout swiper = findViewById(R.id.swiper);
-
-        adapter.get("/threads/" + getIntent().getStringExtra("id") + "?paging=first");
-        swiper.setOnRefreshListener(() -> adapter.get(swiper, "/threads/" + getIntent().getStringExtra("id") + "?paging=first"));
+        final String url = "/threads/" + getIntent().getStringExtra("id") + "?paging=first";
+        adapter.get(url);
+        swiper.setOnRefreshListener(() -> adapter.get(swiper, url));
 
         final LayoutInflater inflater = getLayoutInflater();
         firstView = inflater.inflate(R.layout.thread_post, new LinearLayout(this));
@@ -170,7 +169,7 @@ public class ThreadsView extends PageActivity {
             }
 
 
-            return super.getView(position-1, convertView, parent);
+            return super.getView(position - 1, convertView, parent);
         }
 
         @Override
