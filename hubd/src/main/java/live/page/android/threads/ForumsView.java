@@ -32,7 +32,7 @@ import live.page.android.sys.Settings;
 import live.page.android.sys.Since;
 import live.page.android.ui.Animations;
 
-public class ForumsFragment extends PageFragment {
+public class ForumsView extends PageFragment {
 
 
     private final List<Json> forums = new ArrayList<>();
@@ -40,11 +40,11 @@ public class ForumsFragment extends PageFragment {
     private TabLayout tabs;
 
 
-    public ForumsFragment() {
+    public ForumsView() {
 
     }
 
-    public ForumsFragment(String base) {
+    public ForumsView(String base) {
         forums.add(new Json("url", base));
     }
 

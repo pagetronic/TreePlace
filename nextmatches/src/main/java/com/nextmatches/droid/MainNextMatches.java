@@ -8,14 +8,14 @@ import live.page.android.api.ApiAsync;
 import live.page.android.api.ApiResult;
 import live.page.android.api.Json;
 import live.page.android.sys.Settings;
-import live.page.android.threads.ForumsFragment;
+import live.page.android.threads.ForumsView;
 
 public class MainNextMatches extends MainActivity {
 
     @Override
     protected void init() {
 
-        MenuFragment def = new MenuFragment("ROOT", "Threads", new ForumsFragment("/threads"));
+        MenuFragment def = new MenuFragment("ROOT", "Threads", new ForumsView("/threads"));
         addMenu(def);
         loadFragment(def);
 
@@ -26,7 +26,7 @@ public class MainNextMatches extends MainActivity {
                 if (result != null) {
                     List<MenuFragment> frags = new ArrayList<>();
                     for (Json forum : result) {
-                        frags.add(new MenuFragment(forum.getId(), forum.getString("title"), new ForumsFragment(forum.getString("url"))));
+                        frags.add(new MenuFragment(forum.getId(), forum.getString("title"), new ForumsView(forum.getString("url"))));
                     }
                     addMenu(frags);
                 }
