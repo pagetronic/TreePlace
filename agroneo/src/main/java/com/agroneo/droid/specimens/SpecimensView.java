@@ -22,11 +22,11 @@ import com.agroneo.droid.R;
 import com.bumptech.glide.Glide;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import live.page.android.api.ApiAdapter;
 import live.page.android.api.Json;
 import live.page.android.auto.PageFragment;
-import live.page.android.api.ApiAdapter;
 
-public class SpecimensFragment extends PageFragment {
+public class SpecimensView extends PageFragment {
 
 
     private SpecimensAdapter specimensAdapter;
@@ -34,18 +34,17 @@ public class SpecimensFragment extends PageFragment {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+
+        String url = "/gaia/specimens";
         if (specimensAdapter == null) {
             specimensAdapter = new SpecimensAdapter();
-            specimensAdapter.get("/gaia/specimens");
+            specimensAdapter.get(url);
         }
         ((ListView) view.findViewById(R.id.specimens)).setAdapter(specimensAdapter);
 
-
         final SwipeRefreshLayout swiper = view.findViewById(live.page.android.R.id.swiper);
         swiper.setOnRefreshListener(() -> {
-            swiper.setRefreshing(false);
-            specimensAdapter.clear();
-            specimensAdapter.get("/gaia/specimens");
+            specimensAdapter.get(swiper, url);
         });
 
 
