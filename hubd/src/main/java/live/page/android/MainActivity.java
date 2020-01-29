@@ -34,7 +34,7 @@ public abstract class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        user = Accounts.getProfile(getBaseContext());
+        user = Accounts.getProfile(this);
 
         setContentView(R.layout._main);
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -94,7 +94,7 @@ public abstract class MainActivity extends AppCompatActivity {
     @Override
     protected void onPostResume() {
         super.onPostResume();
-        if (!Accounts.accountActiveRemoved(getBaseContext())) {
+        if (!Accounts.accountActiveRemoved(this)) {
             recreate();
         }
     }

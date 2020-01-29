@@ -64,4 +64,6 @@
     <string name="and">and</string>
     <string name="since_ago">%1 ago</string>
     <string name="since_in">in %1</string>
+    <string name="post_title">Post title</string>
+    <string name="post_text">Post text</string>
 </resources>

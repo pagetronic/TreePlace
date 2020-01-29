@@ -161,6 +161,17 @@ public class ForumsView extends PageFragment {
                             });
                         }
                     });
+                    options.add(new Command(getString(R.string.edit), R.drawable.edit) {
+                        @Override
+                        public void onClick() {
+                            PostEditor.edit(context, thread.getId(), new PostEditor() {
+                                @Override
+                                void success() {
+
+                                }
+                            });
+                        }
+                    });
                     options.add(new Command(getString(R.string.move), R.drawable.move) {
                         @Override
                         public void onClick() {

@@ -22,7 +22,7 @@ public abstract class PageActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        user = Accounts.getProfile(getBaseContext());
+        user = Accounts.getProfile(getContext());
 
         setContentView(R.layout.base_pop);
         Toolbar toolbar = findViewById(R.id.toolbar);

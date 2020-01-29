@@ -59,7 +59,7 @@ public class ThreadsView extends PageActivity {
             options.add(new Command(getString(R.string.rapid_comment)) {
                 @Override
                 public void onClick() {
-                    PostEditor.rapid(getBaseContext(), post.getId(), new PostEditor() {
+                    PostEditor.rapid(getContext(), post.getId(), new PostEditor() {
                         @Override
                         void success() {
 
@@ -72,7 +72,7 @@ public class ThreadsView extends PageActivity {
                 options.add(new Command(getString(R.string.edit), R.drawable.edit) {
                     @Override
                     public void onClick() {
-                        PostEditor.edit(getBaseContext(), post.getId(), new PostEditor() {
+                        PostEditor.edit(getContext(), post.getId(), new PostEditor() {
                             @Override
                             void success() {
 
@@ -83,7 +83,7 @@ public class ThreadsView extends PageActivity {
                 options.add(new Command(getString(R.string.delete), R.drawable.delete) {
                     @Override
                     public void onClick() {
-                        PostEditor.delete(getBaseContext(), post.getId(), new PostEditor() {
+                        PostEditor.delete(getContext(), post.getId(), new PostEditor() {
                             @Override
                             void success() {
 
@@ -105,7 +105,7 @@ public class ThreadsView extends PageActivity {
         private Json data = null;
 
         private ThreadAdapter() {
-            super(getBaseContext(), R.layout.thread_post);
+            super(getContext(), R.layout.thread_post);
         }
 
         private View getHeadPost() {
