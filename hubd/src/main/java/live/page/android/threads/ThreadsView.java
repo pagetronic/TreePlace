@@ -61,7 +61,7 @@ public class ThreadsView extends PageActivity {
                 public void onClick() {
                     PostEditor.rapid(getContext(), post.getId(), new PostEditor() {
                         @Override
-                        void success() {
+                        void success(Json data) {
 
                         }
                     });
@@ -74,7 +74,7 @@ public class ThreadsView extends PageActivity {
                     public void onClick() {
                         PostEditor.edit(getContext(), post.getId(), new PostEditor() {
                             @Override
-                            void success() {
+                            void success(Json data) {
 
                             }
                         });
@@ -85,7 +85,7 @@ public class ThreadsView extends PageActivity {
                     public void onClick() {
                         PostEditor.delete(getContext(), post.getId(), new PostEditor() {
                             @Override
-                            void success() {
+                            void success(Json data) {
 
                             }
                         });

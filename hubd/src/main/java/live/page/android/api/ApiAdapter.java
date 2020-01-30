@@ -20,10 +20,10 @@ public abstract class ApiAdapter extends BaseAdapter {
     //TODO : manage "paging prev"
 
     protected Context context;
+    protected List<Json> items = new ArrayList<>();
     private LayoutInflater inflater;
     private ScrollEvent scroll = null;
     private int resource;
-    protected List<Json> items = new ArrayList<>();
     private Json progress = new Json("progress", true);
     private ApiRequest req = null;
 
@@ -46,6 +46,12 @@ public abstract class ApiAdapter extends BaseAdapter {
                 break;
             }
         }
+    }
+
+
+    protected void replace(Json thread, Json data) {
+        items.set(items.indexOf(thread), data);
+        notifyDataSetChanged();
     }
 
     public ApiAdapter post(final String url, final Json data) {

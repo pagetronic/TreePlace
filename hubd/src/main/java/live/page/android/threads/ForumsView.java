@@ -26,11 +26,11 @@ import java.util.List;
 import live.page.android.R;
 import live.page.android.api.ApiAdapter;
 import live.page.android.api.Json;
-import live.page.android.utils.Command;
 import live.page.android.auto.PageFragment;
+import live.page.android.ui.Animations;
+import live.page.android.utils.Command;
 import live.page.android.utils.Settings;
 import live.page.android.utils.Since;
-import live.page.android.ui.Animations;
 
 public class ForumsView extends PageFragment {
 
@@ -150,7 +150,7 @@ public class ForumsView extends PageFragment {
                         public void onClick() {
                             PostEditor.delete(getContext(), thread.getId(), new PostEditor() {
                                 @Override
-                                void success() {
+                                void success(Json data) {
                                     Animations.moveOut(view, new Animations.Events() {
                                         @Override
                                         public void finished() {
@@ -166,8 +166,8 @@ public class ForumsView extends PageFragment {
                         public void onClick() {
                             PostEditor.edit(context, thread.getId(), new PostEditor() {
                                 @Override
-                                void success() {
-
+                                void success(Json data) {
+                                    replace(thread, data);
                                 }
                             });
                         }
@@ -177,7 +177,7 @@ public class ForumsView extends PageFragment {
                         public void onClick() {
                             PostEditor.move(getContext(), thread.getId(), new PostEditor() {
                                 @Override
-                                void success() {
+                                void success(Json data) {
 
                                 }
                             });

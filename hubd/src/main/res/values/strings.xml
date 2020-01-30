@@ -49,7 +49,7 @@
     <string name="move">move</string>
     <string name="error">error</string>
     <string name="just_now">just now</string>
-    <string name="years" />
+    <string name="years">years</string>
     <string name="year">year</string>
     <string name="months">months</string>
     <string name="month">month</string>
@@ -66,4 +66,6 @@
     <string name="since_in">in %1</string>
     <string name="post_title">Post title</string>
     <string name="post_text">Post text</string>
+    <string name="save">save</string>
+    <string name="cancel">cancel</string>
 </resources>
