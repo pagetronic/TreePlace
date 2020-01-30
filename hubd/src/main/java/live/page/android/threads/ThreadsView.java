@@ -20,8 +20,8 @@ import java.util.List;
 import live.page.android.R;
 import live.page.android.api.ApiAdapter;
 import live.page.android.api.Json;
-import live.page.android.utils.Command;
 import live.page.android.auto.PageActivity;
+import live.page.android.utils.Command;
 import live.page.android.utils.Since;
 
 public class ThreadsView extends PageActivity {
@@ -49,57 +49,10 @@ public class ThreadsView extends PageActivity {
         final LayoutInflater inflater = getLayoutInflater();
         firstView = inflater.inflate(R.layout.thread_post, new LinearLayout(this));
         lastView = inflater.inflate(R.layout.thread_reply, new LinearLayout(this));
+        lastView.setVisibility(View.INVISIBLE);
 
     }
 
-    public boolean command(View view, final Json post) {
-        List<Command> options = new ArrayList<>();
-        if (user != null) {
-
-            options.add(new Command(getString(R.string.rapid_comment)) {
-                @Override
-                public void onClick() {
-                    PostEditor.rapid(getContext(), post.getId(), new PostEditor() {
-                        @Override
-                        void success(Json data) {
-
-                        }
-                    });
-                }
-            });
-
-            if (user.getId().equals(post.getJson("user").getId()) || user.getBoolean("editor", false)) {
-                options.add(new Command(getString(R.string.edit), R.drawable.edit) {
-                    @Override
-                    public void onClick() {
-                        PostEditor.edit(getContext(), post.getId(), new PostEditor() {
-                            @Override
-                            void success(Json data) {
-
-                            }
-                        });
-                    }
-                });
-                options.add(new Command(getString(R.string.delete), R.drawable.delete) {
-                    @Override
-                    public void onClick() {
-                        PostEditor.delete(getContext(), post.getId(), new PostEditor() {
-                            @Override
-                            void success(Json data) {
-
-                            }
-                        });
-                    }
-                });
-            }
-        }
-        if (options.size() > 0) {
-            Command.make(getContext(), options);
-            return false;
-        } else {
-            return true;
-        }
-    }
 
     private class ThreadAdapter extends ApiAdapter {
         private Json data = null;
@@ -122,9 +75,70 @@ public class ThreadsView extends PageActivity {
             return lastView;
         }
 
+
+        public boolean command(View view, final Json post) {
+            List<Command> options = new ArrayList<>();
+            if (user != null) {
+
+                options.add(new Command(getString(R.string.rapid_comment)) {
+                    @Override
+                    public void onClick() {
+                        PostEditor.rapid(getContext(), post.getId(), new PostEditor() {
+                            @Override
+                            void success(Json data) {
+
+                            }
+                        });
+                    }
+                });
+
+                if (user.getId().equals(post.getJson("user").getId()) || user.getBoolean("editor", false)) {
+                    options.add(new Command(getString(R.string.edit), R.drawable.edit) {
+                        @Override
+                        public void onClick() {
+                            if (!replace(post, post.clone().put("editable", true))) {
+                                data.put("editable", true);
+                                notifyDataSetChanged();
+                            }
+                        }
+                    });
+                    options.add(new Command(getString(R.string.delete), R.drawable.delete) {
+                        @Override
+                        public void onClick() {
+                            PostEditor.delete(getContext(), post.getId(), new PostEditor() {
+                                @Override
+                                void success(Json data) {
+
+                                }
+                            });
+                        }
+                    });
+                }
+            }
+            if (options.size() > 0) {
+                Command.make(getContext(), options);
+                return false;
+            } else {
+                return true;
+            }
+        }
+
         @Override
         public View getView(final View convertView, final Json thread) {
 
+            if (thread.getBoolean("editable", false)) {
+
+                return PostEditor.edit(getContext(), getLayoutInflater(), thread, new PostEditor() {
+                    @Override
+                    void success(Json data) {
+                        if (!replace(thread, data)) {
+                            data.remove("editable");
+                            notifyDataSetChanged();
+                        }
+                    }
+                });
+
+            }
 
             TextView title = convertView.findViewById(R.id.title);
             if (thread.getString("title", "").equals("")) {

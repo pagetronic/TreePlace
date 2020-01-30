@@ -164,12 +164,7 @@ public class ForumsView extends PageFragment {
                     options.add(new Command(getString(R.string.edit), R.drawable.edit) {
                         @Override
                         public void onClick() {
-                            PostEditor.edit(context, thread.getId(), new PostEditor() {
-                                @Override
-                                void success(Json data) {
-                                    replace(thread, data);
-                                }
-                            });
+                            replace(thread, thread.clone().put("editable", true));
                         }
                     });
                     options.add(new Command(getString(R.string.move), R.drawable.move) {
@@ -196,6 +191,17 @@ public class ForumsView extends PageFragment {
 
         @Override
         public View getView(final View convertView, final Json thread) {
+
+            if (thread.getBoolean("editable", false)) {
+
+                return PostEditor.edit(getContext(), getLayoutInflater(), thread, new PostEditor() {
+                    @Override
+                    void success(Json data) {
+                        replace(thread, data);
+                    }
+                });
+
+            }
 
 
             ((TextView) convertView.findViewById(R.id.title)).setText(Html.fromHtml(thread.getString("title", ""), Html.FROM_HTML_MODE_LEGACY));

@@ -1,7 +1,10 @@
 package live.page.android.threads;
 
-import android.app.AlertDialog;
 import android.content.Context;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.List;
@@ -43,58 +46,48 @@ public abstract class PostEditor {
 
     }
 
-    public static void edit(Context ctx, String id, final PostEditor completed) {
-        ApiAsync.post(ctx, "/threads", new Json("action", "get").put("id", id), new ApiResult() {
-            @Override
-            public void success(Json data) {
-                if (!data.containsKey("error")) {
-                    AlertDialog post = postBox(ctx, completed);
-                    TextView text = post.findViewById(R.id.text);
-                    text.setText(data.getString("text", ""));
 
-                    TextView title = post.findViewById(R.id.title);
-                    if (data.getString("title") != null) {
-                        title.setText(data.getString("title", ""));
-                        title.setVisibility(TextView.VISIBLE);
-                    } else {
-                        title.setVisibility(TextView.GONE);
-                    }
+    public static View edit(final Context ctx, LayoutInflater layoutInflater, Json data, final PostEditor completed) {
+        View view = layoutInflater.inflate(R.layout.thread_reply,  new LinearLayout(ctx));
 
-                    post.findViewById(R.id.cancel).setOnClickListener(v -> post.cancel());
+        TextView text = view.findViewById(R.id.text);
+        text.setText(data.getString("text", ""));
 
-                    post.findViewById(R.id.save).setOnClickListener(v -> {
-                        Json data_post = new Json("action", "send").put("id", id);
-                        data_post.put("text", text.getText().toString());
-                        if (title.getVisibility() == TextView.VISIBLE) {
-                            data_post.put("title", title.getText().toString());
-                        }
-                        ApiAsync.post(ctx, "/threads", data_post, new ApiResult() {
-                                    @Override
-                                    public void success(Json data) {
-                                        if (data.getBoolean("ok", false)) {
-                                            post.cancel();
-                                            completed.success(data.getJson("post"));
+        TextView title = view.findViewById(R.id.title);
+        if (data.getString("title") != null) {
+            title.setText(data.getString("title", ""));
+            title.setVisibility(TextView.VISIBLE);
+        } else {
+            title.setVisibility(TextView.GONE);
+        }
 
-                                        }
-                                    }
-                                }
-                                , true);
-                    });
+        Button cancel = view.findViewById(R.id.cancel);
+        cancel.setOnClickListener(v -> completed.success(data.remove("editable")));
+        cancel.setVisibility(Button.VISIBLE);
 
-
-                } else {
-                    Fx.toast(ctx, data.getString("error"));
-                }
+        view.findViewById(R.id.save).setOnClickListener(v -> {
+            Json data_post = new Json("action", "send").put("id", data.getId());
+            data_post.put("text", text.getText().toString());
+            if (title.getVisibility() == TextView.VISIBLE) {
+                data_post.put("title", title.getText().toString());
             }
-        }, true);
+            ApiAsync.post(ctx, "/threads", data_post, new ApiResult() {
+                        @Override
+                        public void success(Json data) {
+                            if (data.getBoolean("ok", false)) {
+                                completed.success(data.getJson("post"));
+
+                            }
+                        }
+                    }
+                    , true);
+        });
+
+
+        return view;
+
     }
 
-    public static AlertDialog postBox(Context ctx, final PostEditor completed) {
-        final AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
-        builder.setView(R.layout.thread_reply);
-        builder.setCancelable(true);
-        return builder.show();
-    }
 
     public static void rapid(Context ctx, String id, final PostEditor completed) {
     }

@@ -49,9 +49,15 @@ public abstract class ApiAdapter extends BaseAdapter {
     }
 
 
-    protected void replace(Json thread, Json data) {
-        items.set(items.indexOf(thread), data);
-        notifyDataSetChanged();
+    protected boolean replace(Json thread, Json data) {
+        int index = items.indexOf(thread);
+        if(index>=0) {
+            items.set(index, data);
+            notifyDataSetChanged();
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public ApiAdapter post(final String url, final Json data) {
