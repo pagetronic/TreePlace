@@ -49,7 +49,8 @@ public class ThreadsView extends PageActivity {
         final LayoutInflater inflater = getLayoutInflater();
         firstView = inflater.inflate(R.layout.thread_post, new LinearLayout(this));
         lastView = inflater.inflate(R.layout.thread_reply, new LinearLayout(this));
-        lastView.setVisibility(View.INVISIBLE);
+        lastView.findViewById(R.id.cancel).setVisibility(View.GONE);
+        lastView.findViewById(R.id.title).setVisibility(View.GONE);
 
     }
 
