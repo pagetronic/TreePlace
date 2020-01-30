@@ -173,7 +173,7 @@ public class ForumsView extends PageFragment {
                             PostEditor.move(getContext(), thread.getId(), new PostEditor() {
                                 @Override
                                 void success(Json data) {
-
+                                    notifyDataSetChanged();
                                 }
                             });
                         }

@@ -98,17 +98,13 @@ class SelectAdapter extends ApiAdapter {
     }
 
     public List<Json> getChoices() {
-        List<Json> choices = new ArrayList<>();
-        for (int i = 0; i < getCount(); i++) {
-            choices.add(getJson(i));
-        }
-        return choices;
+        return selection;
     }
 
     public List<String> getValues() {
         List<String> values = new ArrayList<>();
-        for (int i = 0; i < getCount(); i++) {
-            values.add(getJson(i).getId());
+        for (Json select : selection) {
+            values.add(select.getId());
         }
         return values;
     }

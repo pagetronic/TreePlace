@@ -7,6 +7,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import live.page.android.R;
@@ -37,8 +38,17 @@ public abstract class PostEditor {
             public void success(Json data) {
                 new SelectDialog(ctx, "/forums", data.getListJson("forums"), true, new SelectAction() {
                     @Override
-                    public void onValues(List<String> values) {
-                        Fx.log(values);
+                    public void onValues(List<String> forums) {
+                        List<String> parents = new ArrayList<>();
+                        for (String forum : forums) {
+                            parents.add("Forums(" + forum + ")");
+                        }
+                        ApiAsync.post(ctx, "/threads", new Json("action", "move").put("id", id).put("parents", parents), new ApiResult() {
+                            @Override
+                            public void success(Json data) {
+                                completed.success(data);
+                            }
+                        }, true);
                     }
                 });
             }

@@ -32,7 +32,6 @@ public class SelectDialog {
 
         final Json data = new Json("action", "search").put("search", "").put("lng", Settings.getLng(ctx));
 
-
         selection = new SelectAdapter(ctx, multiple, dialog);
         selection.addValues(initial);
         list.setAdapter(selection);
@@ -55,6 +54,7 @@ public class SelectDialog {
             public void afterTextChanged(Editable s) {
             }
         });
+        dialog.setOnCancelListener((d) -> onChoice.onChoices(selection.getChoices()));
     }
 
 
