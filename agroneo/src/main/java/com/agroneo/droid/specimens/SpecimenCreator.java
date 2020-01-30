@@ -13,8 +13,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.agroneo.droid.R;
-
 import com.agroneo.droid.utils.LocationUtils;
+
 import live.page.android.auto.PageActivity;
 
 public class SpecimenCreator extends PageActivity implements LocationListener {

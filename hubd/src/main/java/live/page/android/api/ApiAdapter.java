@@ -51,7 +51,7 @@ public abstract class ApiAdapter extends BaseAdapter {
 
     protected boolean replace(Json thread, Json data) {
         int index = items.indexOf(thread);
-        if(index>=0) {
+        if (index >= 0) {
             items.set(index, data);
             notifyDataSetChanged();
             return true;
