@@ -6,6 +6,7 @@ import android.os.AsyncTask;
 
 import live.page.android.auth.Accounts;
 import live.page.android.utils.Fx;
+import live.page.android.utils.Settings;
 
 public class ApiAsync extends AsyncTask<Object, Integer, ApiResponse> {
 
@@ -126,6 +127,9 @@ public class ApiAsync extends AsyncTask<Object, Integer, ApiResponse> {
 
     private static void send(final String method, final ApiRequest req, final Context ctx, final String url, final Json data, final ApiResult func) {
 
+        if (data != null && !data.containsKey("lng")) {
+            data.put("lng", Settings.getLng(ctx));
+        }
         new ApiAsync(req, new ApiResult() {
 
             @Override
