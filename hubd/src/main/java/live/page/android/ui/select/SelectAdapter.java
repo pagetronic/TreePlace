@@ -137,6 +137,18 @@ class SelectAdapter extends ApiAdapter {
         notifyDataSetChanged();
     }
 
+    public void addValues(List<Json> items) {
+        if (items == null) {
+            return;
+        }
+        for (Json item : items) {
+            if (!selected(item)) {
+                selection.add(item);
+            }
+        }
+        notifyDataSetChanged();
+    }
+
     public void removeValue(Json item) {
         selection.remove(item);
         notifyDataSetChanged();

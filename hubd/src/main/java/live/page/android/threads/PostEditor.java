@@ -35,7 +35,7 @@ public abstract class PostEditor {
         ApiAsync.get(ctx, "/threads/" + id, new ApiResult() {
             @Override
             public void success(Json data) {
-                new SelectDialog(ctx, "/forums", data.getListJson("parents"), true, new SelectAction() {
+                new SelectDialog(ctx, "/forums", data.getListJson("forums"), true, new SelectAction() {
                     @Override
                     public void onValues(List<String> values) {
                         Fx.log(values);

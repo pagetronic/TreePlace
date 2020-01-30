@@ -34,6 +34,7 @@ public class SelectDialog {
 
 
         selection = new SelectAdapter(ctx, multiple, dialog);
+        selection.addValues(initial);
         list.setAdapter(selection);
         selection.post(url, data);
 
