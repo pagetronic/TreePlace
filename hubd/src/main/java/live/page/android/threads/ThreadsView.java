@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.view.ViewPropertyAnimator;
 import android.view.animation.AccelerateInterpolator;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AbsListView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -36,7 +37,7 @@ public class ThreadsView extends PageActivity {
     private View firstView = null;
     private View lastView = null;
     private ImageButton reply = null;
-    private boolean onTop = true;
+    private boolean beforeOnBottom = true;
     private ViewPropertyAnimator animation;
 
     @Override
@@ -52,7 +53,7 @@ public class ThreadsView extends PageActivity {
         list.setAdapter(adapter);
 
         final SwipeRefreshLayout swiper = findViewById(R.id.swiper);
-        final String url = "/threads/" + getIntent().getStringExtra("id") + "?paging=first";
+        final String url = "/threads/" + getIntent().getStringExtra("id");
         adapter.get(url);
         swiper.setOnRefreshListener(() -> adapter.get(swiper, url));
 
@@ -62,27 +63,38 @@ public class ThreadsView extends PageActivity {
         lastView.findViewById(R.id.cancel).setVisibility(View.GONE);
         lastView.findViewById(R.id.title).setVisibility(View.GONE);
 
+
         reply = findViewById(R.id.reply);
-        reply.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                list.smoothScrollToPosition(adapter.getCount() - 1);
-                lastView.findViewById(R.id.text).requestFocus();
-                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
-            }
+        reply.setOnClickListener(v -> {
+
+            list.setOnScrollListener(new AbsListView.OnScrollListener() {
+                @Override
+                public void onScrollStateChanged(AbsListView view, int scrollState) {
+                    if (scrollState == 0) {
+                        lastView.findViewById(R.id.text).requestFocus();
+                        ((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE))
+                                .toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
+                        list.setOnScrollListener(null);
+                    }
+                }
+
+                @Override
+                public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+
+                }
+            });
+            list.smoothScrollToPosition(adapter.getCount() - 1);
+
         });
 
-
-        jumpReply(false);
 
     }
 
     private void jumpReply(boolean onBottom) {
-        if (onTop == !onBottom) {
+        if (beforeOnBottom == onBottom) {
             return;
         }
-        onTop = !onBottom;
+        beforeOnBottom = onBottom;
 
         Fx.log(onBottom);
         if (animation == null) {
