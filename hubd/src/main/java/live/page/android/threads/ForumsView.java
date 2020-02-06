@@ -63,6 +63,11 @@ public class ForumsView extends PageFragment {
             pager.setAdapter(adapter);
             tabs.setupWithViewPager(pager);
         }
+        view.findViewById(R.id.new_thread).setOnClickListener(v -> newThread());
+    }
+
+    private void newThread() {
+        //TODO new thread
     }
 
     private void makeTabs(Json data) {
