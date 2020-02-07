@@ -35,9 +35,6 @@ public class ThreadsView extends PageActivity {
 
     private View firstView = null;
     private View lastView = null;
-    private ImageButton jumper = null;
-    private ViewPropertyAnimator jumperAnim;
-    private boolean jumperLocked = false;
 
     @Override
     protected int getLayout() {
@@ -50,6 +47,7 @@ public class ThreadsView extends PageActivity {
         final ThreadAdapter adapter = new ThreadAdapter();
         ListView list = findViewById(R.id.thread);
         list.setAdapter(adapter);
+        makeJumper(list);
 
         final SwipeRefreshLayout swiper = findViewById(R.id.swiper);
         final String url = "/threads/" + getIntent().getStringExtra("id");
@@ -59,65 +57,68 @@ public class ThreadsView extends PageActivity {
 
         final LayoutInflater inflater = getLayoutInflater();
         firstView = inflater.inflate(R.layout.thread_post, new LinearLayout(this));
-
         lastView = inflater.inflate(R.layout.thread_reply, new LinearLayout(this));
         lastView.findViewById(R.id.cancel).setVisibility(View.GONE);
         lastView.findViewById(R.id.title).setVisibility(View.GONE);
-
-
-        jumper = findViewById(R.id.reply);
-        jumper.setOnClickListener(v -> {
-            jumper.setVisibility(View.GONE);
-            jumperLocked = true;
-            list.setOnScrollListener(new AbsListView.OnScrollListener() {
-                @Override
-                public void onScrollStateChanged(AbsListView view, int scrollState) {
-                    if (scrollState == 0) {
-                        jumperLocked = false;
-                        lastView.findViewById(R.id.text).requestFocus();
-                        ((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE))
-                                .toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
-                        list.setOnScrollListener(null);
-                    }
-                }
-
-                @Override
-                public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-
-                }
-            });
-            list.smoothScrollToPosition(adapter.getCount() - 1);
-        });
+        lastView.setId(R.id.user_id);
 
 
     }
 
-    private void viewJumper(boolean visible) {
-        if (jumperAnim == null) {
-            jumperAnim = jumper.animate();
-        }
+    private void makeJumper(ListView list) {
 
-        if (visible && jumper.getVisibility() != View.VISIBLE && !jumperLocked) {
-            jumperAnim.cancel();
-            jumper.setVisibility(View.VISIBLE);
-            jumper.setAlpha(0F);
-            jumperAnim.cancel();
-            jumperAnim.setDuration(400);
-            jumperAnim.setInterpolator(new AccelerateInterpolator());
-            jumperAnim.alpha(1F);
-            jumperAnim.start();
+        ImageButton jumper = findViewById(R.id.reply);
+        ViewPropertyAnimator animator = jumper.animate();
+        animator.setInterpolator(new AccelerateInterpolator());
+        final boolean[] isClicked = {false};
 
-        }
 
-        if (!visible && jumper.getVisibility() != View.GONE) {
-            jumperAnim.cancel();
-            jumperAnim.setDuration(400);
-            jumper.setAlpha(1F);
-            jumperAnim.setInterpolator(new AccelerateInterpolator());
-            jumperAnim.alpha(0F);
-            jumperAnim.withEndAction(() -> jumper.setVisibility(View.GONE));
-            jumperAnim.start();
-        }
+        list.setOnScrollListener(new AbsListView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+                if (scrollState == 0 && isClicked[0]) {
+                    isClicked[0] = false;
+                    lastView.findViewById(R.id.text).requestFocus();
+                    ((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE))
+                            .toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
+                }
+            }
+
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+
+                if (isClicked[0]) {
+                    return;
+                }
+
+                boolean visible = visibleItemCount > 0 && totalItemCount > visibleItemCount && firstVisibleItem + visibleItemCount < totalItemCount;
+                if (visible && jumper.getVisibility() != View.VISIBLE) {
+                    animator.cancel();
+                    jumper.setVisibility(View.VISIBLE);
+                    animator.setDuration(300);
+                    jumper.setAlpha(0F);
+                    animator.alpha(1F);
+                    animator.withEndAction(null);
+                    animator.start();
+
+                }
+
+                if (!visible && jumper.getVisibility() != View.GONE) {
+                    animator.cancel();
+                    animator.setDuration(200);
+                    jumper.setAlpha(1F);
+                    animator.alpha(0F);
+                    animator.withEndAction(() -> jumper.setVisibility(View.GONE));
+                    animator.start();
+                }
+            }
+        });
+
+        jumper.setOnClickListener(v -> {
+            isClicked[0] = true;
+            jumper.setVisibility(View.GONE);
+            list.smoothScrollToPosition(list.getCount() - 1);
+        });
     }
 
     private class ThreadAdapter extends ApiAdapter {
@@ -138,7 +139,6 @@ public class ThreadsView extends PageActivity {
             if (data == null) {
                 return new View(context);
             }
-            viewJumper(false);
             return lastView;
         }
 
@@ -193,7 +193,6 @@ public class ThreadsView extends PageActivity {
         @Override
         public View getView(final View convertView, final Json thread) {
 
-            viewJumper(true);
 
             if (thread.getBoolean("editable", false)) {
 
@@ -264,6 +263,5 @@ public class ThreadsView extends PageActivity {
             return data.getJson("posts");
         }
     }
-
 
 }
