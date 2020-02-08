@@ -157,7 +157,7 @@ public class ApiRequest {
                 return new String(outputStream.toByteArray(), StandardCharsets.UTF_8);
             }
 
-        } catch (IOException ignore) {
+        } catch (Exception ignore) {
 
         } finally {
 
