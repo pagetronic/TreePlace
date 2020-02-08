@@ -237,12 +237,6 @@ public class ThreadsView extends PageActivity {
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
 
-            Json item = (Json) getItem(position - 1);
-
-            if (item != null && item.getBoolean("progress", false)) {
-                return progressView();
-            }
-
             if (position == 0) {
                 return getHeadPost();
             }
@@ -250,7 +244,6 @@ public class ThreadsView extends PageActivity {
             if (position == getCount() - 1) {
                 return getFormReply();
             }
-
 
             return super.getView(position - 1, convertView, parent);
         }
