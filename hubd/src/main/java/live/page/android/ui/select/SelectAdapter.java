@@ -1,7 +1,6 @@
 package live.page.android.ui.select;
 
 import android.app.AlertDialog;
-import android.content.Context;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -19,11 +18,11 @@ import live.page.android.api.Json;
 class SelectAdapter extends ApiAdapter {
 
     private final List<Json> selection = new ArrayList<>();
-    private boolean multiple = false;
+    private boolean multiple;
     private AlertDialog dialog;
 
     public SelectAdapter(@NonNull ListView list, boolean multiple, AlertDialog dialog) {
-        super(list, R.layout.selectable_option);
+        super(list);
         this.multiple = multiple;
         this.dialog = dialog;
     }
