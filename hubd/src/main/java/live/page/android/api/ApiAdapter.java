@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -21,22 +22,31 @@ import live.page.android.R;
 
 public abstract class ApiAdapter extends BaseAdapter {
 
-    //TODO : manage "paging prev"
 
-    protected Context context;
+    private final int maxItems = 500; // preserve memory, unload items
     protected List<Json> items = new ArrayList<>();
+    protected Context context;
     private LayoutInflater inflater;
     private int resource;
     private ApiRequest req = null;
     private ScrollEvent scroll = null;
+    private boolean autoloadPrevious = true;
+    private ListView listView;
 
-    public ApiAdapter(Context context) {
-        this(context, R.layout.selectable_option);
+    public ApiAdapter(ListView listView) {
+        this(listView, R.layout.selectable_option);
     }
 
-    public ApiAdapter(Context context, int resource) {
+
+    public ApiAdapter(ListView listView, int resource, boolean autoloadPrevious) {
+        this(listView, resource);
+        this.autoloadPrevious = autoloadPrevious;
+    }
+
+    public ApiAdapter(ListView listView, int resource) {
+        this.listView = listView;
+        this.context = listView.getContext();
         inflater = LayoutInflater.from(context);
-        this.context = context;
         this.resource = resource;
         items.add(new Json("paging", null));
     }
@@ -77,15 +87,20 @@ public abstract class ApiAdapter extends BaseAdapter {
                 if (run != null) {
                     run.run();
                 }
-                compose(rez, dir);
-                scroll = (String paging_str, int dir, Runnable run) -> {
+                int lastPosition = compose(rez, dir);
+
+                notifyDataSetChanged();
+                if (lastPosition >= 0) {
+                    listView.setSelection(lastPosition);
+                }
+                scroll = (String paging_str, int dir1, Runnable run1) -> {
                     try {
-                        post(url, data_post.put("paging", paging_str), dir, run);
+                        post(url, data_post.put("paging", paging_str), dir1, run1);
                     } catch (Exception ignore) {
 
                     }
                 };
-                notifyDataSetChanged();
+
             }
 
             @Override
@@ -128,8 +143,13 @@ public abstract class ApiAdapter extends BaseAdapter {
                     swiper.setRefreshing(false);
                     items.clear();
                 }
-                compose(rez, dir);
 
+                int lastPosition = compose(rez, dir);
+                notifyDataSetChanged();
+
+                if (lastPosition >= 0) {
+                    listView.setSelection(lastPosition);
+                }
                 scroll = (String paging_str, int dir, Runnable run) -> {
                     try {
                         get(addPaging(url, paging_str), dir, run);
@@ -137,7 +157,6 @@ public abstract class ApiAdapter extends BaseAdapter {
 
                     }
                 };
-                notifyDataSetChanged();
             }
 
             @Override
@@ -146,7 +165,7 @@ public abstract class ApiAdapter extends BaseAdapter {
                 if (swiper != null) {
                     swiper.setRefreshing(false);
                 }
-                if (data.getString("error") != null) {
+                if (data != null && data.getString("error") != null) {
                     Toast.makeText(context, data.getString("error"), Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(context, R.string.network_error, Toast.LENGTH_SHORT).show();
@@ -156,12 +175,63 @@ public abstract class ApiAdapter extends BaseAdapter {
         return this;
     }
 
-    private void compose(Json rez, int dir) {
+    private int compose(Json rez, int dir) {
+
+        Json firstItem = null;
+        if (items.size() >= maxItems) {
+            int firstPosition = listView.getFirstVisiblePosition();
+            do {
+                firstItem = firstPosition >= 0 && firstPosition < items.size() ? items.get(firstPosition) : null;
+                firstPosition++;
+            } while (firstItem != null && firstItem.containsKey("paging"));
+        }
+
         Json data = getData(rez);
+        List<Json> result = data.getListJson("result");
+
+        if (items.size() + result.size() > maxItems) {
+
+
+            List<Json> newItems = new ArrayList<>();
+
+            if (dir > 0) {
+
+                List<Json> tempsItems = new ArrayList<>();
+                for (int i = items.size() - 1; i >= 0; i--) {
+                    Json item = items.get(i);
+                    tempsItems.add(0, item);
+                    if (item.containsKey("paging")) {
+                        if (newItems.size() + tempsItems.size() >= maxItems) {
+                            break;
+                        }
+                        newItems.addAll(0, tempsItems);
+                        tempsItems.clear();
+                    }
+                }
+
+            } else {
+
+                List<Json> tempsItems = new ArrayList<>();
+                for (int i = 0; i < items.size(); i++) {
+                    Json item = items.get(i);
+                    tempsItems.add(item);
+                    if (item.containsKey("paging")) {
+                        if (newItems.size() + tempsItems.size() >= maxItems) {
+                            break;
+                        }
+                        newItems.addAll(tempsItems);
+                        tempsItems.clear();
+                    }
+                }
+            }
+
+            items.clear();
+            items.addAll(newItems);
+        }
+
 
         Json paging = data.getJson("paging");
 
-        List<Json> result = data.getListJson("result");
 
         if (paging.containsKey("next")) {
             result.add(new Json("paging", paging.getString("next")).put("dir", 1));
@@ -175,7 +245,12 @@ public abstract class ApiAdapter extends BaseAdapter {
         } else {
             items.addAll(0, result);
         }
+
+
+        return getPosition(firstItem);
+
     }
+
 
     private String addPaging(String url, String paging) {
         if (!url.contains("?")) {
@@ -257,6 +332,19 @@ public abstract class ApiAdapter extends BaseAdapter {
         return getView(convertView, item);
     }
 
+    private int getPosition(Json item) {
+        if (item == null) {
+            return -1;
+        }
+        for (int i = 0; i < items.size(); i++) {
+            Json cur_item = items.get(i);
+            if (cur_item.getId() != null && cur_item.getId().equals(item.getId())) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
     public void clear() {
 
         if (req != null) {
@@ -267,7 +355,11 @@ public abstract class ApiAdapter extends BaseAdapter {
         notifyDataSetChanged();
     }
 
-    private LinearLayout viewAction(Runnable run) {
+    private View viewAction(Runnable run) {
+        if (autoloadPrevious) {
+            run.run();
+            return viewProgress();
+        }
         LinearLayout layout = new LinearLayout(context);
         layout.setLayoutParams(new LinearLayout.LayoutParams(-1, -1));
         layout.setHorizontalGravity(Gravity.CENTER_HORIZONTAL);
