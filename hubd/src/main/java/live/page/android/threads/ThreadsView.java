@@ -44,8 +44,8 @@ public class ThreadsView extends PageActivity {
     @Override
     protected void onCreate() {
 
-        final ThreadAdapter adapter = new ThreadAdapter();
         ListView list = findViewById(R.id.thread);
+        final ThreadAdapter adapter = new ThreadAdapter(list);
         list.setAdapter(adapter);
         makeJumper(list);
 
@@ -124,8 +124,8 @@ public class ThreadsView extends PageActivity {
     private class ThreadAdapter extends ApiAdapter {
         private Json data = null;
 
-        private ThreadAdapter() {
-            super(getContext(), R.layout.thread_post);
+        private ThreadAdapter(ListView list) {
+            super(list, R.layout.thread_post, false);
         }
 
         private View getHeadPost() {

@@ -114,7 +114,7 @@ public class ForumsView extends PageFragment {
             ListView list = new ListView(getContext());
 
             list.setLayoutParams(new ListView.LayoutParams(-1, -1));
-            final ThreadsAdapter threadAdapter = new ThreadsAdapter();
+            final ThreadsAdapter threadAdapter = new ThreadsAdapter(list);
             list.setAdapter(threadAdapter);
 
             final SwipeRefreshLayout swiper = new SwipeRefreshLayout(getContext());
@@ -141,8 +141,8 @@ public class ForumsView extends PageFragment {
 
     private class ThreadsAdapter extends ApiAdapter {
 
-        private ThreadsAdapter() {
-            super(getContext(), R.layout.threads_view);
+        private ThreadsAdapter(ListView list) {
+            super(list, R.layout.threads_view);
         }
 
         private boolean command(final View view, final Json thread) {

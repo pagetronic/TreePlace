@@ -32,7 +32,7 @@ public class SelectDialog {
 
         final Json data = new Json("action", "search").put("search", "").put("lng", Settings.getLng(ctx));
 
-        selection = new SelectAdapter(ctx, multiple, dialog);
+        selection = new SelectAdapter(list, multiple, dialog);
         selection.addValues(initial);
         list.setAdapter(selection);
         selection.post(url, data);

@@ -36,11 +36,12 @@ public class SpecimensView extends PageFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
 
         String url = "/gaia/specimens";
+        ListView list = view.findViewById(R.id.specimens);
         if (specimensAdapter == null) {
-            specimensAdapter = new SpecimensAdapter();
+            specimensAdapter = new SpecimensAdapter(list);
             specimensAdapter.get(url);
         }
-        ((ListView) view.findViewById(R.id.specimens)).setAdapter(specimensAdapter);
+        list.setAdapter(specimensAdapter);
 
         final SwipeRefreshLayout swiper = view.findViewById(live.page.android.R.id.swiper);
         swiper.setOnRefreshListener(() -> {
@@ -60,8 +61,8 @@ public class SpecimensView extends PageFragment {
 
     private class SpecimensAdapter extends ApiAdapter {
 
-        private SpecimensAdapter() {
-            super(getContext(), R.layout.specimens_view);
+        private SpecimensAdapter(ListView list) {
+            super(list, R.layout.specimens_view);
         }
 
         @Override

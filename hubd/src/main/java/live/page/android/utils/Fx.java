@@ -30,12 +30,7 @@ public class Fx {
         builder.setView(progress);
         final AlertDialog dialog = builder.show();
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
-            @Override
-            public void onCancel(DialogInterface dialog) {
-                cancel.doIt();
-            }
-        });
+        dialog.setOnCancelListener(dialog1 -> cancel.doIt());
         dialog.show();
         return dialog;
     }

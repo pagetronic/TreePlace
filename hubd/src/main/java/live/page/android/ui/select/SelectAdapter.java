@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -21,8 +22,8 @@ class SelectAdapter extends ApiAdapter {
     private boolean multiple = false;
     private AlertDialog dialog;
 
-    public SelectAdapter(@NonNull Context ctx, boolean multiple, AlertDialog dialog) {
-        super(ctx, R.layout.selectable_option);
+    public SelectAdapter(@NonNull ListView list, boolean multiple, AlertDialog dialog) {
+        super(list, R.layout.selectable_option);
         this.multiple = multiple;
         this.dialog = dialog;
     }
