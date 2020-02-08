@@ -211,8 +211,9 @@ public class ForumsView extends PageFragment {
 
             ((TextView) convertView.findViewById(R.id.title)).setText(Html.fromHtml(thread.getString("title", ""), Html.FROM_HTML_MODE_LEGACY));
             ((TextView) convertView.findViewById(R.id.text)).setText(Html.fromHtml(thread.getString("text", ""), Html.FROM_HTML_MODE_LEGACY));
-            ((TextView) convertView.findViewById(R.id.date)).setText(Since.format(context, thread.parseDate("date"), 2));
-
+            if (thread.get("date") != null) {
+                ((TextView) convertView.findViewById(R.id.date)).setText(Since.format(context, thread.parseDate("date"), 2));
+            }
             Glide.with(context).load(Uri.parse(thread.getJson("user").getString("avatar") + "@64x64"))
                     .error(R.drawable.logo)
                     .into((ImageView) convertView.findViewById(R.id.avatar));
