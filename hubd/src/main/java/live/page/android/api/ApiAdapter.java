@@ -73,10 +73,10 @@ public abstract class ApiAdapter extends BaseAdapter {
     }
 
     public ApiAdapter post(final String url, final Json data_post) {
-        return post(url, data_post, 1, () -> items.remove(0));
+        return post(url, data_post, 1, () -> items.remove(0), null);
     }
 
-    private ApiAdapter post(final String url, final Json data_post, int dir, Runnable run) {
+    private ApiAdapter post(final String url, final Json data_post, int dir, Runnable before, Runnable after) {
         if (req != null) {
             req.abort();
         }
@@ -84,14 +84,17 @@ public abstract class ApiAdapter extends BaseAdapter {
 
             @Override
             public void success(final Json rez) {
-                if (run != null) {
-                    run.run();
+                if (before != null) {
+                    before.run();
                 }
                 compose(rez, dir);
 
-                scroll = (String paging_str, int dir1, Runnable run1) -> {
+                if (after != null) {
+                    after.run();
+                }
+                scroll = (String paging_str, int dir1, Runnable before, Runnable after) -> {
                     try {
-                        post(url, data_post.put("paging", paging_str), dir1, run1);
+                        post(url, data_post.put("paging", paging_str), dir1, before, after);
                     } catch (Exception ignore) {
 
                     }
@@ -112,18 +115,18 @@ public abstract class ApiAdapter extends BaseAdapter {
     }
 
     public ApiAdapter get(final String url) {
-        return get(null, url, 1, () -> items.remove(0));
+        return get(null, url, 1, () -> items.remove(0), null);
     }
 
     public ApiAdapter get(SwipeRefreshLayout swiper, final String url) {
-        return get(swiper, url, 1, () -> items.remove(0));
+        return get(swiper, url, 1, () -> items.remove(0), null);
     }
 
-    private ApiAdapter get(final String url, int dir, Runnable run) {
-        return get(null, url, dir, run);
+    private ApiAdapter get(final String url, int dir, Runnable before, Runnable after) {
+        return get(null, url, dir, before, after);
     }
 
-    public ApiAdapter get(SwipeRefreshLayout swiper, final String url, int dir, Runnable run) {
+    public ApiAdapter get(SwipeRefreshLayout swiper, final String url, int dir, Runnable before, Runnable after) {
 
         if (req != null) {
             req.abort();
@@ -132,19 +135,23 @@ public abstract class ApiAdapter extends BaseAdapter {
 
             @Override
             public void success(final Json rez) {
-                if (run != null) {
-                    run.run();
+
+                if (before != null) {
+                    before.run();
                 }
                 if (swiper != null) {
                     swiper.setRefreshing(false);
                     items.clear();
                 }
-
                 compose(rez, dir);
 
-                scroll = (String paging_str, int dir, Runnable run) -> {
+                if (after != null) {
+                    after.run();
+                }
+
+                scroll = (String paging_str, int dir, Runnable before, Runnable after) -> {
                     try {
-                        get(addPaging(url, paging_str), dir, run);
+                        get(addPaging(url, paging_str), dir, before, after);
                     } catch (Exception ignore) {
 
                     }
@@ -308,14 +315,20 @@ public abstract class ApiAdapter extends BaseAdapter {
             if (item.getString("paging") == null) {
                 return viewProgress();
             } else if (scroll != null && (position == 0 || position == getCount() - 1)) {
-                Runnable run = () -> {
-                    scroll.doPaging(item.getString("paging"), item.getInteger("dir", 1), () -> items.remove(item));
-                    scroll = null;
-                };
+
                 if (position == 0) {
-                    return viewAction(run);
+                    return viewAction(() -> {
+                        Json jump = getJson(1);
+                        int yOffset = listView.getChildAt(1).getTop();
+                        scroll.doPaging(item.getString("paging"), item.getInteger("dir", 1),
+                                () -> items.remove(item),
+                                () -> listView.setSelectionFromTop(getPosition(jump), yOffset)
+                        );
+                        scroll = null;
+                    });
                 } else {
-                    run.run();
+                    scroll.doPaging(item.getString("paging"), item.getInteger("dir", 1), () -> items.remove(item), null);
+                    scroll = null;
                     return viewProgress();
                 }
             } else {
@@ -390,6 +403,6 @@ public abstract class ApiAdapter extends BaseAdapter {
     }
 
     private interface ScrollEvent {
-        void doPaging(String paging_, int dir, Runnable run);
+        void doPaging(String paging_, int dir, Runnable before, Runnable after);
     }
 }
