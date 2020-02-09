@@ -87,12 +87,8 @@ public abstract class ApiAdapter extends BaseAdapter {
                 if (run != null) {
                     run.run();
                 }
-                int lastPosition = compose(rez, dir);
+                compose(rez, dir);
 
-                notifyDataSetChanged();
-                if (lastPosition >= 0) {
-                    listView.setSelection(lastPosition);
-                }
                 scroll = (String paging_str, int dir1, Runnable run1) -> {
                     try {
                         post(url, data_post.put("paging", paging_str), dir1, run1);
@@ -144,12 +140,8 @@ public abstract class ApiAdapter extends BaseAdapter {
                     items.clear();
                 }
 
-                int lastPosition = compose(rez, dir);
-                notifyDataSetChanged();
+                compose(rez, dir);
 
-                if (lastPosition >= 0) {
-                    listView.setSelection(lastPosition);
-                }
                 scroll = (String paging_str, int dir, Runnable run) -> {
                     try {
                         get(addPaging(url, paging_str), dir, run);
@@ -175,9 +167,12 @@ public abstract class ApiAdapter extends BaseAdapter {
         return this;
     }
 
-    private int compose(Json rez, int dir) {
+    private void compose(Json rez, int dir) {
 
         Json firstItem = null;
+        View firstFiew = listView.getChildAt(dir < 0 ? 1 : 0);
+        int yOffset = firstFiew != null ? firstFiew.getTop() : 0;
+
         if (items.size() >= maxItems) {
             int firstPosition = listView.getFirstVisiblePosition();
             do {
@@ -246,8 +241,14 @@ public abstract class ApiAdapter extends BaseAdapter {
             items.addAll(0, result);
         }
 
+        int lastPosition = getPosition(firstItem);
 
-        return getPosition(firstItem);
+        notifyDataSetChanged();
+
+        if (lastPosition >= 0) {
+            listView.setSelectionFromTop(lastPosition, yOffset);
+        }
+
 
     }
 
