@@ -243,11 +243,11 @@ public abstract class ApiAdapter extends BaseAdapter {
 
 
         int position = getPosition(jump);
+        scroll = onScroll;
 
         notifyDataSetChanged();
 
         listView.setSelectionFromTop(Math.max(0, position), yOffset);
-        scroll = onScroll;
 
     }
 
