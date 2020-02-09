@@ -2,7 +2,6 @@ package live.page.android.utils;
 
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.util.Log;
@@ -45,6 +44,10 @@ public class Fx {
             }
         }
         return false;
+    }
+
+    public static void setTimeout(Runnable runnable, int delay) {
+        new android.os.Handler().postDelayed(runnable, delay);
     }
 
     public static abstract class Action {
