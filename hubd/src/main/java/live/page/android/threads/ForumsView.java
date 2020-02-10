@@ -111,17 +111,19 @@ public class ForumsView extends PageFragment {
                 return swipers.get(position);
             }
 
-            ListView list = new ListView(getContext());
+            ListView listView = new ListView(getContext());
+            listView.setDivider(null);
+            listView.setBackgroundColor(getContext().getColor(R.color.grey_light));
 
-            list.setLayoutParams(new ListView.LayoutParams(-1, -1));
-            final ThreadsAdapter threadAdapter = new ThreadsAdapter(list);
-            list.setAdapter(threadAdapter);
+            listView.setLayoutParams(new ListView.LayoutParams(-1, -1));
+            final ThreadsAdapter threadAdapter = new ThreadsAdapter(listView);
+            listView.setAdapter(threadAdapter);
 
             final SwipeRefreshLayout swiper = new SwipeRefreshLayout(getContext());
             swiper.setLayoutParams(new SwipeRefreshLayout.LayoutParams(-1, -1));
             final String url = forums.get(position).getString("url") + "?lng=" + Settings.getLng(getContext());
             swiper.setOnRefreshListener(() -> threadAdapter.get(swiper, url));
-            swiper.addView(list);
+            swiper.addView(listView);
 
             container.addView(swiper);
 
@@ -198,34 +200,33 @@ public class ForumsView extends PageFragment {
         public View getView(final View convertView, final Json thread) {
 
             if (thread.getBoolean("editable", false)) {
-
                 return PostEditor.edit(getContext(), getLayoutInflater(), thread, new PostEditor() {
                     @Override
                     void success(Json data) {
                         replace(thread, data);
                     }
                 });
-
             }
-
 
             ((TextView) convertView.findViewById(R.id.title)).setText(Html.fromHtml(thread.getString("title", ""), Html.FROM_HTML_MODE_LEGACY));
             ((TextView) convertView.findViewById(R.id.text)).setText(Html.fromHtml(thread.getString("text", ""), Html.FROM_HTML_MODE_LEGACY));
             ((TextView) convertView.findViewById(R.id.date)).setText(Since.format(context, thread.parseDate("date"), 2));
 
-            Glide.with(context).load(Uri.parse(thread.getJson("user").getString("avatar") + "@64x64"))
-                    .error(R.drawable.logo)
-                    .into((ImageView) convertView.findViewById(R.id.avatar));
 
-
-            convertView.findViewById(R.id.command).setOnClickListener(v -> command(convertView, thread));
+            convertView.setLongClickable(true);
             convertView.setOnLongClickListener(v -> command(convertView, thread));
 
+            convertView.setClickable(true);
             convertView.setOnClickListener(view -> {
                 Intent intent = new Intent(context, ThreadsView.class);
                 intent.putExtra("id", thread.getId());
                 startActivity(intent);
             });
+
+
+            Glide.with(context).load(Uri.parse(thread.getJson("user").getString("avatar") + "@64x64"))
+                    .error(R.drawable.logo)
+                    .into((ImageView) convertView.findViewById(R.id.avatar));
 
             return convertView;
         }

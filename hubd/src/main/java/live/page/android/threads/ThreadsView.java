@@ -44,10 +44,12 @@ public class ThreadsView extends PageActivity {
     @Override
     protected void onCreate() {
 
-        ListView list = findViewById(R.id.thread);
-        final ThreadAdapter adapter = new ThreadAdapter(list);
-        list.setAdapter(adapter);
-        makeJumper(list);
+        ListView listView = findViewById(R.id.thread);
+        listView.setDivider(null);
+        listView.setBackgroundColor(getContext().getColor(R.color.grey_light));
+        final ThreadAdapter adapter = new ThreadAdapter(listView);
+        listView.setAdapter(adapter);
+        makeJumper(listView);
 
         final SwipeRefreshLayout swiper = findViewById(R.id.swiper);
         final String url = "/threads/" + getIntent().getStringExtra("id");
@@ -222,8 +224,7 @@ public class ThreadsView extends PageActivity {
                     .error(R.drawable.logo)
                     .into((ImageView) convertView.findViewById(R.id.avatar));
 
-
-            convertView.findViewById(R.id.command).setOnClickListener(v -> command(convertView, thread));
+            convertView.setLongClickable(true);
             convertView.setOnLongClickListener(v -> command(convertView, thread));
 
             return convertView;

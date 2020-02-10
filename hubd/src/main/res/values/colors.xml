@@ -3,7 +3,11 @@
     <color name="colorPrimary">#31771d</color>
     <color name="colorSecondary">#a96923</color>
     <color name="colorPrimaryDark">#333333</color>
+    <color name="grey_light">#EEEEEE</color>
     <color name="grey">#CCCCCC</color>
     <color name="colorAccent">#666666</color>
     <color name="transparent">#ffffffff</color>
+
+    <!-- card colors -->
+    <color name="list_background">#e2e4fe</color>
 </resources>

@@ -24,6 +24,7 @@
         android:layout_gravity="bottom|end"
         android:layout_margin="10dp"
         android:visibility="gone"
-        app:srcCompat="@drawable/reply" />
+        app:srcCompat="@drawable/reply"
+        android:contentDescription="@string/empty" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
