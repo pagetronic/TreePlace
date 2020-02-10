@@ -26,7 +26,7 @@ public abstract class ApiAdapter extends BaseAdapter {
 
     protected List<Json> items = new ArrayList<>();
     protected Context context;
-    private int maxItems = 50; // preserve memory, unload items
+    private int maxItems = 50; // preserve the memory, unload the elements if the maximum is reached, unload at best respecting the pagination
     private LayoutInflater inflater;
     private int resource;
     private ApiRequest req = null;
@@ -195,10 +195,10 @@ public abstract class ApiAdapter extends BaseAdapter {
                 for (int i = items.size() - 1; i >= 0; i--) {
                     Json item = items.get(i);
                     tempsItems.add(0, item);
-                    if (item.containsKey("paging")) {
+                    if (i == 0 || item.containsKey("paging")) {
                         newItems.addAll(0, tempsItems);
                         tempsItems.clear();
-                        if (newItems.size() > maxItems) {
+                        if (newItems.size() + result.size() > maxItems) {
                             break;
                         }
                     }
@@ -210,10 +210,10 @@ public abstract class ApiAdapter extends BaseAdapter {
                 for (int i = 0; i < items.size(); i++) {
                     Json item = items.get(i);
                     tempsItems.add(item);
-                    if (item.containsKey("paging")) {
+                    if (i == items.size() - 1 || item.containsKey("paging")) {
                         newItems.addAll(tempsItems);
                         tempsItems.clear();
-                        if (newItems.size() > maxItems) {
+                        if (newItems.size() + result.size() > maxItems) {
                             break;
                         }
                     }
@@ -246,9 +246,10 @@ public abstract class ApiAdapter extends BaseAdapter {
         scroll = onScroll;
 
         notifyDataSetChanged();
-
-        listView.setSelectionFromTop(Math.max(0, position), yOffset);
-
+        Fx.log(position);
+        if (position >= 0) {
+            listView.setSelectionFromTop(position, yOffset);
+        }
     }
 
 
