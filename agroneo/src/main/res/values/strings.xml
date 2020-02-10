@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">TreePlace</string>
+    <string name="app_name">Agroneo</string>
     <string name="account_type">com.agroneo</string>
 
     <string name="apiHost">api.agroneo.com</string>
