@@ -148,9 +148,6 @@ public abstract class ApiAdapter extends BaseAdapter {
             @Override
             public void error(int code, Json data) {
 
-                if (swiper != null) {
-                    swiper.setRefreshing(false);
-                }
                 Fx.toastNetworkError(context, code, data);
                 notifyDataSetChanged();
                 Fx.setTimeout(() -> get(swiper, url, dir), 1500);
