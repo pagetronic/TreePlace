@@ -430,6 +430,17 @@ public abstract class ApiAdapter extends BaseAdapter {
         }
     }
 
+    public void addItem(Json post) {
+        int position = getPosition(post);
+        if (position >= 0) {
+            items.set(position, post);
+        } else {
+            items.add(post);
+        }
+        notifyDataSetChanged();
+    }
+
+
     private interface ScrollEvent {
         void doPaging(String paging_, int dir, Runnable after);
     }

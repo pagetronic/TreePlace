@@ -10,6 +10,7 @@ import android.view.ViewPropertyAnimator;
 import android.view.animation.AccelerateInterpolator;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AbsListView;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -25,9 +26,13 @@ import java.util.List;
 
 import live.page.android.R;
 import live.page.android.api.ApiAdapter;
+import live.page.android.api.ApiAsync;
+import live.page.android.api.ApiRequest;
+import live.page.android.api.ApiResult;
 import live.page.android.api.Json;
 import live.page.android.auto.PageActivity;
 import live.page.android.utils.Command;
+import live.page.android.utils.Fx;
 import live.page.android.utils.Since;
 
 public class ThreadsView extends PageActivity {
@@ -35,6 +40,7 @@ public class ThreadsView extends PageActivity {
 
     private View firstView = null;
     private View lastView = null;
+    private ApiRequest postReq;
 
     @Override
     protected int getLayout() {
@@ -52,20 +58,42 @@ public class ThreadsView extends PageActivity {
         makeJumper(listView);
 
         final SwipeRefreshLayout swiper = findViewById(R.id.swiper);
-        final String url = "/threads/" + getIntent().getStringExtra("id");
+        String thread_id = getIntent().getStringExtra("id");
+        final String url = "/threads/" + thread_id;
         adapter.get(url);
         swiper.setOnRefreshListener(() -> adapter.get(swiper, url));
 
 
         final LayoutInflater inflater = getLayoutInflater();
         firstView = inflater.inflate(R.layout.thread_post, new LinearLayout(this));
+
         lastView = inflater.inflate(R.layout.thread_reply, new LinearLayout(this));
         lastView.findViewById(R.id.cancel).setVisibility(View.GONE);
         lastView.findViewById(R.id.title).setVisibility(View.GONE);
-        lastView.setId(R.id.user_id);
+        lastView.findViewById(R.id.save).setOnClickListener((v) -> {
+            if (postReq != null) {
+                postReq.abort();
+            }
+            EditText editText = lastView.findViewById(R.id.text);
+            postReq = ApiAsync.post(getContext(), "/threads", new Json("action", "send").put("parent", "Posts(" + thread_id + ")").put("text", editText.getText().toString()), new ApiResult() {
+                @Override
+                public void success(Json data) {
+                    if (data.getBoolean("ok", false)) {
+                        adapter.addItem(data.getJson("post"));
+                        editText.setText("");
+                    }
+                }
+
+                @Override
+                public void error(int code, Json data) {
+                    Fx.log(data);
+                }
+            }, true);
+        });
 
 
     }
+
 
     private void makeJumper(ListView list) {
 
