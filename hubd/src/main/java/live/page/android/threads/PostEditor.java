@@ -3,6 +3,7 @@ package live.page.android.threads;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -74,6 +75,7 @@ public abstract class PostEditor {
         text.setText(data.getString("text", ""));
 
         TextView title = view.findViewById(R.id.title);
+        title.setFocusable(false);
         if (data.getString("title") != null) {
             title.setText(data.getString("title", ""));
             title.setVisibility(TextView.VISIBLE);
@@ -108,7 +110,9 @@ public abstract class PostEditor {
                     , true);
         });
 
-
+        text.requestFocus();
+        ((InputMethodManager) ctx.getSystemService(Context.INPUT_METHOD_SERVICE))
+                .toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
         return view;
 
     }

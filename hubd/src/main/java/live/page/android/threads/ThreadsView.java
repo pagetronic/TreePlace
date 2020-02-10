@@ -97,6 +97,9 @@ public class ThreadsView extends PageActivity {
             Json post = (pos == 0) ? adapter.getBase() : adapter.getJson(pos - 1);
 
             if (post != null && post.getId() != null) {
+                if (post.getBoolean("editable", false)) {
+                    return false;
+                }
                 List<Command> options = new ArrayList<>();
                 if (user != null) {
 

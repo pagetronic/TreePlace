@@ -136,6 +136,9 @@ public class ForumsView extends PageFragment {
 
                 Json thread = threadAdapter.getJson(pos);
                 if (thread != null && thread.getId() != null) {
+                    if (thread.getBoolean("editable", false)) {
+                        return true;
+                    }
                     List<Command> options = new ArrayList<>();
                     if (user != null) {
                         if (user.getId().equals(thread.getJson("user").getId()) || user.getBoolean("editor", false)) {
@@ -178,9 +181,9 @@ public class ForumsView extends PageFragment {
                     }
                     if (options.size() > 0) {
                         Command.make(getContext(), options);
-                        return false;
-                    } else {
                         return true;
+                    } else {
+                        return false;
                     }
                 }
                 return false;
@@ -188,8 +191,12 @@ public class ForumsView extends PageFragment {
 
             listView.setClickable(true);
             listView.setOnItemClickListener((parent, view, pos, id) -> {
+
                 Json thread = threadAdapter.getJson(pos);
                 if (thread != null && thread.getId() != null) {
+                    if (thread.getBoolean("editable", false)) {
+                        return;
+                    }
                     Intent intent = new Intent(getContext(), ThreadsView.class);
                     intent.putExtra("id", thread.getId());
                     startActivity(intent);
