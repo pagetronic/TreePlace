@@ -137,7 +137,7 @@ public class ForumsView extends PageFragment {
                 Json thread = threadAdapter.getJson(pos);
                 if (thread != null && thread.getId() != null) {
                     if (thread.getBoolean("editable", false)) {
-                        return true;
+                        return false;
                     }
                     List<Command> options = new ArrayList<>();
                     if (user != null) {

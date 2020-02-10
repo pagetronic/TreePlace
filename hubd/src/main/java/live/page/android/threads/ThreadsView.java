@@ -103,7 +103,7 @@ public class ThreadsView extends PageActivity {
                 List<Command> options = new ArrayList<>();
                 if (user != null) {
 
-                    options.add(new Command(getString(R.string.rapid_comment)) {
+                    options.add(new Command(getString(R.string.rapid_comment), R.drawable.reply) {
                         @Override
                         public void onClick() {
                             PostEditor.rapid(getContext(), post.getId(), new PostEditor() {
