@@ -25,7 +25,7 @@ public abstract class ApiAdapter extends BaseAdapter {
 
     protected List<Json> items = new ArrayList<>();
     protected Context context;
-    private int maxItems = 50; // preserve the memory, unload the elements if the maximum is reached, unload at best respecting the pagination
+    private int maxItems = 500; // preserve the memory, unload the elements if the maximum is reached, unload at best respecting the pagination
     private LayoutInflater inflater;
     private int resource;
     private ApiRequest req = null;
