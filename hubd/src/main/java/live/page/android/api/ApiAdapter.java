@@ -248,7 +248,7 @@ public abstract class ApiAdapter extends BaseAdapter {
         scroll = onScroll;
 
         notifyDataSetChanged();
-        Fx.log(position);
+
         if (position >= 0) {
             listView.setSelectionFromTop(position, yOffset);
         }
@@ -282,7 +282,7 @@ public abstract class ApiAdapter extends BaseAdapter {
         return null;
     }
 
-    protected Json getJson(int position) {
+    public Json getJson(int position) {
         return (Json) getItem(position);
     }
 
