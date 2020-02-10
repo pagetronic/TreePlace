@@ -18,14 +18,14 @@ import java.util.List;
 import live.page.android.R;
 
 public abstract class Command {
-    public String title;
+    public int title;
     public int icon = -1;
 
-    public Command(String title) {
+    public Command(@IdRes int title) {
         this.title = title;
     }
 
-    public Command(String title, @IdRes int icon) {
+    public Command(@IdRes int title, @IdRes int icon) {
         this.title = title;
         this.icon = icon;
     }

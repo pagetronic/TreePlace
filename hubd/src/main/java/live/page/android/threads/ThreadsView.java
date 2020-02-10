@@ -103,20 +103,8 @@ public class ThreadsView extends PageActivity {
                 List<Command> options = new ArrayList<>();
                 if (user != null) {
 
-                    options.add(new Command(getString(R.string.rapid_comment), R.drawable.reply) {
-                        @Override
-                        public void onClick() {
-                            PostEditor.rapid(getContext(), post.getId(), new PostEditor() {
-                                @Override
-                                void success(Json data) {
-
-                                }
-                            });
-                        }
-                    });
-
                     if (user.getId().equals(post.getJson("user").getId()) || user.getBoolean("editor", false)) {
-                        options.add(new Command(getString(R.string.edit), R.drawable.edit) {
+                        options.add(new Command(R.string.edit, R.drawable.edit) {
                             @Override
                             public void onClick() {
                                 if (pos == 0) {
@@ -127,7 +115,7 @@ public class ThreadsView extends PageActivity {
                                 adapter.notifyDataSetChanged();
                             }
                         });
-                        options.add(new Command(getString(R.string.delete), R.drawable.delete) {
+                        options.add(new Command(R.string.delete, R.drawable.delete) {
                             @Override
                             public void onClick() {
                                 PostEditor.delete(getContext(), post.getId(), new PostEditor() {
@@ -139,6 +127,19 @@ public class ThreadsView extends PageActivity {
                             }
                         });
                     }
+
+
+                    options.add(new Command(R.string.rapid_comment, R.drawable.reply) {
+                        @Override
+                        public void onClick() {
+                            PostEditor.rapid(getContext(), post.getId(), new PostEditor() {
+                                @Override
+                                void success(Json data) {
+
+                                }
+                            });
+                        }
+                    });
                 }
                 if (options.size() > 0) {
                     Command.make(getContext(), options);
