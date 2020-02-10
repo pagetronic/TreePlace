@@ -29,6 +29,11 @@ public abstract class PostEditor {
                     Fx.toast(ctx, data.getString("error"));
                 }
             }
+
+            @Override
+            public void error(int code, Json data) {
+                Fx.toastNetworkError(ctx, code, data);
+            }
         }, true);
     }
 
@@ -47,6 +52,11 @@ public abstract class PostEditor {
                             @Override
                             public void success(Json data) {
                                 completed.success(data);
+                            }
+
+                            @Override
+                            public void error(int code, Json data) {
+                                Fx.toastNetworkError(ctx, code, data);
                             }
                         }, true);
                     }
@@ -89,6 +99,11 @@ public abstract class PostEditor {
 
                             }
                         }
+
+                        @Override
+                        public void error(int code, Json data) {
+                            Fx.toastNetworkError(ctx, code, data);
+                        }
                     }
                     , true);
         });
@@ -104,4 +119,8 @@ public abstract class PostEditor {
 
 
     abstract void success(Json data);
+
+    void error(Json data) {
+
+    }
 }
