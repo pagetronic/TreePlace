@@ -92,8 +92,10 @@ public abstract class ApiAdapter extends BaseAdapter {
                 if (data.getString("error") != null) {
                     Toast.makeText(context, data.getString("error"), Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(context, R.string.network_error, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, R.string.unknown_error, Toast.LENGTH_SHORT).show();
                 }
+                notifyDataSetChanged();
+                Fx.setTimeout(() -> post(url, data_post, dir), 1500);
             }
         });
         return this;
@@ -147,8 +149,10 @@ public abstract class ApiAdapter extends BaseAdapter {
                 if (data != null && data.getString("error") != null) {
                     Toast.makeText(context, data.getString("error"), Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(context, R.string.network_error, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, R.string.unknown_error, Toast.LENGTH_SHORT).show();
                 }
+                notifyDataSetChanged();
+                Fx.setTimeout(() -> get(swiper, url, dir), 1500);
             }
         });
         return this;
@@ -312,6 +316,7 @@ public abstract class ApiAdapter extends BaseAdapter {
                 Runnable runner = () -> {
                     scroll.doPaging(item.getString("paging"), item.getInteger("dir", 1), null);
                     scroll = null;
+
                 };
                 if (position == 0) {
                     return viewAction(runner);
