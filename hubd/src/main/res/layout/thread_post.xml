@@ -48,19 +48,22 @@
                 android:id="@+id/title"
                 style="@style/TextAppearance.AppCompat.Headline"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:text="@string/title" />
 
             <TextView
                 android:id="@+id/date"
                 style="@style/TextAppearance.AppCompat.Small"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:text="@string/date" />
 
             <TextView
                 android:id="@+id/text"
                 style="@style/TextAppearance.AppCompat.Medium"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:text="@string/text" />
 
         </LinearLayout>
     </LinearLayout>
