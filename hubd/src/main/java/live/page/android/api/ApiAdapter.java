@@ -51,14 +51,11 @@ public abstract class ApiAdapter extends BaseAdapter {
         items.add(new Json("paging", null));
     }
 
-    protected boolean replace(Json thread, Json data) {
-        int index = items.indexOf(thread);
+    public void replace(Json before, Json after) {
+        int index = items.indexOf(before);
         if (index >= 0) {
-            items.set(index, data);
+            items.set(index, after);
             notifyDataSetChanged();
-            return true;
-        } else {
-            return false;
         }
     }
 

@@ -131,6 +131,70 @@ public class ForumsView extends PageFragment {
 
             swipers.append(position, swiper);
 
+            listView.setLongClickable(true);
+            listView.setOnItemLongClickListener((parent, view, pos, id) -> {
+
+                Json thread = threadAdapter.getJson(pos);
+                if (thread != null && thread.getId() != null) {
+                    List<Command> options = new ArrayList<>();
+                    if (user != null) {
+                        if (user.getId().equals(thread.getJson("user").getId()) || user.getBoolean("editor", false)) {
+
+                            options.add(new Command(getString(R.string.delete), R.drawable.delete) {
+                                @Override
+                                public void onClick() {
+                                    PostEditor.delete(getContext(), thread.getId(), new PostEditor() {
+                                        @Override
+                                        void success(Json data) {
+                                            Animations.moveOut(view, new Animations.Events() {
+                                                @Override
+                                                public void finished() {
+                                                    threadAdapter.removeItem(thread.getId());
+                                                }
+                                            });
+                                        }
+                                    });
+                                }
+                            });
+                            options.add(new Command(getString(R.string.edit), R.drawable.edit) {
+                                @Override
+                                public void onClick() {
+                                    threadAdapter.replace(thread, thread.clone().put("editable", true));
+                                }
+                            });
+                            options.add(new Command(getString(R.string.move), R.drawable.move) {
+                                @Override
+                                public void onClick() {
+                                    PostEditor.move(getContext(), thread.getId(), new PostEditor() {
+                                        @Override
+                                        void success(Json data) {
+                                            notifyDataSetChanged();
+                                        }
+                                    });
+                                }
+                            });
+                        }
+
+                    }
+                    if (options.size() > 0) {
+                        Command.make(getContext(), options);
+                        return false;
+                    } else {
+                        return true;
+                    }
+                }
+                return false;
+            });
+
+            listView.setClickable(true);
+            listView.setOnItemClickListener((parent, view, pos, id) -> {
+                Json thread = threadAdapter.getJson(pos);
+                if (thread != null && thread.getId() != null) {
+                    Intent intent = new Intent(getContext(), ThreadsView.class);
+                    intent.putExtra("id", thread.getId());
+                    startActivity(intent);
+                }
+            });
 
             return swiper;
         }
@@ -147,54 +211,6 @@ public class ForumsView extends PageFragment {
             super(list, R.layout.threads_view);
         }
 
-        private boolean command(final View view, final Json thread) {
-            List<Command> options = new ArrayList<>();
-            if (user != null) {
-                if (user.getId().equals(thread.getJson("user").getId()) || user.getBoolean("editor", false)) {
-
-                    options.add(new Command(getString(R.string.delete), R.drawable.delete) {
-                        @Override
-                        public void onClick() {
-                            PostEditor.delete(getContext(), thread.getId(), new PostEditor() {
-                                @Override
-                                void success(Json data) {
-                                    Animations.moveOut(view, new Animations.Events() {
-                                        @Override
-                                        public void finished() {
-                                            removeItem(thread.getId());
-                                        }
-                                    });
-                                }
-                            });
-                        }
-                    });
-                    options.add(new Command(getString(R.string.edit), R.drawable.edit) {
-                        @Override
-                        public void onClick() {
-                            replace(thread, thread.clone().put("editable", true));
-                        }
-                    });
-                    options.add(new Command(getString(R.string.move), R.drawable.move) {
-                        @Override
-                        public void onClick() {
-                            PostEditor.move(getContext(), thread.getId(), new PostEditor() {
-                                @Override
-                                void success(Json data) {
-                                    notifyDataSetChanged();
-                                }
-                            });
-                        }
-                    });
-                }
-
-            }
-            if (options.size() > 0) {
-                Command.make(getContext(), options);
-                return false;
-            } else {
-                return true;
-            }
-        }
 
         @Override
         public View getView(final View convertView, final Json thread) {
@@ -211,17 +227,6 @@ public class ForumsView extends PageFragment {
             ((TextView) convertView.findViewById(R.id.title)).setText(Html.fromHtml(thread.getString("title", ""), Html.FROM_HTML_MODE_LEGACY));
             ((TextView) convertView.findViewById(R.id.text)).setText(Html.fromHtml(thread.getString("text", ""), Html.FROM_HTML_MODE_LEGACY));
             ((TextView) convertView.findViewById(R.id.date)).setText(Since.format(context, thread.parseDate("date"), 2));
-
-
-            convertView.setLongClickable(true);
-            convertView.setOnLongClickListener(v -> command(convertView, thread));
-
-            convertView.setClickable(true);
-            convertView.setOnClickListener(view -> {
-                Intent intent = new Intent(context, ThreadsView.class);
-                intent.putExtra("id", thread.getId());
-                startActivity(intent);
-            });
 
 
             Glide.with(context).load(Uri.parse(thread.getJson("user").getString("avatar") + "@64x64"))
