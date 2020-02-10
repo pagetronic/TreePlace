@@ -63,11 +63,14 @@ public abstract class ApiAdapter extends BaseAdapter {
     }
 
     public ApiAdapter post(final String url, final Json data_post) {
-        return post(url, data_post, 1);
+        return post(null, url, data_post, 1);
     }
 
+    public ApiAdapter post(SwipeRefreshLayout swiper, final String url, final Json data_post) {
+        return post(swiper, url, data_post, 1);
+    }
 
-    private ApiAdapter post(final String url, final Json data_post, int dir) {
+    private ApiAdapter post(SwipeRefreshLayout swiper, final String url, final Json data_post, int dir) {
         if (req != null) {
             req.abort();
         }
@@ -76,9 +79,14 @@ public abstract class ApiAdapter extends BaseAdapter {
             @Override
             public void success(final Json rez) {
 
+                if (swiper != null) {
+                    swiper.setRefreshing(false);
+                    items.clear();
+                }
+
                 compose(rez, dir, (String paging_str, int dir1, Runnable after) -> {
                     try {
-                        post(url, data_post.put("paging", paging_str), dir1);
+                        post(swiper, url, data_post.put("paging", paging_str), dir1);
                     } catch (Exception ignore) {
 
                     }
@@ -92,7 +100,7 @@ public abstract class ApiAdapter extends BaseAdapter {
                 Fx.toastNetworkError(context, code, data);
 
                 notifyDataSetChanged();
-                Fx.setTimeout(() -> post(url, data_post, dir), 1500);
+                Fx.setTimeout(() -> post(swiper, url, data_post, dir), 1500);
             }
         });
         return this;
