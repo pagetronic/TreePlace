@@ -9,6 +9,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import live.page.android.R;
+import live.page.android.api.Json;
 
 public class Fx {
 
@@ -48,6 +49,16 @@ public class Fx {
 
     public static void setTimeout(Runnable runnable, int delay) {
         new android.os.Handler().postDelayed(runnable, delay);
+    }
+
+    public static void toastNetworkError(Context context, int code, Json data) {
+        if (code == -1) {
+            Toast.makeText(context, R.string.network_error, Toast.LENGTH_SHORT).show();
+        } else if (data != null && data.getString("error") != null) {
+            Toast.makeText(context, data.getString("error", context.getString(R.string.unknown_error)), Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(context, R.string.unknown_error, Toast.LENGTH_SHORT).show();
+        }
     }
 
     public static abstract class Action {

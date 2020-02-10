@@ -11,7 +11,6 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
@@ -89,11 +88,9 @@ public abstract class ApiAdapter extends BaseAdapter {
 
             @Override
             public void error(int code, Json data) {
-                if (data.getString("error") != null) {
-                    Toast.makeText(context, data.getString("error"), Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(context, R.string.unknown_error, Toast.LENGTH_SHORT).show();
-                }
+
+                Fx.toastNetworkError(context, code, data);
+
                 notifyDataSetChanged();
                 Fx.setTimeout(() -> post(url, data_post, dir), 1500);
             }
@@ -146,11 +143,7 @@ public abstract class ApiAdapter extends BaseAdapter {
                 if (swiper != null) {
                     swiper.setRefreshing(false);
                 }
-                if (data != null && data.getString("error") != null) {
-                    Toast.makeText(context, data.getString("error"), Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(context, R.string.unknown_error, Toast.LENGTH_SHORT).show();
-                }
+                Fx.toastNetworkError(context, code, data);
                 notifyDataSetChanged();
                 Fx.setTimeout(() -> get(swiper, url, dir), 1500);
             }

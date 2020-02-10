@@ -22,6 +22,7 @@
 
     <string name="empty"> </string>
     <string name="unknown_error">Unknown error</string>
+    <string name="network_error">Network error</string>
 
     <string name="title">Title</string>
     <string name="date">21/12/2012</string>
