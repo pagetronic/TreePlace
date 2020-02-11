@@ -33,10 +33,9 @@
 
     <ImageButton
         android:id="@+id/new_thread"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/ButtonFloating"
         android:layout_gravity="bottom|end"
-        android:layout_margin="10dp"
-        app:srcCompat="@android:drawable/ic_input_add" />
+        android:contentDescription="@string/empty"
+        android:src="@drawable/thread_new" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

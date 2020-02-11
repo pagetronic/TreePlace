@@ -68,7 +68,7 @@ public abstract class PostEditor {
 
 
     public static View edit(final Context ctx, LayoutInflater layoutInflater, Json data, final PostEditor completed) {
-        View view = layoutInflater.inflate(R.layout.thread_reply, new LinearLayout(ctx));
+        View view = layoutInflater.inflate(R.layout.thread_form, new LinearLayout(ctx));
 
         TextView text = view.findViewById(R.id.text);
         text.setText(data.getString("text", ""));

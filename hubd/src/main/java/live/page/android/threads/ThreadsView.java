@@ -53,7 +53,7 @@ public class ThreadsView extends PageActivity {
 
         ListView listView = findViewById(R.id.thread);
         listView.setDivider(null);
-        listView.setBackgroundColor(getContext().getColor(R.color.grey_light));
+        listView.setBackgroundColor(getContext().getColor(R.color.greyLight));
         adapter = new ThreadAdapter(listView);
         listView.setAdapter(adapter);
         makeJumper(listView);
@@ -66,7 +66,7 @@ public class ThreadsView extends PageActivity {
         headerView.setOrientation(LinearLayout.VERTICAL);
         listView.addHeaderView(headerView);
 
-        replyView = getLayoutInflater().inflate(R.layout.thread_reply, new LinearLayout(this));
+        replyView = getLayoutInflater().inflate(R.layout.thread_form, new LinearLayout(this));
         threadPost = getLayoutInflater().inflate(R.layout.thread_post, new LinearLayout(this));
 
         replyView.findViewById(R.id.cancel).setVisibility(View.GONE);

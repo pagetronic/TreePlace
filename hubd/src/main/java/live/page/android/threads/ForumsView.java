@@ -113,7 +113,7 @@ public class ForumsView extends PageFragment {
 
             ListView listView = new ListView(getContext());
             listView.setDivider(null);
-            listView.setBackgroundColor(getContext().getColor(R.color.grey_light));
+            listView.setBackgroundColor(getContext().getColor(R.color.greyLight));
 
             listView.setLayoutParams(new ListView.LayoutParams(-1, -1));
             final ThreadsAdapter threadAdapter = new ThreadsAdapter(listView);
