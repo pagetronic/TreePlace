@@ -8,6 +8,9 @@ import android.widget.LinearLayout;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.drawerlayout.widget.DrawerLayout;
+
+import com.google.android.material.navigation.NavigationView;
 
 import live.page.android.BuildConfig;
 import live.page.android.R;
@@ -48,6 +51,14 @@ public abstract class PageActivity extends AppCompatActivity {
     public boolean onSupportNavigateUp() {
         onBackPressed();
         return true;
+    }
+
+    public NavigationView getNavRight() {
+        return findViewById(R.id.nav_right);
+    }
+
+    public void removeNavRight() {
+        ((DrawerLayout) findViewById(R.id.drawer_layout)).removeView(getNavRight());
     }
 
     public Context getContext() {

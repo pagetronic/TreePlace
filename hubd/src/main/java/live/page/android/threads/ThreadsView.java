@@ -51,6 +51,8 @@ public class ThreadsView extends PageActivity {
     @Override
     protected void onCreate() {
 
+        removeNavRight();
+
         ListView listView = findViewById(R.id.thread);
         listView.setDivider(null);
         listView.setBackgroundColor(getContext().getColor(R.color.greyLight));
