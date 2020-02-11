@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="menu_specimens">Spécimens</string>
+    <string name="menu_creation">Création</string>
+    <string name="add_specimen">Ajouter un spécimen</string>
+
+    <string name="specimen_title">Titre du spécimen</string>
+    <string name="specimen_creator">Createur du spécimen</string>
+    <string name="specimen_view">Voir le spécimen</string>
+
+    <string name="specimen_publish">publier un spécimen</string>
+    <string name="specimen_draft">sauvegarder le brouillon</string>
+    <string name="localization">localisation</string>
+    <string name="location_disable">La fonction de localisation est désactivée</string>
+    <string name="species">Espèce</string>
+</resources>

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+
+    <string name="unknown_error">Erreur inconnue</string>
+    <string name="network_error">Erreur réseau</string>
+
+    <string name="confirmation">Êtes-vous sûr?</string>
+    <string name="yes">oui</string>
+    <string name="no">non</string>
+
+    <string name="title">Titre</string>
+
+    <string name="connect">Connexion à HubD</string>
+    <string name="action_settings">Paramètres</string>
+
+    <string name="name">Nom</string>
+    <string name="select_account">Selectionner le compte</string>
+    <string name="new_account">Nouveau compte</string>
+
+    <string name="search">Rechercher</string>
+    <string name="authors">Auteurs</string>
+    <string name="post_reply">Poster une réponse</string>
+    <string name="menu_forums">Forums</string>
+    <string name="open">ouvrir</string>
+    <string name="close">fermer</string>
+    <string name="edit">Éditer</string>
+    <string name="delete">Supprimer</string>
+    <string name="rapid_comment">Commentaire rapide</string>
+    <string name="move">Déplacer</string>
+    <string name="error">erreur</string>
+    <string name="just_now">à l\'instant</string>
+    <string name="years">années</string>
+    <string name="year">année</string>
+    <string name="months">mois</string>
+    <string name="month">mois</string>
+    <string name="weeks">semaines</string>
+    <string name="week">semaine</string>
+    <string name="days">jours</string>
+    <string name="day">jour</string>
+    <string name="hours">heures</string>
+    <string name="hour">heurr</string>
+    <string name="minutes">minutes</string>
+    <string name="minute">minute</string>
+    <string name="and">et</string>
+    <string name="since_ago">il y a %1</string>
+    <string name="since_in">dans %1</string>
+    <string name="post_title">Titre du poste</string>
+    <string name="post_text">Texte du poste</string>
+    <string name="save">sauvegarder</string>
+    <string name="cancel">annuler</string>
+    <string name="load_previous">charger les résultats précédents</string>
+</resources>

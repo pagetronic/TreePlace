@@ -1,10 +1,10 @@
 <resources>
-    <string name="app_name">HubD</string>
-    <string name="account_type">live.page</string>
+    <string name="app_name" translatable="false">HubD</string>
+    <string name="account_type" translatable="false">live.page</string>
 
-    <string name="apiHost">api.page.live</string>
-    <string name="schemeAuth">domain-oauth</string>
-    <string name="scopes">email,threads</string>
+    <string name="apiHost" translatable="false">api.page.live</string>
+    <string name="schemeAuth" translatable="false">domain-oauth</string>
+    <string name="scopes" translatable="false">email,threads</string>
 
     <string-array name="domains">
         <item>en@https://en.page.live</item>
@@ -13,14 +13,14 @@
         <item>pt@https://pt.page.live</item>
     </string-array>
 
-    <string name="upSocket">/up</string>
-    <string name="socket">/socket</string>
+    <string name="upSocket" translatable="false">/up</string>
+    <string name="socket" translatable="false">/socket</string>
 
-    <string name="client_id">XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX</string>
-    <string name="client_secret">XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX</string>
+    <string name="client_id" translatable="false">XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX</string>
+    <string name="client_secret" translatable="false">XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX</string>
 
 
-    <string name="empty"> </string>
+    <string name="empty" translatable="false"> </string>
     <string name="unknown_error">Unknown error</string>
     <string name="network_error">Network error</string>
 
@@ -29,30 +29,28 @@
     <string name="no">no</string>
 
     <string name="title">Title</string>
-    <string name="date">21/12/2012</string>
-    <string name="lorem_ipsum">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras eleifend, nunc et eleifend dapibus, est nunc elementum augue, at lobortis tortor odio quis diam. Suspendisse pellentesque ante massa, et lacinia purus sollicitudin ut. Proin vel finibus arcu. Aenean varius sapien a ex hendrerit dapibus. Proin id metus sed nisi maximus interdum vehicula eu tortor. Maecenas venenatis purus in arcu venenatis finibus. Suspendisse sodales mollis viverra.</string>
+    <string name="date" translatable="false">21/12/2012</string>
+    <string name="lorem_ipsum" translatable="false">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras eleifend, nunc et eleifend dapibus, est nunc elementum augue, at lobortis tortor odio quis diam. Suspendisse pellentesque ante massa, et lacinia purus sollicitudin ut. Proin vel finibus arcu. Aenean varius sapien a ex hendrerit dapibus. Proin id metus sed nisi maximus interdum vehicula eu tortor. Maecenas venenatis purus in arcu venenatis finibus. Suspendisse sodales mollis viverra.</string>
 
     <string name="connect">Connect to HubD</string>
-    <string name="nav_header_subtitle">Share on HubD</string>
-    <string name="nav_header_desc">HubD Place</string>
     <string name="action_settings">Settings</string>
 
-    <string name="authenticator_label">HubD</string>
+    <string name="authenticator_label" translatable="false">HubD</string>
     <string name="name">Name</string>
     <string name="select_account">Select account</string>
     <string name="new_account">New account</string>
 
     <string name="search">search</string>
     <string name="authors">Authors</string>
-    <string name="hellip">…</string>
+    <string name="hellip" translatable="false">…</string>
     <string name="post_reply">Post a reply</string>
     <string name="menu_forums">Forums</string>
-    <string name="navigation_drawer_open">open</string>
-    <string name="navigation_drawer_close">close</string>
+    <string name="open">open</string>
+    <string name="close">close</string>
     <string name="edit">Edit</string>
     <string name="delete">Delete</string>
-    <string name="rapid_comment">rapid comment</string>
-    <string name="move">move</string>
+    <string name="rapid_comment">Rapid comment</string>
+    <string name="move">Move</string>
     <string name="error">error</string>
     <string name="just_now">just now</string>
     <string name="years">years</string>
