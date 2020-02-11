@@ -3,9 +3,7 @@ package live.page.android.threads;
 import android.content.Context;
 import android.net.Uri;
 import android.text.Html;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.ViewPropertyAnimator;
 import android.view.animation.AccelerateInterpolator;
 import android.view.inputmethod.InputMethodManager;
@@ -38,9 +36,12 @@ import live.page.android.utils.Since;
 public class ThreadsView extends PageActivity {
 
 
-    private View threadView = null;
+    private LinearLayout headerView = null;
     private View replyView = null;
+    private View threadPost = null;
     private ApiRequest postReq;
+    private Json thread;
+    private ThreadAdapter adapter;
 
     @Override
     protected int getLayout() {
@@ -53,21 +54,21 @@ public class ThreadsView extends PageActivity {
         ListView listView = findViewById(R.id.thread);
         listView.setDivider(null);
         listView.setBackgroundColor(getContext().getColor(R.color.grey_light));
-        final ThreadAdapter adapter = new ThreadAdapter(listView);
+        adapter = new ThreadAdapter(listView);
         listView.setAdapter(adapter);
         makeJumper(listView);
 
         final SwipeRefreshLayout swiper = findViewById(R.id.swiper);
         String thread_id = getIntent().getStringExtra("id");
         final String url = "/threads/" + thread_id;
-        adapter.get(url);
-        swiper.setOnRefreshListener(() -> adapter.get(swiper, url));
 
+        headerView = new LinearLayout(getContext());
+        headerView.setOrientation(LinearLayout.VERTICAL);
+        listView.addHeaderView(headerView);
 
-        final LayoutInflater inflater = getLayoutInflater();
-        threadView = inflater.inflate(R.layout.thread_post, new LinearLayout(this));
+        replyView = getLayoutInflater().inflate(R.layout.thread_reply, new LinearLayout(this));
+        threadPost = getLayoutInflater().inflate(R.layout.thread_post, new LinearLayout(this));
 
-        replyView = inflater.inflate(R.layout.thread_reply, new LinearLayout(this));
         replyView.findViewById(R.id.cancel).setVisibility(View.GONE);
         replyView.findViewById(R.id.title).setVisibility(View.GONE);
         replyView.findViewById(R.id.save).setOnClickListener((v) -> {
@@ -94,7 +95,8 @@ public class ThreadsView extends PageActivity {
         listView.setLongClickable(true);
         listView.setOnItemLongClickListener((parent, view, pos, id) -> {
 
-            Json post = (pos == 0) ? adapter.getBase() : adapter.getJson(pos - 1);
+
+            Json post = pos == 0 ? thread : adapter.getJson(pos - 1);
 
             if (post != null && post.getId() != null) {
                 if (post.getBoolean("editable", false)) {
@@ -108,11 +110,11 @@ public class ThreadsView extends PageActivity {
                             @Override
                             public void onClick() {
                                 if (pos == 0) {
-                                    adapter.setBase(post.clone().put("editable", true));
+                                    makeHeader(true);
                                 } else {
                                     adapter.replace(post, post.clone().put("editable", true));
+                                    adapter.notifyDataSetChanged();
                                 }
-                                adapter.notifyDataSetChanged();
                             }
                         });
                         options.add(new Command(R.string.delete, R.drawable.delete) {
@@ -143,13 +145,50 @@ public class ThreadsView extends PageActivity {
                 }
                 if (options.size() > 0) {
                     Command.make(getContext(), options);
-                    return false;
-                } else {
                     return true;
+                } else {
+                    return false;
                 }
             }
-            return true;
+            return false;
         });
+
+        ApiResult onresult = new ApiResult() {
+            @Override
+            public void success(Json data) {
+                thread = data.clone().remove("posts");
+                makeHeader(false);
+                listView.removeFooterView(replyView);
+                listView.addFooterView(replyView, null, true);
+            }
+        };
+
+
+        adapter.get(url, onresult);
+        swiper.setOnRefreshListener(() -> adapter.get(swiper, url, onresult));
+
+    }
+
+    private void makeHeader(boolean editable) {
+
+        headerView.removeAllViews();
+
+        if (thread == null) {
+            return;
+        }
+        getSupportActionBar().setTitle(thread.getString("title"));
+        if (editable) {
+            headerView.addView(PostEditor.edit(getContext(), getLayoutInflater(), thread, new PostEditor() {
+                @Override
+                void success(Json data) {
+                    thread = data.clone().remove("posts");
+                    makeHeader(false);
+                }
+            }));
+
+        } else {
+            headerView.addView(adapter.getView(threadPost, thread));
+        }
 
     }
 
@@ -211,24 +250,9 @@ public class ThreadsView extends PageActivity {
     }
 
     private class ThreadAdapter extends ApiAdapter {
-        private Json base = null;
 
         private ThreadAdapter(ListView list) {
             super(list, R.layout.thread_post, false);
-        }
-
-        private View getHeadPost() {
-            if (base == null) {
-                return new View(context);
-            }
-            return getView(threadView, base);
-        }
-
-        private View getFormReply() {
-            if (base == null) {
-                return new View(context);
-            }
-            return replyView;
         }
 
 
@@ -267,49 +291,16 @@ public class ThreadsView extends PageActivity {
 
         @Override
         public int getCount() {
-            return super.getCount() + 2;
+            return super.getCount();
         }
 
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-
-            if (position == 0) {
-                return getHeadPost();
-            }
-
-            if (position == getCount() - 1) {
-                return getFormReply();
-            }
-
-            return super.getView(position - 1, convertView, parent);
-        }
 
         @Override
         protected Json getData(final Json data) {
 
-            getSupportActionBar().setTitle(data.getString("title"));
-            setBase(data);
             return data.getJson("posts");
         }
 
-
-        @Override
-        public void replace(Json before, Json after) {
-            if (getBase().getId().equals(before.getId())) {
-                setBase(after);
-                notifyDataSetChanged();
-                return;
-            }
-            super.replace(before, after);
-        }
-
-        public Json getBase() {
-            return base;
-        }
-
-        public void setBase(Json base) {
-            this.base = base;
-        }
     }
 
 }

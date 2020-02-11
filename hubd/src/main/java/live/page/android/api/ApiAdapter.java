@@ -60,14 +60,22 @@ public abstract class ApiAdapter extends BaseAdapter {
     }
 
     public ApiAdapter post(final String url, final Json data_post) {
-        return post(null, url, data_post, 1);
+        return post(null, url, data_post, 1, null);
     }
 
     public ApiAdapter post(SwipeRefreshLayout swiper, final String url, final Json data_post) {
-        return post(swiper, url, data_post, 1);
+        return post(swiper, url, data_post, 1, null);
     }
 
-    private ApiAdapter post(SwipeRefreshLayout swiper, final String url, final Json data_post, int dir) {
+    public ApiAdapter post(final String url, final Json data_post, ApiResult onresult) {
+        return post(null, url, data_post, 1, onresult);
+    }
+
+    private ApiAdapter post(final String url, final Json data_post, int dir) {
+        return post(null, url, data_post, dir, null);
+    }
+
+    private ApiAdapter post(SwipeRefreshLayout swiper, final String url, final Json data_post, int dir, ApiResult onresult) {
         if (req != null) {
             req.abort();
         }
@@ -75,7 +83,9 @@ public abstract class ApiAdapter extends BaseAdapter {
 
             @Override
             public void success(final Json rez) {
-
+                if (onresult != null) {
+                    onresult.success(rez);
+                }
                 if (swiper != null) {
                     swiper.setRefreshing(false);
                     items.clear();
@@ -83,7 +93,7 @@ public abstract class ApiAdapter extends BaseAdapter {
 
                 compose(rez, dir, (String paging_str, int dir1, Runnable after) -> {
                     try {
-                        post(swiper, url, data_post.put("paging", paging_str), dir1);
+                        post(url, data_post.put("paging", paging_str), dir1);
                     } catch (Exception ignore) {
 
                     }
@@ -93,29 +103,39 @@ public abstract class ApiAdapter extends BaseAdapter {
 
             @Override
             public void error(int code, Json data) {
-
+                if (onresult != null) {
+                    onresult.error(code, data);
+                }
                 Fx.toastNetworkError(context, code, data);
 
                 notifyDataSetChanged();
-                Fx.setTimeout(() -> post(swiper, url, data_post, dir), 1500);
+                Fx.setTimeout(() -> post(swiper, url, data_post, dir, onresult), 1500);
             }
         });
         return this;
     }
 
     public ApiAdapter get(final String url) {
-        return get(null, url, 1);
+        return get(null, url, 1, null);
     }
 
     public ApiAdapter get(SwipeRefreshLayout swiper, final String url) {
-        return get(swiper, url, 1);
+        return get(swiper, url, 1, null);
+    }
+
+    public ApiAdapter get(SwipeRefreshLayout swiper, final String url, ApiResult onresult) {
+        return get(swiper, url, 1, onresult);
+    }
+
+    public ApiAdapter get(final String url, ApiResult onresult) {
+        return get(null, url, 1, onresult);
     }
 
     private ApiAdapter get(final String url, int dir) {
-        return get(null, url, dir);
+        return get(null, url, dir, null);
     }
 
-    public ApiAdapter get(SwipeRefreshLayout swiper, final String url, int dir) {
+    private ApiAdapter get(SwipeRefreshLayout swiper, final String url, int dir, ApiResult onresult) {
 
         if (req != null) {
             req.abort();
@@ -124,7 +144,9 @@ public abstract class ApiAdapter extends BaseAdapter {
 
             @Override
             public void success(final Json rez) {
-
+                if (onresult != null) {
+                    onresult.success(rez);
+                }
                 if (swiper != null) {
                     swiper.setRefreshing(false);
                     items.clear();
@@ -139,15 +161,16 @@ public abstract class ApiAdapter extends BaseAdapter {
                     }
                 });
 
-
             }
 
             @Override
             public void error(int code, Json data) {
-
+                if (onresult != null) {
+                    onresult.error(code, data);
+                }
                 Fx.toastNetworkError(context, code, data);
                 notifyDataSetChanged();
-                Fx.setTimeout(() -> get(swiper, url, dir), 1500);
+                Fx.setTimeout(() -> get(swiper, url, dir, onresult), 1500);
             }
         });
         return this;
