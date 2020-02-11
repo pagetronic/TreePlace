@@ -24,6 +24,10 @@
     <string name="unknown_error">Unknown error</string>
     <string name="network_error">Network error</string>
 
+    <string name="confirmation">Are you sure?</string>
+    <string name="yes">yes</string>
+    <string name="no">no</string>
+
     <string name="title">Title</string>
     <string name="date">21/12/2012</string>
     <string name="lorem_ipsum">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras eleifend, nunc et eleifend dapibus, est nunc elementum augue, at lobortis tortor odio quis diam. Suspendisse pellentesque ante massa, et lacinia purus sollicitudin ut. Proin vel finibus arcu. Aenean varius sapien a ex hendrerit dapibus. Proin id metus sed nisi maximus interdum vehicula eu tortor. Maecenas venenatis purus in arcu venenatis finibus. Suspendisse sodales mollis viverra.</string>

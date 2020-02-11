@@ -2,6 +2,7 @@ package live.page.android.utils;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.util.Log;
@@ -59,6 +60,16 @@ public class Fx {
         } else {
             Toast.makeText(context, R.string.unknown_error, Toast.LENGTH_SHORT).show();
         }
+    }
+
+    public static void confirm(Context context, Runnable runnable) {
+
+        new AlertDialog.Builder(context)
+                .setMessage(R.string.confirmation)
+                .setCancelable(false)
+                .setPositiveButton(R.string.yes, (dialog, id) -> runnable.run())
+                .setNegativeButton(R.string.no, null)
+                .show();
     }
 
     public static abstract class Action {

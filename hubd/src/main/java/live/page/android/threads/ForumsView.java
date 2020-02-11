@@ -149,7 +149,7 @@ public class ForumsView extends PageFragment {
                             options.add(new Command(R.string.delete, R.drawable.delete) {
                                 @Override
                                 public void onClick() {
-                                    PostEditor.delete(getContext(), thread.getId(), new PostEditor() {
+                                    Fx.confirm(getContext(), () -> PostEditor.delete(getContext(), thread.getId(), new PostEditor() {
                                         @Override
                                         void success(Json data) {
                                             Animations.moveOut(view, new Animations.Events() {
@@ -159,7 +159,7 @@ public class ForumsView extends PageFragment {
                                                 }
                                             });
                                         }
-                                    });
+                                    }));
                                 }
                             });
                             options.add(new Command(R.string.edit, R.drawable.edit) {

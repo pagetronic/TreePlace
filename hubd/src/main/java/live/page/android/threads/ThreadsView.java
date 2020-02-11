@@ -120,12 +120,12 @@ public class ThreadsView extends PageActivity {
                         options.add(new Command(R.string.delete, R.drawable.delete) {
                             @Override
                             public void onClick() {
-                                PostEditor.delete(getContext(), post.getId(), new PostEditor() {
+                                Fx.confirm(getContext(), () -> PostEditor.delete(getContext(), post.getId(), new PostEditor() {
                                     @Override
                                     void success(Json data) {
 
                                     }
-                                });
+                                }));
                             }
                         });
                     }
@@ -178,6 +178,7 @@ public class ThreadsView extends PageActivity {
         }
         getSupportActionBar().setTitle(thread.getString("title"));
         if (editable) {
+            thread.put("editable", true);
             headerView.addView(PostEditor.edit(getContext(), getLayoutInflater(), thread, new PostEditor() {
                 @Override
                 void success(Json data) {
