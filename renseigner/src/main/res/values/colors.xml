@@ -3,4 +3,5 @@
     <color name="colorPrimary">#002395</color>
     <color name="colorSecondary">#980000</color>
     <color name="colorAccent">#666666</color>
+    <color name="back_icon">#980000</color>
 </resources>

@@ -9,5 +9,6 @@
     <color name="grey">#CCCCCC</color>
     <color name="greyHeavy">#666666</color>
     <color name="transparent">#00FFFFFF</color>
+    <color name="back_icon">#000000</color>
 
 </resources>
