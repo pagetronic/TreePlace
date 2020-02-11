@@ -25,10 +25,13 @@ import java.util.List;
 
 import live.page.android.R;
 import live.page.android.api.ApiAdapter;
+import live.page.android.api.ApiAsync;
+import live.page.android.api.ApiResult;
 import live.page.android.api.Json;
 import live.page.android.auto.PageFragment;
 import live.page.android.ui.Animations;
 import live.page.android.utils.Command;
+import live.page.android.utils.Fx;
 import live.page.android.utils.Settings;
 import live.page.android.utils.Since;
 
@@ -162,7 +165,17 @@ public class ForumsView extends PageFragment {
                             options.add(new Command(R.string.edit, R.drawable.edit) {
                                 @Override
                                 public void onClick() {
-                                    threadAdapter.replace(thread, thread.clone().put("editable", true));
+                                    ApiAsync.post(getContext(), "/threads", new Json("action", "get").put("id", thread.getId()), new ApiResult() {
+                                        @Override
+                                        public void success(Json data) {
+                                            threadAdapter.replace(thread, data.put("editable", true));
+                                        }
+
+                                        @Override
+                                        public void error(int code, Json data) {
+                                            Fx.log(data);
+                                        }
+                                    }, true);
                                 }
                             });
                             options.add(new Command(R.string.move, R.drawable.move) {
