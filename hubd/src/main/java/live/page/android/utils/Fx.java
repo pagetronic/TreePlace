@@ -2,7 +2,6 @@ package live.page.android.utils;
 
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.util.Log;
@@ -10,6 +9,8 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import live.page.android.R;
+import live.page.android.api.ApiAsync;
+import live.page.android.api.ApiResult;
 import live.page.android.api.Json;
 
 public class Fx {
@@ -52,6 +53,23 @@ public class Fx {
         new android.os.Handler().postDelayed(runnable, delay);
     }
 
+    public static void awaitNetwork(Context context, Runnable runnable, int delay) {
+
+        ApiAsync.get(context, "/", new ApiResult() {
+            @Override
+            public void success(Json data) {
+                runnable.run();
+            }
+
+            @Override
+            public void error(int code, Json data) {
+                if (code == -1) {
+                    setTimeout(() -> awaitNetwork(context, runnable, delay), delay);
+                }
+            }
+        });
+    }
+
     public static void toastNetworkError(Context context, int code, Json data) {
         if (code == -1) {
             Toast.makeText(context, R.string.network_error, Toast.LENGTH_SHORT).show();
@@ -71,6 +89,7 @@ public class Fx {
                 .setNegativeButton(R.string.no, null)
                 .show();
     }
+
 
     public static abstract class Action {
         public abstract void doIt();

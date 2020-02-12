@@ -109,7 +109,9 @@ public abstract class ApiAdapter extends BaseAdapter {
                 Fx.toastNetworkError(context, code, data);
 
                 notifyDataSetChanged();
-                Fx.setTimeout(() -> post(swiper, url, data_post, dir, onresult), 1500);
+
+                Fx.awaitNetwork(context, () -> post(swiper, url, data_post, dir, onresult), 1500);
+
             }
         });
         return this;
@@ -170,7 +172,7 @@ public abstract class ApiAdapter extends BaseAdapter {
                 }
                 Fx.toastNetworkError(context, code, data);
                 notifyDataSetChanged();
-                Fx.setTimeout(() -> get(swiper, url, dir, onresult), 1500);
+                Fx.awaitNetwork(context, () -> get(swiper, url, dir, onresult), 1500);
             }
         });
         return this;
