@@ -73,4 +73,7 @@
     <string name="save">save</string>
     <string name="cancel">cancel</string>
     <string name="load_previous">load previous results</string>
+    <string name="related_pages">Related pages</string>
+    <string name="related_forums">Related forums</string>
+    <string name="same_posts">Same posts</string>
 </resources>

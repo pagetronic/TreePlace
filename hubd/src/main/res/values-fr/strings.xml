@@ -50,4 +50,7 @@
     <string name="save">sauvegarder</string>
     <string name="cancel">annuler</string>
     <string name="load_previous">charger les résultats précédents</string>
+    <string name="related_pages">Pages en rapport</string>
+    <string name="related_forums">Forums en rapport</string>
+    <string name="same_posts">Postes similaires</string>
 </resources>
