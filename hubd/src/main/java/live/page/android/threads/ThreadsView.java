@@ -280,13 +280,11 @@ public class ThreadsView extends PageActivity {
                 items.add(forum.put("icon", R.drawable.forum));
             }
         }
-        if (thread.getJson("posts") != null) {
+        List<Json> branch = thread.getListJson("branch");
+        if (branch.size() > 0) {
             items.add(new Json("separator", getString(R.string.same_posts)));
-            List<Json> posts = thread.getJson("posts").getListJson("result");
-            if (posts.size() > 0) {
-                for (Json post : posts) {
-                    items.add(post.put("icon", R.drawable.post));
-                }
+            for (Json post : branch) {
+                items.add(post.put("icon", R.drawable.post));
             }
         }
         if (items.size() == 0) {
@@ -340,9 +338,9 @@ public class ThreadsView extends PageActivity {
                     separator.setVisibility(View.GONE);
                     title.setText(item.getString("title", ""));
 
-                    if (item.containsKey("intro")) {
+                    if (item.containsKey("intro") || item.containsKey("text")) {
                         intro.setVisibility(View.VISIBLE);
-                        intro.setText(item.getString("intro"));
+                        intro.setText(item.getString("intro", item.getString("text", "")));
                     } else {
                         intro.setVisibility(View.GONE);
                     }
