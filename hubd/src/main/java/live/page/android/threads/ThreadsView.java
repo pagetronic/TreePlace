@@ -15,8 +15,6 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.bumptech.glide.Glide;
@@ -32,7 +30,7 @@ import live.page.android.api.ApiRequest;
 import live.page.android.api.ApiResult;
 import live.page.android.api.Json;
 import live.page.android.auto.PageActivity;
-import live.page.android.threads.admin.SeoNav;
+import live.page.android.threads.admin.LateralNav;
 import live.page.android.utils.Command;
 import live.page.android.utils.Fx;
 import live.page.android.utils.Since;
@@ -261,40 +259,36 @@ public class ThreadsView extends PageActivity {
 
         NavigationView nav = getNavRight();
         nav.removeAllViews();
-        RecyclerView thread_nav = new RecyclerView(getContext());
-        thread_nav.setLayoutManager(new LinearLayoutManager(getContext()));
-        nav.addView(thread_nav);
-
-        SeoNav.NavAdapter adapterNav = new SeoNav.NavAdapter(getContext(), isAdmin());
+        LateralNav lateralNav = new LateralNav(getContext(), isAdmin());
+        nav.addView(lateralNav);
 
         List<Json> pages = thread.getListJson("pages");
         if (pages.size() > 0) {
-            adapterNav.add(new Json("separator", getString(R.string.related_pages)));
+            lateralNav.add(new Json("separator", getString(R.string.related_pages)));
             for (Json page : pages) {
-                adapterNav.add(page.put("icon", R.drawable.page));
+                lateralNav.add(page.put("icon", R.drawable.page));
             }
         }
         List<Json> forums = thread.getListJson("forums");
         if (forums.size() > 0) {
-            adapterNav.add(new Json("separator", getString(R.string.related_forums)));
+            lateralNav.add(new Json("separator", getString(R.string.related_forums)));
             for (Json forum : forums) {
-                adapterNav.add(forum.put("icon", R.drawable.forum));
+                lateralNav.add(forum.put("icon", R.drawable.forum));
             }
         }
         List<Json> branch = thread.getListJson("branch");
         if (branch.size() > 0) {
-            adapterNav.add(new Json("separator", getString(R.string.same_posts)));
+            lateralNav.add(new Json("separator", getString(R.string.same_posts)));
             for (Json post : branch) {
-                adapterNav.add(post.put("icon", R.drawable.post));
+                lateralNav.add(post.put("icon", R.drawable.post));
             }
         }
-        if (adapterNav.getItemCount() == 0) {
+        if (lateralNav.getCount() == 0) {
             removeNavRight();
-            return;
+        } else {
+            lateralNav.refresh();
         }
 
-        thread_nav.setAdapter(adapterNav);
-        adapterNav.notifyDataSetChanged();
 
     }
 

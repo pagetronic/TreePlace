@@ -1,5 +1,6 @@
 package live.page.android.threads.admin;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
@@ -19,9 +21,36 @@ import live.page.android.ui.select.SelectAction;
 import live.page.android.ui.select.SelectDialog;
 import live.page.android.utils.Fx;
 
-public class SeoNav {
+@SuppressLint("ViewConstructor")
+public class LateralNav extends RecyclerView {
 
-    public static class NavAdapter extends RecyclerView.Adapter<NavAdapter.NavView> {
+    private NavAdapter adapter;
+
+    public LateralNav(@NonNull Context context, boolean isAdmin) {
+        super(context);
+        setLayoutManager(new LinearLayoutManager(getContext()));
+
+        setAdapter(new NavAdapter(context, isAdmin));
+    }
+
+    public void add(Json item) {
+        adapter.add(item);
+    }
+
+    public void setAdapter(NavAdapter adapter) {
+        this.adapter = adapter;
+        super.setAdapter(adapter);
+    }
+
+    public int getCount() {
+        return adapter.getItemCount();
+    }
+
+    public void refresh() {
+        adapter.notifyDataSetChanged();
+    }
+
+    private class NavAdapter extends RecyclerView.Adapter<NavAdapter.NavView> {
 
         private List<Json> items = new ArrayList<>();
         private Context context;
@@ -52,17 +81,16 @@ public class SeoNav {
 
         public void add(Json item) {
             items.add(item);
-            notifyDataSetChanged();
         }
 
 
         private class NavView extends RecyclerView.ViewHolder {
 
-            public NavView(@NonNull View itemView) {
+            private NavView(@NonNull View itemView) {
                 super(itemView);
             }
 
-            public void make(Json item, boolean isAdmin) {
+            private void make(Json item, boolean isAdmin) {
                 TextView separator = itemView.findViewById(R.id.separator);
                 TextView title = itemView.findViewById(R.id.title);
                 TextView intro = itemView.findViewById(R.id.intro);
