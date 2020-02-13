@@ -23,6 +23,7 @@
             android:layout_height="24dp"
             android:layout_margin="5dp"
             android:src="@drawable/add_item"
+            android:background="@color/transparent"
             android:visibility="gone" />
     </LinearLayout>
 

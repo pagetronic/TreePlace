@@ -262,17 +262,17 @@ public class ThreadsView extends PageActivity {
         nav.addView(lateralNav);
 
         List<Json> pages = thread.getListJson("pages");
-        if (pages.size() > 0) {
-            lateralNav.add(new Json("separator", getString(R.string.related_pages)));
+        if (pages.size() > 0 || isAdmin()) {
+            lateralNav.add(new Json("separator", getString(R.string.related_pages)).put("type", "pages"));
             for (Json page : pages) {
-                lateralNav.add(page.put("icon", R.drawable.page));
+                lateralNav.add(page.put("drag", "page").put("icon", R.drawable.page));
             }
         }
         List<Json> forums = thread.getListJson("forums");
-        if (forums.size() > 0) {
-            lateralNav.add(new Json("separator", getString(R.string.related_forums)));
+        if (forums.size() > 0 || isAdmin()) {
+            lateralNav.add(new Json("separator", getString(R.string.related_forums)).put("type", "forums"));
             for (Json forum : forums) {
-                lateralNav.add(forum.put("icon", R.drawable.forum));
+                lateralNav.add(forum.put("drag", "forum").put("icon", R.drawable.forum));
             }
         }
         List<Json> branch = thread.getListJson("branch");

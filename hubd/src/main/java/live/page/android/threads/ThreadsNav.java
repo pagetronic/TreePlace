@@ -9,10 +9,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import live.page.android.R;
@@ -28,9 +30,53 @@ public class ThreadsNav extends RecyclerView {
 
     public ThreadsNav(@NonNull Context context, boolean isAdmin) {
         super(context);
-        setLayoutManager(new LinearLayoutManager(getContext()));
 
+        setLayoutManager(new LinearLayoutManager(getContext()));
         setAdapter(new NavAdapter(context, isAdmin));
+
+        if (isAdmin) {
+            ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP | ItemTouchHelper.DOWN, ItemTouchHelper.LEFT) {
+
+                @Override
+                public int getMovementFlags(@NonNull RecyclerView recyclerView,
+                                            @NonNull ViewHolder viewHolder) {
+
+                    if (adapter.getItem(viewHolder.getAdapterPosition()).containsKey("drag")) {
+                        int dragFlags = ItemTouchHelper.UP | ItemTouchHelper.DOWN;
+
+                        return makeMovementFlags(dragFlags, ItemTouchHelper.LEFT);
+                    } else {
+                        return ItemTouchHelper.ACTION_STATE_IDLE;
+                    }
+
+                }
+
+                @Override
+                public boolean canDropOver(@NonNull RecyclerView recyclerView, @NonNull ViewHolder current, @NonNull ViewHolder target) {
+                    return adapter.getItem(target.getAdapterPosition()).getString("drag", "").equals(adapter.getItem(target.getAdapterPosition()).getString("drag"));
+                }
+
+                @Override
+                public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+                    adapter.onItemMove(viewHolder.getAdapterPosition(),
+                            target.getAdapterPosition());
+                    return true;
+                }
+
+
+                @Override
+                public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
+                    int swipedPosition = viewHolder.getAdapterPosition();
+                    adapter.onItemDismiss(viewHolder.getAdapterPosition());
+                }
+
+            };
+
+            ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
+
+            itemTouchHelper.attachToRecyclerView(ThreadsNav.this);
+
+        }
     }
 
     public void add(Json item) {
@@ -50,7 +96,14 @@ public class ThreadsNav extends RecyclerView {
         adapter.notifyDataSetChanged();
     }
 
-    private class NavAdapter extends RecyclerView.Adapter<NavAdapter.NavView> {
+    public interface ItemTouchHelperAdapter {
+
+        void onItemMove(int fromPosition, int toPosition);
+
+        void onItemDismiss(int position);
+    }
+
+    private class NavAdapter extends RecyclerView.Adapter<NavAdapter.NavView> implements ItemTouchHelperAdapter {
 
         private List<Json> items = new ArrayList<>();
         private Context context;
@@ -59,6 +112,26 @@ public class ThreadsNav extends RecyclerView {
         public NavAdapter(Context context, boolean isAdmin) {
             this.context = context;
             this.isAdmin = isAdmin;
+        }
+
+        @Override
+        public void onItemDismiss(int position) {
+            items.remove(position);
+            notifyItemRemoved(position);
+        }
+
+        @Override
+        public void onItemMove(int fromPosition, int toPosition) {
+            if (fromPosition < toPosition) {
+                for (int i = fromPosition; i < toPosition; i++) {
+                    Collections.swap(items, i, i + 1);
+                }
+            } else {
+                for (int i = fromPosition; i > toPosition; i--) {
+                    Collections.swap(items, i, i - 1);
+                }
+            }
+            notifyItemMoved(fromPosition, toPosition);
         }
 
         @NonNull
@@ -81,6 +154,10 @@ public class ThreadsNav extends RecyclerView {
 
         public void add(Json item) {
             items.add(item);
+        }
+
+        public Json getItem(int position) {
+            return items.get(position);
         }
 
 
