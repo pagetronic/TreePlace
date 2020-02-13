@@ -3,14 +3,11 @@ package live.page.android.threads;
 import android.content.Context;
 import android.net.Uri;
 import android.text.Html;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.ViewPropertyAnimator;
 import android.view.animation.AccelerateInterpolator;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AbsListView;
-import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -18,8 +15,8 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.bumptech.glide.Glide;
@@ -35,6 +32,7 @@ import live.page.android.api.ApiRequest;
 import live.page.android.api.ApiResult;
 import live.page.android.api.Json;
 import live.page.android.auto.PageActivity;
+import live.page.android.threads.admin.SeoNav;
 import live.page.android.utils.Command;
 import live.page.android.utils.Fx;
 import live.page.android.utils.Since;
@@ -263,107 +261,43 @@ public class ThreadsView extends PageActivity {
 
         NavigationView nav = getNavRight();
         nav.removeAllViews();
-        ListView thread_nav = new ListView(getContext());
+        RecyclerView thread_nav = new RecyclerView(getContext());
+        thread_nav.setLayoutManager(new LinearLayoutManager(getContext()));
         nav.addView(thread_nav);
-        List<Json> items = new ArrayList<>();
+
+        SeoNav.NavAdapter adapterNav = new SeoNav.NavAdapter(getContext(), isAdmin());
+
         List<Json> pages = thread.getListJson("pages");
         if (pages.size() > 0) {
-            items.add(new Json("separator", getString(R.string.related_pages)));
+            adapterNav.add(new Json("separator", getString(R.string.related_pages)));
             for (Json page : pages) {
-                items.add(page.put("icon", R.drawable.page));
+                adapterNav.add(page.put("icon", R.drawable.page));
             }
         }
         List<Json> forums = thread.getListJson("forums");
         if (forums.size() > 0) {
-            items.add(new Json("separator", getString(R.string.related_forums)));
+            adapterNav.add(new Json("separator", getString(R.string.related_forums)));
             for (Json forum : forums) {
-                items.add(forum.put("icon", R.drawable.forum));
+                adapterNav.add(forum.put("icon", R.drawable.forum));
             }
         }
         List<Json> branch = thread.getListJson("branch");
         if (branch.size() > 0) {
-            items.add(new Json("separator", getString(R.string.same_posts)));
+            adapterNav.add(new Json("separator", getString(R.string.same_posts)));
             for (Json post : branch) {
-                items.add(post.put("icon", R.drawable.post));
+                adapterNav.add(post.put("icon", R.drawable.post));
             }
         }
-        if (items.size() == 0) {
+        if (adapterNav.getItemCount() == 0) {
             removeNavRight();
             return;
         }
 
-        BaseAdapter adapterNav = new BaseAdapter() {
-
-            @Override
-            public int getCount() {
-                return items.size();
-            }
-
-            @Override
-            public Object getItem(int position) {
-                return items.get(position);
-            }
-
-            @Override
-            public long getItemId(int position) {
-                return items.get(position).toString().hashCode();
-            }
-
-            @NonNull
-            @Override
-            public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-                if (convertView == null) {
-                    convertView = LayoutInflater.from(getContext()).inflate(R.layout.thread_nav, new LinearLayout(getContext()));
-                }
-                Json item = (Json) getItem(position);
-                TextView separator = convertView.findViewById(R.id.separator);
-                TextView title = convertView.findViewById(R.id.title);
-                TextView intro = convertView.findViewById(R.id.intro);
-                ImageView icon = convertView.findViewById(R.id.icon);
-
-                if (item.containsKey("separator")) {
-
-                    separator.setVisibility(View.VISIBLE);
-                    separator.setText(item.getString("separator"));
-                    title.setVisibility(View.GONE);
-                    intro.setVisibility(View.GONE);
-                    icon.setVisibility(View.GONE);
-
-                } else {
-
-                    separator.setVisibility(View.GONE);
-                    title.setVisibility(View.VISIBLE);
-                    icon.setVisibility(View.VISIBLE);
-
-                    separator.setVisibility(View.GONE);
-                    title.setText(item.getString("title", ""));
-
-                    if (item.containsKey("intro") || item.containsKey("text")) {
-                        intro.setVisibility(View.VISIBLE);
-                        intro.setText(item.getString("intro", item.getString("text", "")));
-                    } else {
-                        intro.setVisibility(View.GONE);
-                    }
-                    icon.setImageResource(item.getInteger("icon"));
-
-                }
-                return convertView;
-            }
-
-            public void addAll(List<Json> items) {
-                items.addAll(items);
-                notifyDataSetChanged();
-            }
-
-            public void add(Json item) {
-                items.add(item);
-                notifyDataSetChanged();
-            }
-        };
         thread_nav.setAdapter(adapterNav);
         adapterNav.notifyDataSetChanged();
 
     }
+
 
     private class ThreadAdapter extends ApiAdapter {
 
