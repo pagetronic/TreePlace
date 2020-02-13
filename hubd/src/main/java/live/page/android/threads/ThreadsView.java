@@ -30,7 +30,6 @@ import live.page.android.api.ApiRequest;
 import live.page.android.api.ApiResult;
 import live.page.android.api.Json;
 import live.page.android.auto.PageActivity;
-import live.page.android.threads.admin.LateralNav;
 import live.page.android.utils.Command;
 import live.page.android.utils.Fx;
 import live.page.android.utils.Since;
@@ -259,7 +258,7 @@ public class ThreadsView extends PageActivity {
 
         NavigationView nav = getNavRight();
         nav.removeAllViews();
-        LateralNav lateralNav = new LateralNav(getContext(), isAdmin());
+        ThreadsNav lateralNav = new ThreadsNav(getContext(), isAdmin());
         nav.addView(lateralNav);
 
         List<Json> pages = thread.getListJson("pages");

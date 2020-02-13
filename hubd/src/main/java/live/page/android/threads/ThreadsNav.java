@@ -1,4 +1,4 @@
-package live.page.android.threads.admin;
+package live.page.android.threads;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -22,11 +22,11 @@ import live.page.android.ui.select.SelectDialog;
 import live.page.android.utils.Fx;
 
 @SuppressLint("ViewConstructor")
-public class LateralNav extends RecyclerView {
+public class ThreadsNav extends RecyclerView {
 
     private NavAdapter adapter;
 
-    public LateralNav(@NonNull Context context, boolean isAdmin) {
+    public ThreadsNav(@NonNull Context context, boolean isAdmin) {
         super(context);
         setLayoutManager(new LinearLayoutManager(getContext()));
 
