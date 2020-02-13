@@ -64,4 +64,18 @@ public abstract class PageActivity extends AppCompatActivity {
     public Context getContext() {
         return this;
     }
+
+    public boolean isAdmin() {
+        if (user == null) {
+            return false;
+        }
+        return user.getBoolean("admin", false);
+    }
+
+    public boolean isEditor() {
+        if (user == null) {
+            return false;
+        }
+        return user.getBoolean("editor", user.getBoolean("admin", false));
+    }
 }
