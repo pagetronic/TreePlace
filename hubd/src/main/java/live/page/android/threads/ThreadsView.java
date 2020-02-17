@@ -1,7 +1,6 @@
 package live.page.android.threads;
 
 import android.content.Context;
-import android.content.res.Configuration;
 import android.net.Uri;
 import android.view.View;
 import android.view.ViewPropertyAnimator;
@@ -15,11 +14,9 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.bumptech.glide.Glide;
-import com.google.android.material.navigation.NavigationView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -164,7 +161,9 @@ public class ThreadsView extends PageActivity {
                 makeHeader(false);
                 listView.removeFooterView(replyView);
                 listView.addFooterView(replyView, null, true);
-                makeNav();
+                if (!ThreadsNav.makeNav(getContext(), getNavRight(), thread, isAdmin())) {
+                    removeNavRight();
+                }
             }
         };
 
@@ -255,42 +254,6 @@ public class ThreadsView extends PageActivity {
         });
     }
 
-    private void makeNav() {
-
-        NavigationView nav = getNavRight();
-        nav.removeAllViews();
-        ThreadsNav lateralNav = new ThreadsNav(getContext(), thread.getId(), isAdmin());
-        nav.addView(lateralNav);
-
-        List<Json> pages = thread.getListJson("pages");
-        if (pages.size() > 0 || isAdmin()) {
-            lateralNav.add(new Json("separator", getString(R.string.related_pages)).put("type", "pages"));
-            for (Json page : pages) {
-                lateralNav.add(page.put("type", "pages"));
-            }
-        }
-        List<Json> forums = thread.getListJson("forums");
-        if (forums.size() > 0 || isAdmin()) {
-            lateralNav.add(new Json("separator", getString(R.string.related_forums)).put("type", "forums"));
-            for (Json forum : forums) {
-                lateralNav.add(forum.put("type", "forums"));
-            }
-        }
-        List<Json> branch = thread.getListJson("branch");
-        if (branch.size() > 0) {
-            lateralNav.add(new Json("separator", getString(R.string.same_posts)));
-            for (Json post : branch) {
-                lateralNav.add(post);
-            }
-        }
-        if (lateralNav.getCount() == 0) {
-            removeNavRight();
-        } else {
-            lateralNav.refresh();
-        }
-
-
-    }
 
     private class ThreadAdapter extends ApiAdapter {
 

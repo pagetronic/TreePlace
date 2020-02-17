@@ -13,6 +13,8 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.navigation.NavigationView;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -82,6 +84,42 @@ public class ThreadsNav extends RecyclerView {
             itemTouchHelper.attachToRecyclerView(ThreadsNav.this);
 
         }
+    }
+
+    public static boolean makeNav(Context context, NavigationView nav, Json thread, boolean isAdmin) {
+
+        nav.removeAllViews();
+        ThreadsNav lateralNav = new ThreadsNav(context, thread.getId(), isAdmin);
+        nav.addView(lateralNav);
+
+        List<Json> pages = thread.getListJson("pages");
+        if (pages.size() > 0 || isAdmin) {
+            lateralNav.add(new Json("separator", context.getString(R.string.related_pages)).put("type", "pages"));
+            for (Json page : pages) {
+                lateralNav.add(page.put("type", "pages"));
+            }
+        }
+        List<Json> forums = thread.getListJson("forums");
+        if (forums.size() > 0 || isAdmin) {
+            lateralNav.add(new Json("separator", context.getString(R.string.related_forums)).put("type", "forums"));
+            for (Json forum : forums) {
+                lateralNav.add(forum.put("type", "forums"));
+            }
+        }
+        List<Json> branch = thread.getListJson("branch");
+        if (branch.size() > 0) {
+            lateralNav.add(new Json("separator", context.getString(R.string.same_posts)));
+            for (Json post : branch) {
+                lateralNav.add(post);
+            }
+        }
+        if (lateralNav.getCount() == 0) {
+            return false;
+        }
+        lateralNav.refresh();
+
+        return true;
+
     }
 
     public void add(Json item) {
