@@ -54,7 +54,12 @@ public class ThreadsNav extends RecyclerView {
 
                 @Override
                 public boolean canDropOver(@NonNull RecyclerView recyclerView, @NonNull ViewHolder current, @NonNull ViewHolder target) {
-                    return adapter.getItem(target.getAdapterPosition()).getString("type", "").equals(adapter.getItem(current.getAdapterPosition()).getString("type"));
+                    Json targetItem = adapter.getItem(target.getAdapterPosition());
+                    if (targetItem.containsKey("separator")) {
+                        return false;
+                    }
+                    Json currentItem = adapter.getItem(current.getAdapterPosition());
+                    return targetItem.getString("type", "").equals(currentItem.getString("type"));
                 }
 
                 @Override
