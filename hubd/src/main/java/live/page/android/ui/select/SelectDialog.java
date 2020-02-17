@@ -7,6 +7,7 @@ import android.text.TextWatcher;
 import android.widget.EditText;
 import android.widget.ListView;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -55,6 +56,10 @@ public class SelectDialog {
             }
         });
         dialog.setOnCancelListener((d) -> onChoice.onChoices(selection.getChoices()));
+    }
+
+    public SelectDialog(Context context, String url, SelectAction selectAction) {
+        this(context, url, new ArrayList<>(), false, selectAction);
     }
 
 
