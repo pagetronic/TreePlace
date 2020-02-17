@@ -45,7 +45,6 @@
     </style>
 
     <style name="NavSectionTitle" parent="TextAppearance.AppCompat.Medium">
-        <item name="android:background">@drawable/navtitle</item>
         <item name="android:textStyle">bold</item>
         <item name="android:padding">5dp</item>
     </style>
