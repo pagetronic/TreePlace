@@ -18,21 +18,26 @@ import java.util.Collections;
 import java.util.List;
 
 import live.page.android.R;
+import live.page.android.api.ApiAsync;
 import live.page.android.api.Json;
 import live.page.android.ui.select.SelectAction;
 import live.page.android.ui.select.SelectDialog;
-import live.page.android.utils.Fx;
 
 @SuppressLint("ViewConstructor")
 public class ThreadsNav extends RecyclerView {
 
     private NavAdapter adapter;
+    private String thread_id;
+    private boolean isAdmin;
 
-    public ThreadsNav(@NonNull Context context, boolean isAdmin) {
+
+    public ThreadsNav(@NonNull Context context, String thread_id, boolean isAdmin) {
         super(context);
+        this.thread_id = thread_id;
+        this.isAdmin = isAdmin;
 
         setLayoutManager(new LinearLayoutManager(getContext()));
-        setAdapter(new NavAdapter(context, isAdmin));
+        setAdapter(new NavAdapter());
 
         if (isAdmin) {
 
@@ -40,7 +45,8 @@ public class ThreadsNav extends RecyclerView {
 
                 @Override
                 public int getMovementFlags(@NonNull RecyclerView recyclerView, @NonNull ViewHolder viewHolder) {
-                    if (adapter.getItem(viewHolder.getAdapterPosition()).containsKey("drag")) {
+                    Json item = adapter.getItem(viewHolder.getAdapterPosition());
+                    if (item.containsKey("type") && !item.containsKey("separator")) {
                         return makeMovementFlags(ItemTouchHelper.UP | ItemTouchHelper.DOWN, ItemTouchHelper.LEFT);
                     }
                     return ItemTouchHelper.ACTION_STATE_IDLE;
@@ -48,7 +54,7 @@ public class ThreadsNav extends RecyclerView {
 
                 @Override
                 public boolean canDropOver(@NonNull RecyclerView recyclerView, @NonNull ViewHolder current, @NonNull ViewHolder target) {
-                    return adapter.getItem(target.getAdapterPosition()).getString("drag", "").equals(adapter.getItem(current.getAdapterPosition()).getString("drag"));
+                    return adapter.getItem(target.getAdapterPosition()).getString("type", "").equals(adapter.getItem(current.getAdapterPosition()).getString("type"));
                 }
 
                 @Override
@@ -89,23 +95,88 @@ public class ThreadsNav extends RecyclerView {
         adapter.notifyDataSetChanged();
     }
 
+    private void sortedAdmin(String type) {
+        List<String> sort = new ArrayList<>();
+        for (Json item : adapter.getItems()) {
+            if (!item.containsKey("separator") && item.getString("type", "xx").equals(type)) {
+                sort.add(item.getId());
+            }
+        }
+        switch (type) {
+            case "pages":
+                ApiAsync.post(getContext(), "/threads", new Json("action", "pages_sort").put("id", thread_id).put("pages", sort), null);
+                break;
+
+            case "forums":
+                ApiAsync.post(getContext(), "/threads", new Json("action", "parents_sort").put("id", thread_id).put("parents", sort), null);
+                break;
+        }
+    }
+
+    private void removeAdmin(Json item) {
+        switch (item.getString("type", "")) {
+            case "pages":
+                ApiAsync.post(getContext(), "/threads", new Json("action", "pages_remove").put("id", thread_id).put("page_id", item.getId()), null);
+                break;
+
+            case "forums":
+                ApiAsync.post(getContext(), "/threads", new Json("action", "parents_remove").put("id", thread_id).put("parent", "Forums(" + item.getId() + ")"), null);
+                break;
+        }
+    }
+
+    private void addItemAdmin(View admin, String type) {
+        admin.setVisibility(View.VISIBLE);
+        switch (type) {
+            case "pages":
+                admin.setOnClickListener((v) -> new SelectDialog(getContext(), "/edit", new SelectAction() {
+                    @Override
+                    public void onChoice(Json value) {
+                        adapter.addItemTo(value, type);
+                    }
+
+                    @Override
+                    public void onValue(String value) {
+                        if (value == null) {
+                            return;
+                        }
+                        ApiAsync.post(getContext(), "/threads", new Json("action", "pages_add").put("id", thread_id).put("page_id", value), null, true);
+                    }
+                }));
+                break;
+
+            case "forums":
+                admin.setOnClickListener((v) -> new SelectDialog(getContext(), "/forums", new SelectAction() {
+                    @Override
+                    public void onChoice(Json value) {
+                        adapter.addItemTo(value, type);
+                    }
+
+                    @Override
+                    public void onValue(String value) {
+                        if (value == null) {
+                            return;
+                        }
+                        ApiAsync.post(getContext(), "/threads", new Json("action", "parents_add").put("id", thread_id).put("parent", "Forums(" + value + ")"), null, true);
+                    }
+                }));
+                break;
+        }
+
+    }
+
     private class NavAdapter extends RecyclerView.Adapter<NavAdapter.NavView> {
 
         private List<Json> items = new ArrayList<>();
-        private Context context;
-        private boolean isAdmin;
 
-        public NavAdapter(Context context, boolean isAdmin) {
-            this.context = context;
-            this.isAdmin = isAdmin;
-        }
-
-        public void onItemDismiss(int position) {
+        private void onItemDismiss(int position) {
+            removeAdmin(items.get(position));
             items.remove(position);
             notifyItemRemoved(position);
         }
 
-        public void onItemMove(int fromPosition, int toPosition) {
+        private void onItemMove(int fromPosition, int toPosition) {
+            String type = getItem(fromPosition).getString("type");
             if (fromPosition < toPosition) {
                 for (int i = fromPosition; i < toPosition; i++) {
                     Collections.swap(items, i, i + 1);
@@ -116,12 +187,14 @@ public class ThreadsNav extends RecyclerView {
                 }
             }
             notifyItemMoved(fromPosition, toPosition);
+            sortedAdmin(type);
         }
+
 
         @NonNull
         @Override
         public NavView onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            View view = LayoutInflater.from(context).inflate(R.layout.thread_nav, parent, false);
+            View view = LayoutInflater.from(getContext()).inflate(R.layout.thread_nav, parent, false);
             return new NavView(view);
         }
 
@@ -136,14 +209,31 @@ public class ThreadsNav extends RecyclerView {
             return items.size();
         }
 
+        private List<Json> getItems() {
+            return items;
+        }
+
         public void add(Json item) {
             items.add(item);
         }
 
-        public Json getItem(int position) {
+        private Json getItem(int position) {
             return items.get(position);
         }
 
+
+        private void addItemTo(Json item, String type) {
+            int position = 0;
+            for (int i = 0; i < items.size(); i++) {
+                if (items.get(i).getString("type", "").equals(type)) {
+                    position = i + 1;
+                }
+            }
+            item.put("type", type);
+            items.add(position, item);
+            adapter.notifyItemInserted(position);
+
+        }
 
         private class NavView extends RecyclerView.ViewHolder {
 
@@ -158,8 +248,8 @@ public class ThreadsNav extends RecyclerView {
                 ImageView icon = itemView.findViewById(R.id.icon);
 
                 if (isAdmin) {
-                    if (item.getString("type") != null) {
-                        makeAdmin(itemView.findViewById(R.id.admin), item.getString("type"));
+                    if (item.containsKey("separator") && !item.getString("type", "").equals("")) {
+                        addItemAdmin(itemView.findViewById(R.id.admin), item.getString("type"));
                     } else {
                         itemView.findViewById(R.id.admin).setVisibility(View.GONE);
                     }
@@ -188,30 +278,14 @@ public class ThreadsNav extends RecyclerView {
                     } else {
                         intro.setVisibility(View.GONE);
                     }
-                    icon.setImageResource(item.getInteger("icon"));
+
+                    String type = item.getString("type", "posts");
+                    icon.setImageResource(type.equals("pages") ? R.drawable.page : type.equals("forums") ? R.drawable.forum : R.drawable.post);
 
                 }
             }
 
-            private void makeAdmin(View admin, String type) {
-                admin.setVisibility(View.VISIBLE);
-                switch (type) {
-                    case "pages":
-                        admin.setOnClickListener((v) -> {
-                            new SelectDialog(context, "/threads", null, false, new SelectAction() {
-
-                                @Override
-                                public void onValue(String value) {
-                                    Fx.log(value);
-                                }
-                            });
-                        });
-                        break;
-                    case "forums":
-                        break;
-                }
-
-            }
         }
     }
+
 }
