@@ -460,6 +460,12 @@ public abstract class ApiAdapter extends BaseAdapter {
         notifyDataSetChanged();
     }
 
+    public void setListView(ListView listView) {
+        this.listView = listView;
+        this.context = listView.getContext();
+        notifyDataSetChanged();
+    }
+
 
     private interface ScrollEvent {
         void doPaging(String paging_, int dir, Runnable after);

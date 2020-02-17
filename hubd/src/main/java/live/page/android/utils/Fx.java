@@ -2,11 +2,17 @@ package live.page.android.utils;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
+import android.text.Html;
+import android.text.Spanned;
 import android.util.Log;
 import android.widget.ProgressBar;
 import android.widget.Toast;
+
+import androidx.browser.customtabs.CustomTabsIntent;
 
 import live.page.android.R;
 import live.page.android.api.ApiAsync;
@@ -115,6 +121,20 @@ public class Fx {
         } while ((str.substring(0, newEnd) + "…").length() < length);
 
         return str.substring(0, end) + "…";
+    }
+
+    public static void browse(Context context, Uri url) {
+        CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
+        builder.setColorScheme(CustomTabsIntent.COLOR_SCHEME_SYSTEM);
+        builder.setToolbarColor(context.getColor(R.color.colorPrimary));
+        CustomTabsIntent customTabsIntent = builder.build();
+        customTabsIntent.intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+        customTabsIntent.intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        customTabsIntent.launchUrl(context, url);
+    }
+
+    public static String fromHtml(String str) {
+        return Html.fromHtml(str, Html.FROM_HTML_MODE_LEGACY).toString();
     }
 
 

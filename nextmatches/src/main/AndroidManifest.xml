@@ -34,7 +34,6 @@
 
         <activity
             android:name="live.page.android.threads.ThreadsView"
-            android:configChanges="orientation|screenSize"
             android:label="@string/hellip"
             android:theme="@style/AppTheme.NoActionBar" />
 

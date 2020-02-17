@@ -1,8 +1,8 @@
 package live.page.android.threads;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.net.Uri;
-import android.text.Html;
 import android.view.View;
 import android.view.ViewPropertyAnimator;
 import android.view.animation.AccelerateInterpolator;
@@ -15,6 +15,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.bumptech.glide.Glide;
@@ -291,7 +292,6 @@ public class ThreadsView extends PageActivity {
 
     }
 
-
     private class ThreadAdapter extends ApiAdapter {
 
         private ThreadAdapter(ListView list) {
@@ -300,33 +300,75 @@ public class ThreadsView extends PageActivity {
 
 
         @Override
-        public View getView(final View convertView, final Json thread) {
+        public View getView(final View convertView, final Json post) {
 
 
-            if (thread.getBoolean("editable", false)) {
+            if (post.getBoolean("editable", false)) {
 
-                return PostEditor.edit(getContext(), getLayoutInflater(), thread, new PostEditor() {
+                return PostEditor.edit(getContext(), getLayoutInflater(), post, new PostEditor() {
                     @Override
                     void success(Json data) {
-                        replace(thread, data);
+                        replace(post, data);
                     }
                 });
 
             }
 
             TextView title = convertView.findViewById(R.id.title);
-            if (thread.getString("title", "").equals("")) {
+            ImageView avatar = convertView.findViewById(R.id.avatar);
+            TextView date = convertView.findViewById(R.id.date);
+            avatar.setVisibility(View.VISIBLE);
+            date.setVisibility(View.VISIBLE);
+
+            if (post.getString("title", "").equals("")) {
                 title.setVisibility(View.GONE);
             } else {
-                title.setText(Html.fromHtml(thread.getString("title", ""), Html.FROM_HTML_MODE_LEGACY));
+                title.setText(Fx.fromHtml(post.getString("title", "")));
                 title.setVisibility(View.VISIBLE);
             }
-            ((TextView) convertView.findViewById(R.id.date)).setText(Since.format(context, thread.parseDate("date"), 2));
-            ((TextView) convertView.findViewById(R.id.text)).setText(PostParser.parse(thread.getString("text", ""), thread.getListJson("docs"), thread.getListJson("links")));
+            date.setText(Since.format(context, post.parseDate("date"), 2));
+            TextView text = convertView.findViewById(R.id.text);
+            if (post.getString("text", "").equals("")) {
+                text.setVisibility(View.GONE);
+            } else {
+                text.setVisibility(View.VISIBLE);
+                text.setText(PostParser.parse(post.getString("text", ""), post.getListJson("docs"), post.getListJson("links")));
+            }
 
-            Glide.with(context).load(Uri.parse(thread.getJson("user").getString("avatar") + "@64x64"))
+            Glide.with(context).load(Uri.parse(post.getJson("user").getString("avatar") + "@64x64"))
                     .error(R.drawable.logo)
-                    .into((ImageView) convertView.findViewById(R.id.avatar));
+                    .into(avatar);
+
+
+            View link_area = convertView.findViewById(R.id.link);
+
+            if (post.containsKey("link")) {
+                link_area.setVisibility(View.VISIBLE);
+                Json link = post.getJson("link");
+                ImageView link_image = convertView.findViewById(R.id.link_image);
+                TextView link_title = convertView.findViewById(R.id.link_title);
+                TextView link_text = convertView.findViewById(R.id.link_text);
+                TextView link_date = convertView.findViewById(R.id.link_date);
+
+                link_date.setText(Since.format(context, post.parseDate("date"), 2));
+                link_title.setText(Fx.fromHtml(link.getString("title", "")));
+                link_text.setText(Fx.fromHtml(link.getString("description", "")));
+
+                Glide.with(context).load(Uri.parse(link.getString("image") + "@290x180"))
+                        .error(R.drawable.logo)
+                        .into(link_image);
+
+                //todo possible bug itemClick on list?
+                link_area.setOnClickListener(v -> Fx.browse(context, Uri.parse(link.getString("url"))));
+                if (link.getString("title", "").equals(post.getString("title", ""))) {
+                    title.setVisibility(View.GONE);
+                    avatar.setVisibility(View.GONE);
+                    date.setVisibility(View.GONE);
+                }
+
+            } else {
+                link_area.setVisibility(View.GONE);
+            }
 
 
             return convertView;
@@ -336,7 +378,6 @@ public class ThreadsView extends PageActivity {
         public int getCount() {
             return super.getCount();
         }
-
 
         @Override
         protected Json getData(final Json data) {
