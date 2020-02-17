@@ -1,7 +1,7 @@
 package live.page.android.threads;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,12 +32,14 @@ public class ThreadsNav extends RecyclerView {
     private NavAdapter adapter;
     private String thread_id;
     private boolean isAdmin;
+    private ThreadsView threadsView;
 
 
-    public ThreadsNav(@NonNull Context context, String thread_id, boolean isAdmin) {
-        super(context);
+    public ThreadsNav(@NonNull ThreadsView threadsView, String thread_id, boolean isAdmin) {
+        super(threadsView);
         this.thread_id = thread_id;
         this.isAdmin = isAdmin;
+        this.threadsView = threadsView;
 
         setLayoutManager(new LinearLayoutManager(getContext()));
         setAdapter(new NavAdapter());
@@ -86,29 +88,29 @@ public class ThreadsNav extends RecyclerView {
         }
     }
 
-    public static boolean makeNav(Context context, NavigationView nav, Json thread, boolean isAdmin) {
+    public static boolean makeNav(ThreadsView threadsView, NavigationView nav, Json thread, boolean isAdmin) {
 
         nav.removeAllViews();
-        ThreadsNav lateralNav = new ThreadsNav(context, thread.getId(), isAdmin);
+        ThreadsNav lateralNav = new ThreadsNav(threadsView, thread.getId(), isAdmin);
         nav.addView(lateralNav);
 
         List<Json> pages = thread.getListJson("pages");
         if (pages.size() > 0 || isAdmin) {
-            lateralNav.add(new Json("separator", context.getString(R.string.related_pages)).put("type", "pages"));
+            lateralNav.add(new Json("separator", threadsView.getString(R.string.related_pages)).put("type", "pages"));
             for (Json page : pages) {
                 lateralNav.add(page.put("type", "pages"));
             }
         }
         List<Json> forums = thread.getListJson("forums");
         if (forums.size() > 0 || isAdmin) {
-            lateralNav.add(new Json("separator", context.getString(R.string.related_forums)).put("type", "forums"));
+            lateralNav.add(new Json("separator", threadsView.getString(R.string.related_forums)).put("type", "forums"));
             for (Json forum : forums) {
                 lateralNav.add(forum.put("type", "forums"));
             }
         }
         List<Json> branch = thread.getListJson("branch");
         if (branch.size() > 0) {
-            lateralNav.add(new Json("separator", context.getString(R.string.same_posts)));
+            lateralNav.add(new Json("separator", threadsView.getString(R.string.same_posts)));
             for (Json post : branch) {
                 lateralNav.add(post);
             }
@@ -325,7 +327,20 @@ public class ThreadsNav extends RecyclerView {
 
                     String type = item.getString("type", "posts");
                     icon.setImageResource(type.equals("pages") ? R.drawable.page : type.equals("forums") ? R.drawable.forum : R.drawable.post);
+                    switch (type) {
+                        case "pages":
+                            itemView.setOnClickListener(v -> Fx.browse(getContext(), Uri.parse("https://" + item.getString("domain") + item.getString("url"))));
+                            break;
+                        case "forums":
+                            itemView.setOnClickListener(v -> threadsView.finish());
 
+                            break;
+                        case "posts":
+                            itemView.setOnClickListener(v -> threadsView.load(item.getId()));
+                            break;
+                        default:
+                            itemView.setOnClickListener(null);
+                    }
                 }
             }
 

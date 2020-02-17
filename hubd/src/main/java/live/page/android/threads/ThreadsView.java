@@ -14,6 +14,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.bumptech.glide.Glide;
@@ -41,26 +42,57 @@ public class ThreadsView extends PageActivity {
     private ApiRequest postReq;
     private Json thread;
     private ThreadAdapter adapter;
+    private ListView listView;
+    private List<String> history = new ArrayList<>();
 
     @Override
     protected int getLayout() {
         return R.layout.thread;
     }
 
+
+    public void load(String thread_id) {
+        getNavRight().removeAllViews();
+        history.add(thread_id);
+        String url = "/threads/" + thread_id;
+
+        thread = null;
+        makeHeader(false);
+        adapter.clear();
+        replyView.setVisibility(View.GONE);
+        ApiResult onresult = new ApiResult() {
+            @Override
+            public void success(Json data) {
+                thread = data.clone();
+                thread.remove("posts");
+                makeHeader(false);
+                listView.removeFooterView(replyView);
+                listView.addFooterView(replyView, null, true);
+                if (!ThreadsNav.makeNav(ThreadsView.this, getNavRight(), thread, isAdmin())) {
+                    removeNavRight();
+                }
+                replyView.setVisibility(View.VISIBLE);
+            }
+        };
+        adapter.get(url, onresult);
+        ((DrawerLayout) findViewById(R.id.drawer_layout)).closeDrawers();
+        SwipeRefreshLayout swiper = findViewById(R.id.swiper);
+        swiper.setOnRefreshListener(() -> adapter.get(swiper, url, onresult));
+    }
+
     @Override
     protected void onCreate() {
 
 
-        ListView listView = findViewById(R.id.thread);
+        listView = findViewById(R.id.thread);
         listView.setDivider(null);
         listView.setBackgroundColor(getContext().getColor(R.color.greyLight));
         adapter = new ThreadAdapter(listView);
         listView.setAdapter(adapter);
         makeJumper(listView);
 
-        final SwipeRefreshLayout swiper = findViewById(R.id.swiper);
         String thread_id = getIntent().getStringExtra("id");
-        final String url = "/threads/" + thread_id;
+
 
         headerView = new LinearLayout(getContext());
         headerView.setOrientation(LinearLayout.VERTICAL);
@@ -153,23 +185,8 @@ public class ThreadsView extends PageActivity {
             return false;
         });
 
-        ApiResult onresult = new ApiResult() {
-            @Override
-            public void success(Json data) {
-                thread = data.clone();
-                thread.remove("posts");
-                makeHeader(false);
-                listView.removeFooterView(replyView);
-                listView.addFooterView(replyView, null, true);
-                if (!ThreadsNav.makeNav(getContext(), getNavRight(), thread, isAdmin())) {
-                    removeNavRight();
-                }
-            }
-        };
 
-
-        adapter.get(url, onresult);
-        swiper.setOnRefreshListener(() -> adapter.get(swiper, url, onresult));
+        load(thread_id);
 
     }
 
@@ -252,6 +269,18 @@ public class ThreadsView extends PageActivity {
             jumper.setVisibility(View.GONE);
             list.smoothScrollToPosition(list.getCount() - 1);
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (history.size() == 1) {
+            super.onBackPressed();
+        } else {
+            load(history.get(history.size() - 2));
+            history.remove(history.size() - 1);
+            history.remove(history.size() - 1);
+
+        }
     }
 
 
