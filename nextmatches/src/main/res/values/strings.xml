@@ -4,7 +4,7 @@
 
     <string name="apiHost" translatable="false">api.nextmatches.com</string>
     <string name="schemeAuth" translatable="false">nextmatches-oauth</string>
-    <string name="scopes" translatable="false">email,threads,pm,accounts,pages</string>
+    <string name="scopes" translatable="false">email,threads,pm,accounts</string>
 
     <string-array name="domains" translatable="false">
         <item>en@https://uk.nextmatches.com</item>

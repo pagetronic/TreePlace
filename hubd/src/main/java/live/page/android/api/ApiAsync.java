@@ -39,22 +39,24 @@ public class ApiAsync extends AsyncTask<Object, Integer, ApiResponse> {
                 post(req, ctx, url, data, new ApiResult() {
 
                     @Override
-                    public void success(Json data1) {
+                    public void success(Json data) {
                         if (waiter != null) {
                             waiter.hide();
                         }
                         if (func != null) {
-                            func.success(data1);
+                            func.success(data);
                         }
                     }
 
                     @Override
-                    public void error(int code, Json data1) {
+                    public void error(int code, Json data) {
                         if (waiter != null) {
                             waiter.hide();
                         }
                         if (func != null) {
-                            func.error(code, data1);
+                            func.error(code, data);
+                        } else {
+                            Fx.toastNetworkError(ctx, code, data);
                         }
                     }
                 });
@@ -100,7 +102,9 @@ public class ApiAsync extends AsyncTask<Object, Integer, ApiResponse> {
                         if (waiter != null) {
                             waiter.hide();
                         }
-                        func.success(data);
+                        if (func != null) {
+                            func.success(data);
+                        }
                     }
 
                     @Override
@@ -108,7 +112,11 @@ public class ApiAsync extends AsyncTask<Object, Integer, ApiResponse> {
                         if (waiter != null) {
                             waiter.hide();
                         }
-                        func.error(code, data);
+                        if (func != null) {
+                            func.error(code, data);
+                        } else {
+                            Fx.toastNetworkError(ctx, code, data);
+                        }
                     }
                 });
             }
