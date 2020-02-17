@@ -109,8 +109,9 @@ public abstract class ApiAdapter extends BaseAdapter {
                 Fx.toastNetworkError(context, code, data);
 
                 notifyDataSetChanged();
-
-                Fx.awaitNetwork(context, () -> post(swiper, url, data_post, dir, onresult), 1500);
+                if (code == -1) {
+                    Fx.awaitNetwork(context, () -> post(swiper, url, data_post, dir, onresult), 1500);
+                }
 
             }
         });
