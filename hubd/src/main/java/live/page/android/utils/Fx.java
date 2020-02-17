@@ -90,6 +90,33 @@ public class Fx {
                 .show();
     }
 
+    public static String truncate(String str, int length) {
+        if (str == null) {
+            return null;
+        }
+        if (str.length() <= length) {
+            return str;
+        }
+
+        int end = str.lastIndexOf(' ', length - 3);
+
+        if (end == -1) {
+            return str.substring(0, length - 3) + "…";
+        }
+        int newEnd = end;
+        do {
+            end = newEnd;
+            newEnd = str.indexOf(' ', end + 1);
+
+            if (newEnd == -1) {
+                newEnd = str.length();
+            }
+
+        } while ((str.substring(0, newEnd) + "…").length() < length);
+
+        return str.substring(0, end) + "…";
+    }
+
 
     public static abstract class Action {
         public abstract void doIt();

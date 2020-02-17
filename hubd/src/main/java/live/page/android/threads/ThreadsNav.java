@@ -22,6 +22,7 @@ import live.page.android.api.ApiAsync;
 import live.page.android.api.Json;
 import live.page.android.ui.select.SelectAction;
 import live.page.android.ui.select.SelectDialog;
+import live.page.android.utils.Fx;
 
 @SuppressLint("ViewConstructor")
 public class ThreadsNav extends RecyclerView {
@@ -279,7 +280,7 @@ public class ThreadsNav extends RecyclerView {
 
                     if (item.containsKey("intro") || item.containsKey("text")) {
                         intro.setVisibility(View.VISIBLE);
-                        intro.setText(item.getString("intro", item.getString("text", "")));
+                        intro.setText(Fx.truncate(item.getString("intro", item.getString("text", "")), 150));
                     } else {
                         intro.setVisibility(View.GONE);
                     }
