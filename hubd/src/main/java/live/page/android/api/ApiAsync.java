@@ -24,6 +24,7 @@ public class ApiAsync extends AsyncTask<Object, Integer, ApiResponse> {
     }
 
     public static ApiRequest post(final Context ctx, final String url, final Json data, final ApiResult func, boolean loading) {
+
         final ApiRequest req = new ApiRequest(ctx, url);
         final AlertDialog waiter = (loading) ? Fx.loading(ctx, new Fx.Action() {
             @Override
@@ -42,7 +43,9 @@ public class ApiAsync extends AsyncTask<Object, Integer, ApiResponse> {
                         if (waiter != null) {
                             waiter.hide();
                         }
-                        func.success(data1);
+                        if (func != null) {
+                            func.success(data1);
+                        }
                     }
 
                     @Override
@@ -50,7 +53,9 @@ public class ApiAsync extends AsyncTask<Object, Integer, ApiResponse> {
                         if (waiter != null) {
                             waiter.hide();
                         }
-                        func.error(code, data1);
+                        if (func != null) {
+                            func.error(code, data1);
+                        }
                     }
                 });
             }
