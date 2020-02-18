@@ -338,12 +338,16 @@ public class ThreadsNav extends RecyclerView {
                                 Intent intent = new Intent(getContext(), ThreadsView.class);
                                 intent.putExtra("forum_id", item.getId());
                                 threadsView.startActivity(intent);
-                                threadsView.finish();
                             });
 
                             break;
                         case "posts":
-                            itemView.setOnClickListener(v -> threadsView.load(item.getId()));
+                            itemView.setOnClickListener(v -> {
+//todo treat as threadsView.load()
+                                Intent intent = new Intent(getContext(), ThreadsView.class);
+                                intent.putExtra("id", item.getId());
+                                threadsView.startActivity(intent);
+                            });
                             break;
                         default:
                             itemView.setOnClickListener(null);

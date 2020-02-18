@@ -89,6 +89,7 @@ public class ThreadsView extends PageActivity {
 
         String forum_id = getIntent().getStringExtra("forum_id");
         if (forum_id != null) {
+            removeNavRight();
             String url = "/forums/" + forum_id;
             CoordinatorLayout root = findViewById(R.id.root);
             root.removeAllViews();
@@ -102,6 +103,7 @@ public class ThreadsView extends PageActivity {
             transaction.commit();
             return;
         }
+
 
         listView = findViewById(R.id.thread);
         listView.setDivider(null);
