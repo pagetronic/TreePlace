@@ -8,13 +8,17 @@ import android.view.animation.AccelerateInterpolator;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AbsListView;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.bumptech.glide.Glide;
@@ -68,7 +72,7 @@ public class ThreadsView extends PageActivity {
                 makeHeader(false);
                 listView.removeFooterView(replyView);
                 listView.addFooterView(replyView, null, true);
-                if (!ThreadsNav.makeNav(ThreadsView.this, getNavRight(), thread, isAdmin())) {
+                if (!ThreadsNav.makeNav(ThreadsView.this, getNavRight(), thread, isEditor())) {
                     removeNavRight();
                 }
                 replyView.setVisibility(View.VISIBLE);
@@ -83,6 +87,21 @@ public class ThreadsView extends PageActivity {
     @Override
     protected void onCreate() {
 
+        String forum_id = getIntent().getStringExtra("forum_id");
+        if (forum_id != null) {
+            String url = "/forums/" + forum_id;
+            CoordinatorLayout root = findViewById(R.id.root);
+            root.removeAllViews();
+            FrameLayout frame = new FrameLayout(getContext());
+            frame.setId(R.id.host_fragment);
+            root.addView(frame);
+            FragmentManager fm = getSupportFragmentManager();
+            FragmentTransaction transaction = fm.beginTransaction();
+
+            transaction.replace(R.id.host_fragment, new ForumsView(url));
+            transaction.commit();
+            return;
+        }
 
         listView = findViewById(R.id.thread);
         listView.setDivider(null);
@@ -273,7 +292,8 @@ public class ThreadsView extends PageActivity {
 
     @Override
     public void onBackPressed() {
-        if (history.size() == 1) {
+        //TODO history forum fragment
+        if (history.size() <= 1) {
             super.onBackPressed();
         } else {
             load(history.get(history.size() - 2));

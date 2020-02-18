@@ -1,6 +1,7 @@
 package live.page.android.threads;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,20 +32,20 @@ public class ThreadsNav extends RecyclerView {
 
     private NavAdapter adapter;
     private String thread_id;
-    private boolean isAdmin;
+    private boolean isEditor;
     private ThreadsView threadsView;
 
 
-    public ThreadsNav(@NonNull ThreadsView threadsView, String thread_id, boolean isAdmin) {
+    public ThreadsNav(@NonNull ThreadsView threadsView, String thread_id, boolean isEditor) {
         super(threadsView);
         this.thread_id = thread_id;
-        this.isAdmin = isAdmin;
+        this.isEditor = isEditor;
         this.threadsView = threadsView;
 
         setLayoutManager(new LinearLayoutManager(getContext()));
         setAdapter(new NavAdapter());
 
-        if (isAdmin) {
+        if (isEditor) {
 
             ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP | ItemTouchHelper.DOWN, ItemTouchHelper.LEFT) {
 
@@ -88,21 +89,21 @@ public class ThreadsNav extends RecyclerView {
         }
     }
 
-    public static boolean makeNav(ThreadsView threadsView, NavigationView nav, Json thread, boolean isAdmin) {
+    public static boolean makeNav(ThreadsView threadsView, NavigationView nav, Json thread, boolean isEditor) {
 
         nav.removeAllViews();
-        ThreadsNav lateralNav = new ThreadsNav(threadsView, thread.getId(), isAdmin);
+        ThreadsNav lateralNav = new ThreadsNav(threadsView, thread.getId(), isEditor);
         nav.addView(lateralNav);
 
         List<Json> pages = thread.getListJson("pages");
-        if (pages.size() > 0 || isAdmin) {
+        if (pages.size() > 0 || isEditor) {
             lateralNav.add(new Json("separator", threadsView.getString(R.string.related_pages)).put("type", "pages"));
             for (Json page : pages) {
                 lateralNav.add(page.put("type", "pages"));
             }
         }
         List<Json> forums = thread.getListJson("forums");
-        if (forums.size() > 0 || isAdmin) {
+        if (forums.size() > 0 || isEditor) {
             lateralNav.add(new Json("separator", threadsView.getString(R.string.related_forums)).put("type", "forums"));
             for (Json forum : forums) {
                 lateralNav.add(forum.put("type", "forums"));
@@ -246,7 +247,7 @@ public class ThreadsNav extends RecyclerView {
 
         @Override
         public void onBindViewHolder(@NonNull NavView holder, int position) {
-            holder.make(items.get(position), isAdmin);
+            holder.make(items.get(position), isEditor);
 
         }
 
@@ -332,7 +333,13 @@ public class ThreadsNav extends RecyclerView {
                             itemView.setOnClickListener(v -> Fx.browse(getContext(), Uri.parse("https://" + item.getString("domain") + item.getString("url"))));
                             break;
                         case "forums":
-                            itemView.setOnClickListener(v -> threadsView.finish());
+                            itemView.setOnClickListener(v -> {
+//todo treat as threadsView.load()
+                                Intent intent = new Intent(getContext(), ThreadsView.class);
+                                intent.putExtra("forum_id", item.getId());
+                                threadsView.startActivity(intent);
+                                threadsView.finish();
+                            });
 
                             break;
                         case "posts":
