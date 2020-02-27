@@ -5,5 +5,5 @@
         android:centerColor="@color/greyMedium"
         android:endColor="@color/white"
         android:startColor="@color/white"
-        android:angle="90"/>
+        android:angle="90" />
 </shape>
